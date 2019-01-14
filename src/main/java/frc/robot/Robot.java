@@ -7,13 +7,25 @@
 
 package frc.robot;
 
+import org.junit.Test.None;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.badlogs.BadLog;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,16 +41,33 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-  /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
-   */
+  private BadLog m_logger;
+  private int loopsSinceLastLog = 0;
+  private final int LOOPS_TO_WAIT_FOR_DISABLED_LOGGING = 50;
+
+  public PowerDistributionPanel m_pdp;
+
   @Override
   public void robotInit() {
+
+    // Initialize the PDP
+    m_pdp = new PowerDistributionPanel(RobotMap.PDP_ID);
+
+    // Initialize badlogs
+    initializeLogging();
+
+
+
     m_oi = new OI();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+
+
+
+    // Finalize the BadLog initialization only after everything has had a
+    // chance to register info
+    m_logger.finishInitialization();
   }
 
   /**
@@ -51,6 +80,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    updateLogs();
+
   }
 
   /**
@@ -128,4 +160,99 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
+  /**
+   * Initializes the BadLogs logging system, and adds some general logging
+   * info to it.
+   */
+  private void initializeLogging() {
+
+    // The file name
+    String fileName = "/home/lvuser/log/";
+
+    // Get the current timestamp
+    String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date());
+    fileName += dateTime;
+
+    // Check if we are in a match
+    MatchType matchType = Optional.ofNullable(DriverStation.getInstance().getMatchType()).orElse(MatchType.None);
+    String eventName = "";
+    int matchNumber = 0;
+    int replayNumber = 0;
+    if (matchType != MatchType.None) {
+      eventName = Optional.ofNullable(DriverStation.getInstance().getEventName()).orElse("");
+      matchNumber = DriverStation.getInstance().getMatchNumber();
+      replayNumber = DriverStation.getInstance().getReplayNumber();
+
+      fileName += "_" + eventName + "_" + matchType.toString() + matchNumber + "(" + replayNumber + ")";
+    }
+
+    // Initialize the logger
+    fileName += ".badlog";
+    m_logger = BadLog.init(fileName);
+
+    // Log session info
+    BadLog.createValue("Timestamp", dateTime);
+    BadLog.createValue("Is FMS Connected?", String.valueOf(DriverStation.getInstance().isFMSAttached()));
+    BadLog.createValue("Event Name", eventName);
+    BadLog.createValue("Match Type", matchType.toString());
+    BadLog.createValue("Match Number", String.valueOf(matchNumber));
+    BadLog.createValue("Replay Number", String.valueOf(replayNumber));
+    BadLog.createValue("Alliance", Optional.ofNullable(DriverStation.getInstance().getAlliance()).orElse(Alliance.Invalid).toString());
+    BadLog.createValue("DS Location", String.valueOf(DriverStation.getInstance().getLocation()));
+
+    // Log the current time from start
+    final long startTime = RobotController.getFPGATime(); // us
+    BadLog.createTopic("Time", "s", () -> (RobotController.getFPGATime() - startTime) / 1e6, "hide", "delta", "xaxis");
+
+    // Logging the current mode and match time
+    BadLog.createTopic("Match time", "s", () -> DriverStation.getInstance().getMatchTime());
+    BadLog.createTopicStr("Operation Mode", BadLog.UNITLESS, new Supplier<String>() {
+
+      @Override
+      public String get() {
+        if (DriverStation.getInstance().isAutonomous()) {
+          return "Auton";
+        } else if (DriverStation.getInstance().isOperatorControl()) {
+          return "Teleop";
+        } else if (DriverStation.getInstance().isTest()) {
+          return "Test";
+        } else {
+          return "Disabled";
+        }
+      }
+    });
+
+    // Log power draw information
+    BadLog.createTopicStr("Is Browned Out?", BadLog.UNITLESS, () -> String.valueOf(RobotController.isBrownedOut()));
+    BadLog.createTopic("Battery Voltage", "V", () -> m_pdp.getVoltage());
+    BadLog.createTopic("Total Current Draw", "A", () -> m_pdp.getTotalCurrent());
+
+    // Log CAN information
+    BadLog.createTopic("CAN Bus Off Count", BadLog.UNITLESS, () -> (double)RobotController.getCANStatus().busOffCount);
+    BadLog.createTopic("CAN Bus Utilization", "%", () -> RobotController.getCANStatus().percentBusUtilization);
+    BadLog.createTopic("CAN RX Error Count", BadLog.UNITLESS, () -> (double)RobotController.getCANStatus().receiveErrorCount);
+    BadLog.createTopic("CAN TX Error Count", BadLog.UNITLESS, () -> (double)RobotController.getCANStatus().transmitErrorCount);
+    BadLog.createTopic("CAN TX Full Count", BadLog.UNITLESS, () -> (double)RobotController.getCANStatus().txFullCount);
+
+  }
+
+  /**
+   * Log all topics for the Bad Logs logging system, if it is time to
+   */
+  private void updateLogs() {
+
+    m_logger.updateTopics();
+    if (DriverStation.getInstance().isEnabled() 
+        || loopsSinceLastLog > LOOPS_TO_WAIT_FOR_DISABLED_LOGGING) {
+      
+      m_logger.log();
+      loopsSinceLastLog = 0;
+
+    } else {
+      loopsSinceLastLog++;
+    }
+
+  }
+
 }
