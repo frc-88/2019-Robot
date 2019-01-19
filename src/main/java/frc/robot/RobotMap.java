@@ -16,6 +16,21 @@ package frc.robot;
 public class RobotMap {
   public static final int ELBOW_ID = 0;
   public static final int SHOULDER_ID = 1;
+
+  public static final int LEFT_MASTER_DRIVE_ID = 2;
+  public static final int RIGHT_MASTER_DRIVE_ID = 3;
+  public static final int LEFT_FOLLOWER00_DRIVE_ID = 4;
+  public static final int LEFT_FOLLOWER01_DRIVE_ID = 5;
+  public static final int LEFT_FOLLOWER02_DRIVE_ID = 6;
+  public static final int RIGHT_FOLLOWER00_DRIVE_ID = 7;
+  public static final int RIGHT_FOLLOWER01_DRIVE_ID = 8;
+  public static final int RIGHT_FOLLOWER02_DRIVE_ID = 9;
+
+  public static final double DRIVE_VOLTAGE_LIMIT = 0.83;
+
+  public static final int CAN_TIMEOUT = 1;
+
+  public static final int MAX_SPEED = 14500;
   // For example to map the left and right motors, you could define the
   // following variables to use with your drivetrain subsystem.
   // public static int leftMotor = 1;
