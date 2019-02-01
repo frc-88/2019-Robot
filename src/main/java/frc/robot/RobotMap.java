@@ -25,7 +25,7 @@ public class RobotMap {
   public static final int RIGHT_FOLLOWER00_DRIVE_ID = 7;
   public static final int RIGHT_FOLLOWER01_DRIVE_ID = 8;
   public static final int RIGHT_FOLLOWER02_DRIVE_ID = 9;
-
+  public static final double ARM_TOLERANCE=1;
   public static final double DRIVE_VOLTAGE_LIMIT = 0.83;
 
   public static final int CAN_TIMEOUT = 1;

@@ -5,25 +5,29 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
-import frc.robot.subsystems.Arm;
+package frc.robot.commands.arm;
+
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-public class CargoPickupPosition extends Command {
-  private static final double SHOULDER_POSITION=0;
-  private static final double ELBOW_POSITION=0;
+import frc.robot.RobotMap;
 
-  public CargoPickupPosition() {
+public class ArmGoToPosition extends Command {
+  private double shoulder_target;
+  private double elbow_target;
+
+  public ArmGoToPosition(double shoulder, double elbow) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.m_arm);
+    shoulder_target = shoulder;
+    elbow_target = elbow;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-   Robot.m_arm.moveShoulder(SHOULDER_POSITION);
-   Robot.m_arm.moveElbow(ELBOW_POSITION);
+    Robot.m_arm.moveShoulder(shoulder_target);
+    Robot.m_arm.moveElbow(elbow_target);
 
   }
 
@@ -35,7 +39,8 @@ public class CargoPickupPosition extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return Math.abs(Robot.m_arm.getShoulderPosition() - shoulder_target) < RobotMap.ARM_TOLERANCE
+        && Math.abs(Robot.m_arm.getElbowPosition() - elbow_target) < RobotMap.ARM_TOLERANCE;
   }
 
   // Called once after isFinished returns true
