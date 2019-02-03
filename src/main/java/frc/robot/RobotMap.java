@@ -25,6 +25,13 @@ public class RobotMap {
   public static final int RIGHT_FOLLOWER00_DRIVE_ID = 7;
   public static final int RIGHT_FOLLOWER01_DRIVE_ID = 8;
   public static final int RIGHT_FOLLOWER02_DRIVE_ID = 9;
+
+ public static final int SAPG_MOTOR_ID = 10;
+ public static final int SAPG_DEPLOY_FORWARD = 0;
+ public static final int SAPG_DEPLOY_REVERSE = 1;
+ public static final int SAPG_GRAB_FORWARD = 2;
+ public static final int SAPG_GRAB_REVERSE = 3;
+
   public static final double ARM_TOLERANCE=1;
   public static final double DRIVE_VOLTAGE_LIMIT = 0.83;
 
