@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -15,7 +16,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.*;
 
 /**
- * Add your docs here.
+ * Arm with a shoulder and an elbow joint, a relative encoder and absolute encoder on both.
  */
 
 public class Arm extends Subsystem {
@@ -24,12 +25,27 @@ public class Arm extends Subsystem {
   TalonSRX shoulder, elbow;
   private final static int SLOTIDX = 0;
   private final static int TIMEOUTMS = 0;
+  CANifier shoulderCan, elbowCan;	// CANifier
+
 
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
     elbow = new TalonSRX(RobotMap.ELBOW_ID);
+    shoulderCan=new CANifier(RobotMap.SHOULDER_CANIFIER_ID);
+    elbowCan=new CANifier(RobotMap.ELBOW_CANIFIER_ID);
+
     configShoulderTalon();
     configElbowTalon();
+    configCanifierCommon(shoulderCan);
+    configCanifierCommon(elbowCan);
+  }
+
+  private void configShoulderCanifier() {
+    configCanifierCommon(shoulderCan);
+  }
+
+  private void configElbowCanifier() {
+    configCanifierCommon(elbowCan);
   }
 
   private void configShoulderTalon() {
@@ -68,6 +84,9 @@ public class Arm extends Subsystem {
     /* eFeedbackNotContinuous = 1, subValue/ordinal/timeoutMs = 0 */
 
   }
+  private void configCanifierCommon(CANifier canifier){
+    canifier.configFactoryDefault();
+  }
 
   @Override
   public void initDefaultCommand() {
@@ -93,6 +112,33 @@ public class Arm extends Subsystem {
   }
 
   public double getElbowPosition() {
-    return elbow.getSelectedSensorVelocity();
+    return elbow.getSelectedSensorPosition();
+  }
+  
+public double getShoulderAbsolutePosition(){
+  return shoulderCan.getQuadraturePosition();
+}
+
+public double getElbowAbsolutePosition(){
+  return elbowCan.getQuadraturePosition();
+}
+
+  /**
+   * zeroes elbow motor encoder based on known elbow angle 
+   * @param elbowAngle
+   */
+  public void zeroElbowMotorEncoder(double elbowAngle){
+    // TODO: apply scaling facor to encoder position
+    int encoderPosition=(int)elbowAngle;
+    elbow.setSelectedSensorPosition(encoderPosition,0,TIMEOUTMS);
+  }
+    /**
+   * zeroes shoulder motor encoder based on known shoulder angle 
+   * @param shoulderAngle the angle of the shoulder
+   */
+  public void zeroShoulderMotorEncoder(double shoulderAngle){
+    // TODO: apply scaling facor to encoder position
+    int encoderPosition=(int)shoulderAngle;
+    shoulder.setSelectedSensorPosition(encoderPosition,0,TIMEOUTMS);
   }
 }
