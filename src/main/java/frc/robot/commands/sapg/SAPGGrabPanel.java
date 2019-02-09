@@ -16,7 +16,9 @@ public class SAPGGrabPanel extends Command {
 
     private int state;
     private long startTime;
-    private final long PUSH_TIME=8888;
+    private final long PUSH_TIME = 1000000; // 1s
+    private final long OPEN_TIME = 1000000; // 1s
+    private final long PULL_TIME = 1000000;  // 1s
 
   public SAPGGrabPanel() {
     // Use requires() here to declare subsystem dependencies
@@ -50,7 +52,7 @@ public class SAPGGrabPanel extends Command {
           //open, push out
           Robot.m_sapg.openTheJaws();
           Robot.m_sapg.forwardPush();
-          if (RobotController.getFPGATime()-startTime>PUSH_TIME){
+          if (RobotController.getFPGATime()-startTime>OPEN_TIME){
             state++;
             startTime=RobotController.getFPGATime();
           }
@@ -59,7 +61,7 @@ public class SAPGGrabPanel extends Command {
           //open, pull in
           Robot.m_sapg.openTheJaws();
           Robot.m_sapg.reversePush();
-          if (RobotController.getFPGATime()-startTime>PUSH_TIME){
+          if (RobotController.getFPGATime()-startTime>PULL_TIME){
             state++;
             startTime=RobotController.getFPGATime();
           }
@@ -84,5 +86,6 @@ public class SAPGGrabPanel extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+      end();
   }
 }
