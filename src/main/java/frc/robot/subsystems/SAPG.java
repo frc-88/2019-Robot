@@ -30,12 +30,10 @@ public class SAPG extends Subsystem{
         sideMotor.setInverted(false);
         sideMotor.configFeedbackNotContinuous(false, RobotMap.CAN_TIMEOUT);
         sideMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog);
-        sideMotor.configMotionCruiseVelocity(5);
-        sideMotor.configMotionAcceleration(5);
         sideMotor.configFeedbackNotContinuous(true, RobotMap.CAN_TIMEOUT);
-        sideMotor.configForwardSoftLimitThreshold(10);
+        sideMotor.configForwardSoftLimitThreshold(feetToPotTicks(RobotMap.SAPG_SIDE_RANGE));
         sideMotor.configForwardSoftLimitEnable(true);
-        sideMotor.configReverseSoftLimitThreshold(-10);
+        sideMotor.configReverseSoftLimitThreshold(feetToPotTicks(-RobotMap.SAPG_SIDE_RANGE));
         sideMotor.configReverseSoftLimitEnable(true);
         sideMotor.configNeutralDeadband(0.01);
         sideMotor.enableVoltageCompensation(true);
@@ -49,8 +47,8 @@ public class SAPG extends Subsystem{
         grabPiston.set(Value.kForward);
     }
 
-    public void shiftTheSAPG(double position){
-        sideMotor.set(ControlMode.Position, position);
+    public void moveToPosition(double position){
+        sideMotor.set(ControlMode.Position, feetToPotTicks(position));
     }
 
     public void forwardPush(){
@@ -65,10 +63,17 @@ public class SAPG extends Subsystem{
         grabPiston.set(Value.kReverse);
     }
 
-
     @Override
     protected void initDefaultCommand() {
 
+    }
+
+    public double potTicksToFeet(int potTicks) {
+        return (potTicks  * RobotMap.SAPG_POT_SCALAR) + RobotMap.SAPG_POT_OFFSET; 
+    }
+
+    public int feetToPotTicks(double feet) {
+        return (int)((feet - RobotMap.SAPG_POT_OFFSET) / RobotMap.SAPG_POT_SCALAR);
     }
 
 }

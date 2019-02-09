@@ -39,13 +39,8 @@ public class RobotMap {
   public static final int CAN_TIMEOUT = 1;
 
   public static final int MAX_SPEED = 14500;
-  // For example to map the left and right motors, you could define the
-  // following variables to use with your drivetrain subsystem.
-  // public static int leftMotor = 1;
-  // public static int rightMotor = 2;
 
-  // If you are using multiple modules, make sure to define both the port
-  // number and the module. For example you with a rangefinder:
-  // public static int rangefinderPort = 1;
-  // public static int rangefinderModule = 1;
+  public static final double SAPG_POT_SCALAR = 1 / 1024 * 10 * 1.432/2/12;
+  public static final double SAPG_POT_OFFSET = 0;
+  public static final double SAPG_SIDE_RANGE = 8.5/12;
 }
