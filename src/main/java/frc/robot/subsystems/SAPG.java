@@ -29,17 +29,20 @@ public class SAPG extends Subsystem{
         sideMotor.setNeutralMode(NeutralMode.Coast);
         sideMotor.setInverted(false);
         sideMotor.configFeedbackNotContinuous(false, RobotMap.CAN_TIMEOUT);
-        sideMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
-        sideMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
-        sideMotor.configForwardSoftLimitEnable(true);
-        sideMotor.configReverseSoftLimitEnable(true);
         sideMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog);
         sideMotor.configMotionCruiseVelocity(5);
         sideMotor.configMotionAcceleration(5);
+        sideMotor.configFeedbackNotContinuous(true, RobotMap.CAN_TIMEOUT);
+        sideMotor.configForwardSoftLimitThreshold(10);
+        sideMotor.configForwardSoftLimitEnable(true);
+        sideMotor.configReverseSoftLimitThreshold(-10);
+        sideMotor.configReverseSoftLimitEnable(true);
+        sideMotor.configNeutralDeadband(0.01);
+        sideMotor.enableVoltageCompensation(true);
         sideMotor.config_kP(0, 0);
         sideMotor.config_kI(0, 0);
         sideMotor.config_kD(0, 0);
-        sideMotor.config_kF(0 , 0);
+        sideMotor.config_kF(0, 0);
     }
 
     public void openTheJaws(){
