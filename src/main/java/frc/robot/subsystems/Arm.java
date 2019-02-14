@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -15,21 +16,49 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.*;
 
 /**
- * Add your docs here.
+ * Arm with a shoulder and an elbow joint, a relative encoder and absolute encoder on both.
  */
 
 public class Arm extends Subsystem {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
-  TalonSRX shoulder, elbow;
+  private final static double SHOULDER_LENGTH = 30.5;
+  private final static double ELBOW_LENGTH = 24;
+  private final static double ARM_HEIGHT = 41;
+  private final static double ROBOT_LENGTH = 30;
+  private final static double LEGAL_HEIGHT_LIMIT = 78;
+  private final static double LEGAL_EXTENSION = 30;
+  private final static double LEGAL_REACH = ROBOT_LENGTH / 2 + LEGAL_EXTENSION;
+  private final static double FORWARD_SHOULDER_LIMIT = 170;
+  private final static double REVERSE_SHOULDER_LIMIT = -60;
+  private final static double FORWARD_ELBOW_LIMIT = 170;
+  private final static double REVERSE_ELBOW_LIMIT = -170;
+  private final static double ROBOT_TOP_LIMIT = -10;
+  private final static double ROBOT_FORWARD_LIMIT = 5;
+  private final static double ROBOT_REVERSE_LIMIT = 15;
+
   private final static int SLOTIDX = 0;
   private final static int TIMEOUTMS = 0;
+
+  TalonSRX shoulder, elbow;
+  CANifier shoulderCan, elbowCan;	// CANifier
 
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
     elbow = new TalonSRX(RobotMap.ELBOW_ID);
+    shoulderCan=new CANifier(RobotMap.SHOULDER_CANIFIER_ID);
+    elbowCan=new CANifier(RobotMap.ELBOW_CANIFIER_ID);
+
     configShoulderTalon();
     configElbowTalon();
+    configCanifierCommon(shoulderCan);
+    configCanifierCommon(elbowCan);
+  }
+
+  private void configShoulderCanifier() {
+    configCanifierCommon(shoulderCan);
+  }
+
+  private void configElbowCanifier() {
+    configCanifierCommon(elbowCan);
   }
 
   private void configShoulderTalon() {
@@ -68,6 +97,9 @@ public class Arm extends Subsystem {
     /* eFeedbackNotContinuous = 1, subValue/ordinal/timeoutMs = 0 */
 
   }
+  private void configCanifierCommon(CANifier canifier){
+    canifier.configFactoryDefault();
+  }
 
   @Override
   public void initDefaultCommand() {
@@ -93,6 +125,78 @@ public class Arm extends Subsystem {
   }
 
   public double getElbowPosition() {
-    return elbow.getSelectedSensorVelocity();
+    return elbow.getSelectedSensorPosition();
   }
+  
+public double getShoulderAbsolutePosition(){
+  return shoulderCan.getQuadraturePosition();
+}
+
+public double getElbowAbsolutePosition(){
+  return elbowCan.getQuadraturePosition();
+}
+
+  /**
+   * zeroes elbow motor encoder based on known elbow angle 
+   * @param elbowAngle
+   */
+  public void zeroElbowMotorEncoder(double elbowAngle){
+    // TODO: apply scaling facor to encoder position
+    int encoderPosition=(int)elbowAngle;
+    elbow.setSelectedSensorPosition(encoderPosition,0,TIMEOUTMS);
+  }
+    /**
+   * zeroes shoulder motor encoder based on known shoulder angle 
+   * @param shoulderAngle the angle of the shoulder
+   */
+  public void zeroShoulderMotorEncoder(double shoulderAngle){
+    // TODO: apply scaling facor to encoder position
+    int encoderPosition=(int)shoulderAngle;
+    shoulder.setSelectedSensorPosition(encoderPosition,0,TIMEOUTMS);
+  }
+
+  /**
+   * isLegalPosition
+   * 
+   * args:
+   *   targetShoulderAngle  the target angle for the shoulder
+   *   targetElbowAngle     the target angle for the elbow
+   *   inHabZone            set to true when you want to enforce
+   *                        Hab zone height limits
+   * 
+   * returns: 
+   *   boolean value indicating whether specified target position is legal
+   */
+  public boolean isLegalPosition(double targetShoulderAngle, double targetElbowAngle, boolean inHabZone) {
+    double shoulderX = SHOULDER_LENGTH * Math.sin(Math.toRadians(targetShoulderAngle));
+    double shoulderY = SHOULDER_LENGTH * Math.cos(Math.toRadians(targetShoulderAngle));
+    double elbowX = ELBOW_LENGTH * Math.sin(Math.toRadians(targetElbowAngle)) + shoulderX;
+    double elbowY = ELBOW_LENGTH * Math.cos(Math.toRadians(targetElbowAngle)) + shoulderY;
+    boolean isLegal = true;
+
+    // angles should be within range
+    isLegal &= targetShoulderAngle < FORWARD_SHOULDER_LIMIT;
+    isLegal &= targetShoulderAngle > REVERSE_SHOULDER_LIMIT;
+    isLegal &= targetElbowAngle-targetShoulderAngle < FORWARD_ELBOW_LIMIT;
+    isLegal &= targetElbowAngle-targetShoulderAngle > REVERSE_ELBOW_LIMIT; 
+
+    // both points must be above the ground
+    isLegal &= shoulderY > 0-ARM_HEIGHT;
+    isLegal &= elbowY > 0-ARM_HEIGHT;
+
+    // both points must not be within the robot
+    isLegal &= shoulderY > ROBOT_TOP_LIMIT || shoulderX > ROBOT_FORWARD_LIMIT || shoulderX < ROBOT_REVERSE_LIMIT;
+    isLegal &= elbowY > ROBOT_TOP_LIMIT || elbowX > ROBOT_FORWARD_LIMIT || elbowX < ROBOT_REVERSE_LIMIT;
+
+    // both points must not go beyond our legal reach
+    isLegal &= Math.abs(shoulderX) < LEGAL_REACH;
+    isLegal &= Math.abs(elbowX) < LEGAL_REACH;
+
+    // both points must be below the height limit in certain conditions
+    isLegal &= inHabZone && shoulderY < LEGAL_HEIGHT_LIMIT-ARM_HEIGHT;
+    isLegal &= inHabZone && elbowY < LEGAL_HEIGHT_LIMIT-ARM_HEIGHT;
+
+    return isLegal;
+  }
+
 }
