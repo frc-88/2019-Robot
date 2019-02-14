@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.SAPG;
 
 
@@ -28,7 +30,9 @@ public class Robot extends TimedRobot {
   public static OI m_oi;
   public static Arm m_arm;
   public static SAPG m_sapg;
-
+  public static Limelight m_limelight_front;
+  public static Limelight m_limelight_rear;
+  public static NavX m_navx;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -40,9 +44,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI();
+    m_navx = new NavX();
+    m_limelight_front = new Limelight("front");
+    m_limelight_rear = new Limelight("rear");
     m_arm = new Arm();
     m_drive = new Drive();
     m_sapg = new SAPG();
+
+
     //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -58,6 +67,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    m_limelight_front.updateDashboard();
+    m_limelight_rear.updateDashboard();
+    m_navx.updateDashboard();
   }
 
   /**
