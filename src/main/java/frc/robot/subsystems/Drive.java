@@ -8,9 +8,8 @@
 package frc.robot.subsystems;
 
 import javax.lang.model.util.ElementScanner6;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix.motorcontrol.*;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -20,11 +19,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.badlogs.BadLog;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.test.DriveConstantVoltage;
-import frc.robot.commands.test.DriveIncrease;
-import frc.robot.commands.test.DriveIncreaseVel;
+import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.test.DriveConstantVoltage;
+import frc.robot.commands.drive.test.DriveIncrease;
+import frc.robot.commands.drive.test.DriveIncreaseVel;
 import frc.robot.driveutil.DriveConfiguration;
 import frc.robot.driveutil.TJDriveModule;
 import frc.robot.util.TJPIDController;
@@ -43,7 +41,8 @@ public class Drive extends Subsystem {
     private DriveConfiguration driveConfiguration;
     private TJPIDController velocityController;
 
-    private DoubleSolenoid shifter;
+    private DoubleSolenoid leftShifter;
+    private DoubleSolenoid rightShifter;
     private AHRS navX;
 
     private double maxSpeed;
@@ -102,7 +101,8 @@ public class Drive extends Subsystem {
         leftDrive = new TJDriveModule(driveConfiguration.left, transmission);
         rightDrive = new TJDriveModule(driveConfiguration.right, transmission);
 
-        shifter = new DoubleSolenoid(RobotMap.SHIFTER_OUT, RobotMap.SHIFTER_IN);
+        leftShifter = new DoubleSolenoid(RobotMap.SHIFTER_LEFT_PCM, RobotMap.SHIFTER_LEFT_OUT, RobotMap.SHIFTER_LEFT_IN);
+        rightShifter = new DoubleSolenoid(RobotMap.SHIFTER_RIGHT_PCM, RobotMap.SHIFTER_RIGHT_OUT, RobotMap.SHIFTER_RIGHT_IN);
         navX = new AHRS(SPI.Port.kMXP);
 
         transmission.shiftToLow();
@@ -111,38 +111,6 @@ public class Drive extends Subsystem {
         //addBadlogsTopics();
     }
 
-    private void addBadlogsTopics() {
-
-        // Talon status info
-        BadLog.createTopicStr("Left Drive Mode", BadLog.UNITLESS, () -> leftDrive.getControlMode().toString());
-        BadLog.createTopicStr("Right Drive Mode", BadLog.UNITLESS, () -> rightDrive.getControlMode().toString());
-
-
-        // Power info
-        BadLog.createTopic("Left Drive Commanded Voltage", "V", () -> leftDrive.getMotorOutputVoltage());
-        BadLog.createTopic("Right Drive Commanded Voltage", "V", () -> rightDrive.getMotorOutputVoltage());
-        BadLog.createTopic("Left Drive Master Current", "A", () -> leftDrive.getOutputCurrent());
-        BadLog.createTopic("Right Drive Master Current", "A", () -> rightDrive.getOutputCurrent());
-        for (int i = 0; i < leftDrive.getNumTalonFollowers(); i++) {
-            final int index = i;
-            BadLog.createTopic("Left Drive Follower " + i + "Current", "A", () -> leftDrive.getFollowerCurrent(index));
-            BadLog.createTopic("Right Drive Follower " + i + "Current", "A", () -> rightDrive.getFollowerCurrent(index));
-        }
-        BadLog.createTopic("Left Drive Total Current", "A", () -> leftDrive.getTotalCurrent());
-        BadLog.createTopic("Right Drive Total Current", "A", () -> rightDrive.getTotalCurrent());
-
-        // Get encoder info
-        BadLog.createTopic("Left Drive Position", "ft", () -> getLeftPosition());
-        BadLog.createTopic("Right Drive Position", "ft", () -> getRightPosition());
-        BadLog.createTopic("Left Drive Speed", "fps", () -> getLeftSpeed());
-        BadLog.createTopic("Right Drive Speed", "fps", () -> getRightSpeed());
-        BadLog.createTopic("Average Drive Speed", "fps", () -> getStraightSpeed());
-
-        // Get NavX info
-        BadLog.createTopic("Angular Speed", "DPS", () -> getAngularVelocity());
-        BadLog.createTopic("Yaw", "Degrees", () -> getAngle());
-
-    }
 
     public void configureShuffleboard() {
         // Talon status info
@@ -241,6 +209,7 @@ public class Drive extends Subsystem {
     }
 
     public void basicDrive(double leftSpeed, double rightSpeed) {
+        System.out.println(leftSpeed + " " + rightSpeed);
         leftDrive.set(ControlMode.PercentOutput, leftSpeed);
         rightDrive.set(ControlMode.PercentOutput, rightSpeed);
 
@@ -267,13 +236,14 @@ public class Drive extends Subsystem {
      *                  -1 (counterclockwise) to 1 (clockwise)
      */
     public void arcadeDrive(double speed, double turn) {
-        speed *= maxSpeed;
-        turn *= maxSpeed;
-        joystickSpeed = speed;
-        speed = limitAcceleration(speed);
-        double leftSpeed = (speed + turn);
-        double rightSpeed = (speed - turn);
-        basicDriveLimited(leftSpeed, rightSpeed);
+        // speed *= maxSpeed;
+        // turn *= maxSpeed;
+        // joystickSpeed = speed;
+        // speed = limitAcceleration(speed);
+        // double leftSpeed = (speed + turn);
+        // double rightSpeed = (speed - turn);
+        // basicDriveLimited(leftSpeed, rightSpeed);
+        basicDrive(speed + turn, speed - turn);
     }
 
     public double limitAcceleration(double speed){
@@ -354,7 +324,8 @@ Old versions of arcade drive:
     }
 
     public void shiftToLow() {
-        shifter.set(Value.kReverse);
+        leftShifter.set(Value.kReverse);
+        rightShifter.set(Value.kReverse);
         transmission.shiftToLow();
         velocityController.setKP(RobotMap.DRIVE_VEL_LOW_KP);
         velocityController.setKI(RobotMap.DRIVE_VEL_LOW_KI);
@@ -366,7 +337,8 @@ Old versions of arcade drive:
     }
 
     public void shiftToHigh() {
-        shifter.set(Value.kForward);
+        leftShifter.set(Value.kForward);
+        rightShifter.set(Value.kForward);
         transmission.shiftToHigh();
         velocityController.setKP(RobotMap.DRIVE_VEL_HIGH_KP);
         velocityController.setKI(RobotMap.DRIVE_VEL_HIGH_KI);

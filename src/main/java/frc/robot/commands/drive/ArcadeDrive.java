@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -33,7 +33,7 @@ public class ArcadeDrive extends Command {
 
     Robot.m_drive.arcadeDrive(speed, turn);
     
-    Robot.m_drive.autoshift();
+    Robot.m_drive.setGearFromButton();
   }
   
 

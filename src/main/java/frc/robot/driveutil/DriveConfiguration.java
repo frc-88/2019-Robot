@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration;
 
+import frc.robot.RobotMap;
+
 public class DriveConfiguration {
     public TJDriveModuleConfiguration left, right;
 
@@ -16,11 +18,15 @@ public class DriveConfiguration {
         left = new TJDriveModuleConfiguration();
         right = new TJDriveModuleConfiguration();
 
-        left.master = 10;
-        left.talonFollowers = new int [] {11, 12, 13};
+        left.master = RobotMap.LEFT_MASTER_DRIVE_ID;
+        left.victorFollowers = new int [] {RobotMap.LEFT_FOLLOWER00_DRIVE_ID,
+            RobotMap.LEFT_FOLLOWER01_DRIVE_ID,
+            RobotMap.LEFT_FOLLOWER02_DRIVE_ID};
 
-        right.master = 14;
-        right.talonFollowers = new int [] {15, 16, 17};
+        right.master = RobotMap.RIGHT_MASTER_DRIVE_ID;
+        right.victorFollowers = new int [] {RobotMap.RIGHT_FOLLOWER00_DRIVE_ID,
+            RobotMap.RIGHT_FOLLOWER01_DRIVE_ID,
+            RobotMap.RIGHT_FOLLOWER02_DRIVE_ID};
 
         _talonMaster = new TalonSRXConfiguration();
         _talonFollower = new TalonSRXConfiguration();
@@ -36,17 +42,17 @@ public class DriveConfiguration {
 
         /* Talon SRX - Follower */
 
-        _talonFollower.neutralDeadband = 0.01;
+        _victorFollower.neutralDeadband = 0.01;
 
-        left.talonFollowerConfiguration = _talonFollower;
-        right.talonFollowerConfiguration = _talonFollower;
+        left.victorFollowerConfiguration = _victorFollower;
+        right.victorFollowerConfiguration = _victorFollower;
 
         /* General Settings */
         left.neutralMode = NeutralMode.Brake;
-        left.invertMotor = false;
+        left.invertMotor = true;
         left.enableVoltageCompensation = true;
         right.neutralMode = NeutralMode.Brake;
-        right.invertMotor = true;
+        right.invertMotor = false;
         right.enableVoltageCompensation = true;
     }
 }

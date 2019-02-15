@@ -7,36 +7,61 @@
 
 package frc.robot;
 
+import frc.robot.util.TJController;
+
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  //// CREATING BUTTONS
-  // One type of button is a joystick button which is any button on a
-  //// joystick.
-  // You create one by telling it which joystick it's on and which button
-  // number it is.
-  // Joystick stick = new Joystick(port);
-  // Button button = new JoystickButton(stick, buttonNumber);
+  private TJController driveController;
+  private TJController operatorController;
 
-  // There are a few additional built in buttons you can use. Additionally,
-  // by subclassing Button you can create custom triggers and bind those to
-  // commands the same as any other Button.
+  public OI() {
+    operatorController= new TJController(RobotMap.OPERATOR_CONTROLLER_PORT);
+    driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
+  }
 
-  //// TRIGGERING COMMANDS WITH BUTTONS
-  // Once you have a button, it's trivial to bind it to a button in one of
-  // three ways:
+  public double getDriverLeftXAxis() {
+    return driveController.getLeftStickX();
+  }
 
-  // Start the command when the button is pressed and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenPressed(new ExampleCommand());
+  public double getDriverLeftYAxis() {
+    double rawValue = driveController.getLeftStickY();
+    return Math.abs(rawValue) < .05 ? 0 : rawValue;
+  }
 
-  // Run the command while the button is being held down and interrupt it once
-  // the button is released.
-  // button.whileHeld(new ExampleCommand());
+  public double getDriverRightXAxis() {
+    double rawValue = driveController.getRightStickX();
+    return Math.abs(rawValue) < .05 ? 0 : rawValue;
+  }
 
-  // Start the command when the button is released and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenReleased(new ExampleCommand());
+  public double getDriverRightYAxis() {
+    double rawValue = driveController.getRightStickY();
+    return Math.abs(rawValue) < .05 ? 0 : rawValue;
+  }
+
+  public boolean getHighGearButton(){
+    return driveController.getRightTrigger()<.5;
+  }
+
+  public boolean getForceLowGearButton() {
+    return driveController.getRightTrigger() > 0.5;
+  }
+
+  public double getOperatorLeftXAxis() {
+    return operatorController.getLeftStickX();
+  }
+
+  public double getOperatorLeftYAxis() {
+    return operatorController.getLeftStickY();
+  }
+
+  public double getOperatorRightXAxis() {
+    return operatorController.getRightStickX();
+  }
+
+  public double getOperatorRightYAxis() {
+    return operatorController.getRightStickY();
+  }
 }
