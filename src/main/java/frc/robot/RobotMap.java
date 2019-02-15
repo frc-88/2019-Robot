@@ -30,10 +30,10 @@ public class RobotMap {
   public static final int RIGHT_FOLLOWER01_DRIVE_ID = 14;
   public static final int RIGHT_FOLLOWER02_DRIVE_ID = 15;
 
-  public static final int SHIFTER_LEFT_OUT = 7;
-  public static final int SHIFTER_LEFT_IN = 0;
-  public static final int SHIFTER_RIGHT_OUT = 6;
-  public static final int SHIFTER_RIGHT_IN = 1;
+  public static final int SHIFTER_LEFT_OUT = 0;
+  public static final int SHIFTER_LEFT_IN = 7;
+  public static final int SHIFTER_RIGHT_OUT = 1;
+  public static final int SHIFTER_RIGHT_IN = 6;
   public static final int SHIFTER_LEFT_PCM = 0;
   public static final int SHIFTER_RIGHT_PCM = 0;
 
@@ -83,6 +83,8 @@ public class RobotMap {
   public static final double DRIVE_VEL_LOW_IMAX = 0;
 
   public static final double MAX_DRIVE_VOLTAGE = 0;
+  public static final double MAX_SPEED_LOW = 8;
+  public static final double MAX_SPEED_HIGH = 15;
   public static final double DRIVE_CURRENT_LIMIT = 0;
   public static final double MAX_ACCEL_LOW = 0;
   public static final double MAX_ACCEL_HIGH = 0;
@@ -97,6 +99,8 @@ public class RobotMap {
   public static final double DRIVE_VEL_HIGH_KD = 0;
   public static final double DRIVE_VEL_HIGH_IZONE = 0;
   public static final double DRIVE_VEL_HIGH_IMAX = 0;
+
+  public static final int DRIVE_MIN_TRAJ_POINTS = 10;
 
 
   // Arm
