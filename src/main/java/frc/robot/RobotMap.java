@@ -14,6 +14,12 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
+  // DIO ports
+  public static final int SHOULDER_ENCODER_A = 0;
+  public static final int SHOULDER_ENCODER_B = 1;
+  public static final int ELBOW_ENCODER_A = 2;
+  public static final int ELBOW_ENCODER_B = 3;
+
   public static final int ELBOW_ID = 0;
   public static final int SHOULDER_ID = 1;
   public static final int LEFT_MASTER_DRIVE_ID = 0;
@@ -79,8 +85,4 @@ public static final double MAX_ACCEL_HIGH = 0;
 public static final int OPERATOR_CONTROLLER_PORT = 1;
 public static final int DRIVE_CONTROLLER_PORT = 0;
 
-  // If you are using multiple modules, make sure to define both the port
-  // number and the module. For example you with a rangefinder:
-  // public static int rangefinderPort = 1;
-  // public static int rangefinderModule = 1;
 }

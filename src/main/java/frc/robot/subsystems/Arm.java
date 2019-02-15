@@ -7,11 +7,12 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.*;
 
@@ -20,6 +21,7 @@ import frc.robot.*;
  */
 
 public class Arm extends Subsystem {
+  // TODO - check below constants against reality
   private final static double SHOULDER_LENGTH = 30.5;
   private final static double ELBOW_LENGTH = 24;
   private final static double ARM_HEIGHT = 41;
@@ -39,26 +41,26 @@ public class Arm extends Subsystem {
   private final static int TIMEOUTMS = 0;
 
   TalonSRX shoulder, elbow;
-  CANifier shoulderCan, elbowCan;	// CANifier
+  Encoder shoulderEncoder, elbowEncoder;
 
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
     elbow = new TalonSRX(RobotMap.ELBOW_ID);
-    shoulderCan=new CANifier(RobotMap.SHOULDER_CANIFIER_ID);
-    elbowCan=new CANifier(RobotMap.ELBOW_CANIFIER_ID);
+    shoulderEncoder=new Encoder(RobotMap.SHOULDER_ENCODER_A,RobotMap.SHOULDER_ENCODER_B, false, Encoder.EncodingType.k4X);
+    elbowEncoder=new Encoder(RobotMap.ELBOW_ENCODER_A,RobotMap.ELBOW_ENCODER_B, false, Encoder.EncodingType.k4X);
 
     configShoulderTalon();
     configElbowTalon();
-    configCanifierCommon(shoulderCan);
-    configCanifierCommon(elbowCan);
+    configShoulderEncoder();
+    configElbowEncoder();
   }
 
-  private void configShoulderCanifier() {
-    configCanifierCommon(shoulderCan);
+  private void configShoulderEncoder() {
+    configEncoderCommon(shoulderEncoder);
   }
 
-  private void configElbowCanifier() {
-    configCanifierCommon(elbowCan);
+  private void configElbowEncoder() {
+    configEncoderCommon(elbowEncoder);
   }
 
   private void configShoulderTalon() {
@@ -97,8 +99,17 @@ public class Arm extends Subsystem {
     /* eFeedbackNotContinuous = 1, subValue/ordinal/timeoutMs = 0 */
 
   }
-  private void configCanifierCommon(CANifier canifier){
-    canifier.configFactoryDefault();
+  private void configEncoderCommon(Encoder encoder){
+    // TODO 
+    // write this
+    //  see https://wpilib.screenstepslive.com/s/currentCS/m/java/l/599717-encoders-measuring-rotation-of-a-wheel-or-other-shaft
+    //
+    // for example:
+    // encoder.setMaxPeriod(.1);
+    // encoder.setMinRate(10);
+    // encoder.setDistancePerPulse(5);
+    // encoder.setReverseDirection(true);
+    // encoder.setSamplesToAverage(7);
   }
 
   @Override
@@ -129,11 +140,11 @@ public class Arm extends Subsystem {
   }
   
 public double getShoulderAbsolutePosition(){
-  return shoulderCan.getQuadraturePosition();
+  return shoulderEncoder.get();
 }
 
 public double getElbowAbsolutePosition(){
-  return elbowCan.getQuadraturePosition();
+  return elbowEncoder.get();
 }
 
   /**
