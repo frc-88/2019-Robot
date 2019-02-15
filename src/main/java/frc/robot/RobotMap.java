@@ -28,6 +28,7 @@ public class RobotMap {
   public static final int SHOULDER_CANIFIER_ID = 11;
   public static final int ELBOW_CANIFIER_ID = 12;
   public static final int INTAKE_ID = 13;
+  public static final int CLIMBER_ID = 2;
   public static final int SAPG_DEPLOY_FORWARD = 2;
   public static final int SAPG_DEPLOY_REVERSE = 3;
   public static final int SAPG_GRAB_FORWARD = 4;

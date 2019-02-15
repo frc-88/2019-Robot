@@ -29,13 +29,13 @@ import frc.robot.subsystems.Drive;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static OI m_oi;
   public static Arm m_arm;
   public static SAPG m_sapg;
   public static Limelight m_limelight_front;
   public static Limelight m_limelight_rear;
   public static NavX m_navx;
   public static Drive m_drive;
+  public static OI m_oi;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -46,13 +46,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_oi = new OI();
     m_navx = new NavX();
     //m_limelight_front = new Limelight("front");
     //m_limelight_rear = new Limelight("rear");
     m_arm = new Arm();
     m_drive = new Drive();
     m_sapg = new SAPG();
+    
+    // instantiate m_oi last...it may reference subsystems
+    m_oi = new OI();
 
     Compressor compressor = new Compressor(1);
 
