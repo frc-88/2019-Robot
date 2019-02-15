@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.util.TJController;
 
@@ -25,6 +26,8 @@ public class OI {
 
     // setup dashboard buttons for testing and debug
     SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
+
+    SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
   }
 
   public double getDriverLeftXAxis() {

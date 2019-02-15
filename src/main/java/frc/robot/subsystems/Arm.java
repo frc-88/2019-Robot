@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.*;
 
@@ -53,6 +54,8 @@ public class Arm extends Subsystem {
     configElbowTalon();
     configShoulderEncoder();
     configElbowEncoder();
+
+    initPreferences();
   }
 
   private void configShoulderEncoder() {
@@ -112,6 +115,13 @@ public class Arm extends Subsystem {
     // encoder.setDistancePerPulse(5);
     // encoder.setReverseDirection(true);
     // encoder.setSamplesToAverage(7);
+  }
+
+  private void initPreferences() {
+    Preferences prefs = Preferences.getInstance();
+
+    if (!prefs.containsKey("ArmShoulderTarget")) { prefs.putDouble("ArmShoulderTarget", 0.0); }
+    if (!prefs.containsKey("ArmElbowTarget")) { prefs.putDouble("ArmElbowTarget",0.0); }
   }
 
   @Override
