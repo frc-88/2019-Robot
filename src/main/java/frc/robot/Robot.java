@@ -40,12 +40,17 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+  public static Compressor compressor;
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
+
+    compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
+
     m_navx = new NavX();
     //m_limelight_front = new Limelight("front");
     //m_limelight_rear = new Limelight("rear");
@@ -55,8 +60,6 @@ public class Robot extends TimedRobot {
     
     // instantiate m_oi last...it may reference subsystems
     m_oi = new OI();
-
-    Compressor compressor = new Compressor(1);
 
 
     //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());

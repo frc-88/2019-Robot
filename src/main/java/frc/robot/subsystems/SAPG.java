@@ -20,8 +20,8 @@ public class SAPG extends Subsystem{
 
     public SAPG(){
         sideMotor = new TalonSRX(RobotMap.SAPG_MOTOR_ID);
-        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
-        grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
+        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
+        grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
     }
 
     public void configureTalon(){
