@@ -66,10 +66,10 @@ public class RobotMap {
   /////////////////////////////////////////////////////////////////////////////
 
   // Drive
-  public static final int NUM_DRIVE_MOTORS_PER_SIDE = 0;
-  public static final double LOW_DRIVE_RATIO = 0;
-  public static final double HIGH_DRIVE_RATIO = 0;
-  public static final double DRIVE_SENSOR_RATIO = 0;
+  public static final int NUM_DRIVE_MOTORS_PER_SIDE = 4;
+  public static final double LOW_DRIVE_RATIO = (1 / 60.16) * 6 * 3.14159;
+  public static final double HIGH_DRIVE_RATIO = (1 / 17.82) * 6 * 3.14159;
+  public static final double DRIVE_SENSOR_RATIO = (1 / (6 * 3.14159)) * (80/12) * 3;
 
   public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = 0;
   public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = 0;
