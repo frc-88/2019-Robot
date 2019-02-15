@@ -65,6 +65,7 @@ public class Arm extends Subsystem {
 
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
+    // TODO determine these config values
     shoulder.config_kP(SLOTIDX, 0, TIMEOUTMS);
     shoulder.config_kI(SLOTIDX, 0, TIMEOUTMS);
     shoulder.config_kD(SLOTIDX, 0, TIMEOUTMS);
@@ -75,6 +76,7 @@ public class Arm extends Subsystem {
 
   private void configElbowTalon() {
     configTalonCommon(elbow);
+    // TODO determine these config values
     elbow.config_kP(SLOTIDX, 0, TIMEOUTMS);
     elbow.config_kI(SLOTIDX, 0, TIMEOUTMS);
     elbow.config_kD(SLOTIDX, 0, TIMEOUTMS);
