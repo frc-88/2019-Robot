@@ -14,25 +14,25 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
-  public static final int ELBOW_ID = 0;
-  public static final int SHOULDER_ID = 1;
-  public static final int LEFT_MASTER_DRIVE_ID = 2;
-  public static final int RIGHT_MASTER_DRIVE_ID = 3;
-  public static final int LEFT_FOLLOWER00_DRIVE_ID = 4;
-  public static final int LEFT_FOLLOWER01_DRIVE_ID = 5;
-  public static final int LEFT_FOLLOWER02_DRIVE_ID = 6;
-  public static final int RIGHT_FOLLOWER00_DRIVE_ID = 7;
-  public static final int RIGHT_FOLLOWER01_DRIVE_ID = 8;
-  public static final int RIGHT_FOLLOWER02_DRIVE_ID = 9;
-  public static final int SAPG_MOTOR_ID = 10;
-  public static final int SHOULDER_CANIFIER_ID = 11;
-  public static final int ELBOW_CANIFIER_ID = 12;
-  public static final int INTAKE_ID = 13;
+  public static final int ELBOW_ID = 4;
+  public static final int SHOULDER_ID = 5;
+  public static final int LEFT_MASTER_DRIVE_ID = 0;
+  public static final int RIGHT_MASTER_DRIVE_ID = 11;
+  public static final int LEFT_FOLLOWER00_DRIVE_ID = 1;
+  public static final int LEFT_FOLLOWER01_DRIVE_ID = 2;
+  public static final int LEFT_FOLLOWER02_DRIVE_ID = 3;
+  public static final int RIGHT_FOLLOWER00_DRIVE_ID = 14;
+  public static final int RIGHT_FOLLOWER01_DRIVE_ID = 13;
+  public static final int RIGHT_FOLLOWER02_DRIVE_ID = 15;
+  public static final int SAPG_MOTOR_ID = 6;
+  public static final int SHOULDER_CANIFIER_ID = 0;
+  public static final int ELBOW_CANIFIER_ID = 0;
+  public static final int INTAKE_ID = 10;
   public static final int SAPG_DEPLOY_FORWARD = 0;
-  public static final int SAPG_DEPLOY_REVERSE = 1;
-  public static final int SAPG_GRAB_FORWARD = 2;
-  public static final int SAPG_GRAB_REVERSE = 3;
-
+  public static final int SAPG_DEPLOY_REVERSE = 0;
+  public static final int SAPG_GRAB_FORWARD = 0;
+  public static final int SAPG_GRAB_REVERSE = 0;
+  public static final int LIFT_ID = 12;
   public static final double ARM_TOLERANCE = 1;
   public static final double DRIVE_VOLTAGE_LIMIT = 0.83;
 
