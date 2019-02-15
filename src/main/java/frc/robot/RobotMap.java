@@ -14,12 +14,6 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
-  // DIO ports
-  public static final int SHOULDER_ENCODER_A = 0;
-  public static final int SHOULDER_ENCODER_B = 1;
-  public static final int ELBOW_ENCODER_A = 2;
-  public static final int ELBOW_ENCODER_B = 3;
-
   public static final int ELBOW_ID = 0;
   public static final int SHOULDER_ID = 1;
   public static final int LEFT_MASTER_DRIVE_ID = 0;
@@ -46,43 +40,40 @@ public class RobotMap {
   public static final int CAN_TIMEOUT = 1;
 
   public static final int MAX_SPEED = 14500;
-  // For example to map the left and right motors, you could define the
-  // following variables to use with your drivetrain subsystem.
-  // public static int leftMotor = 1;
-  // public static int rightMotor = 2;
-public static final int NUM_DRIVE_MOTORS_PER_SIDE = 0;
-public static final double LOW_DRIVE_RATIO = 0;
-public static final double HIGH_DRIVE_RATIO = 0;
-public static final double DRIVE_SENSOR_RATIO = 0;
-public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = 0;
-public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = 0;
-public static final double DRIVE_LOW_EFFICIENCY = 0;
-public static final double DRIVE_HIGH_EFFICIENCY = 0;
-public static final double DRIVE_VEL_LOW_KI = 0;
-public static final double DRIVE_VEL_LOW_KP = 0;
-public static final double DRIVE_VEL_LOW_KD = 0;
-public static final double DRIVE_VEL_LOW_IZONE = 0;
-public static final double DRIVE_VEL_LOW_IMAX = 0;
-public static final int SHIFTER_LEFT_OUT = 7;
-public static final int SHIFTER_LEFT_IN = 0;
-public static final int SHIFTER_RIGHT_OUT = 6;
-public static final int SHIFTER_RIGHT_IN = 1;
-public static final int SHIFTER_LEFT_PCM = 0;
-public static final int SHIFTER_RIGHT_PCM = 0;
-public static final double MAX_DRIVE_VOLTAGE = 0;
-public static final double DRIVE_CURRENT_LIMIT = 0;
-public static final double MAX_ACCEL_LOW = 0;
-public static final double SHIFT_INTO_LOW_GEAR = 0;
-public static final double SHIFT_INTO_HIGH_GEAR = 0;
-public static final double COMMANDED_STOP_SPEED = 0;
-public static final double SHIFT_INTO_LOW_GEAR_STOP = 0;
-public static final double DRIVE_VEL_HIGH_KP = 0;
-public static final double DRIVE_VEL_HIGH_KI = 0;
-public static final double DRIVE_VEL_HIGH_KD = 0;
-public static final double DRIVE_VEL_HIGH_IZONE = 0;
-public static final double DRIVE_VEL_HIGH_IMAX = 0;
-public static final double MAX_ACCEL_HIGH = 0;
-public static final int OPERATOR_CONTROLLER_PORT = 1;
-public static final int DRIVE_CONTROLLER_PORT = 0;
+
+  public static final int NUM_DRIVE_MOTORS_PER_SIDE = 0;
+  public static final double LOW_DRIVE_RATIO = 0;
+  public static final double HIGH_DRIVE_RATIO = 0;
+  public static final double DRIVE_SENSOR_RATIO = 0;
+  public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = 0;
+  public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = 0;
+  public static final double DRIVE_LOW_EFFICIENCY = 0;
+  public static final double DRIVE_HIGH_EFFICIENCY = 0;
+  public static final double DRIVE_VEL_LOW_KI = 0;
+  public static final double DRIVE_VEL_LOW_KP = 0;
+  public static final double DRIVE_VEL_LOW_KD = 0;
+  public static final double DRIVE_VEL_LOW_IZONE = 0;
+  public static final double DRIVE_VEL_LOW_IMAX = 0;
+  public static final int SHIFTER_LEFT_OUT = 7;
+  public static final int SHIFTER_LEFT_IN = 0;
+  public static final int SHIFTER_RIGHT_OUT = 6;
+  public static final int SHIFTER_RIGHT_IN = 1;
+  public static final int SHIFTER_LEFT_PCM = 0;
+  public static final int SHIFTER_RIGHT_PCM = 0;
+  public static final double MAX_DRIVE_VOLTAGE = 0;
+  public static final double DRIVE_CURRENT_LIMIT = 0;
+  public static final double MAX_ACCEL_LOW = 0;
+  public static final double SHIFT_INTO_LOW_GEAR = 0;
+  public static final double SHIFT_INTO_HIGH_GEAR = 0;
+  public static final double COMMANDED_STOP_SPEED = 0;
+  public static final double SHIFT_INTO_LOW_GEAR_STOP = 0;
+  public static final double DRIVE_VEL_HIGH_KP = 0;
+  public static final double DRIVE_VEL_HIGH_KI = 0;
+  public static final double DRIVE_VEL_HIGH_KD = 0;
+  public static final double DRIVE_VEL_HIGH_IZONE = 0;
+  public static final double DRIVE_VEL_HIGH_IMAX = 0;
+  public static final double MAX_ACCEL_HIGH = 0;
+  public static final int OPERATOR_CONTROLLER_PORT = 1;
+  public static final int DRIVE_CONTROLLER_PORT = 0;
 
 }
