@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   public static SAPG m_sapg;
   public static Climber m_climber;
   public static Limelight m_limelight_front;
-  public static Limelight m_limelight_rear;
+  public static Limelight m_limelight_back;
   public static NavX m_navx;
   public static Drive m_drive;
   public static OI m_oi;
@@ -64,8 +64,8 @@ public class Robot extends TimedRobot {
     m_climber = new Climber();
     m_intake = new Intake();
 
-    //m_limelight_front = new Limelight("front");
-    //m_limelight_rear = new Limelight("rear");
+    //m_limelight_front = new Limelight("limelight-front");
+    m_limelight_back = new Limelight("limelight-back");
     m_arm = new Arm();
     m_sapg = new SAPG();
     
