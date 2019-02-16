@@ -83,9 +83,9 @@ public class Drive extends Subsystem {
     private double currentLimit = RobotMap.DRIVE_CURRENT_LIMIT;
     private double maxAccel = RobotMap.MAX_ACCEL_LOW;
 
-    private double moProKP = driveConfiguration.left.masterConfiguration.slot0.kP;
-    private double moProKI = driveConfiguration.left.masterConfiguration.slot0.kI;
-    private double moProKD = driveConfiguration.left.masterConfiguration.slot0.kD;
+    private double moProKP;
+    private double moProKI;
+    private double moProKD;
 
     boolean resetFromShift = false;
 
@@ -105,6 +105,10 @@ public class Drive extends Subsystem {
 
         driveConfiguration = new DriveConfiguration();
 
+        moProKP = driveConfiguration.left.masterConfiguration.slot0.kP;
+        moProKI = driveConfiguration.left.masterConfiguration.slot0.kI;
+        moProKD = driveConfiguration.left.masterConfiguration.slot0.kD;
+    
         leftDrive = new TJDriveModule(driveConfiguration.left, transmission);
         rightDrive = new TJDriveModule(driveConfiguration.right, transmission);
 
