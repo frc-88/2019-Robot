@@ -28,6 +28,7 @@ import frc.robot.driveutil.DriveConfiguration;
 import frc.robot.driveutil.TJDriveModule;
 import frc.robot.driveutil.TJDriveMotionPoint;
 import frc.robot.util.TJPIDController;
+import frc.robot.util.transmission.CTREMagEncoder;
 import frc.robot.util.transmission.ShiftingTransmission;
 import frc.robot.util.transmission.TalonGrayhill;
 import frc.robot.util.transmission.Vex775Pro;
@@ -95,7 +96,7 @@ public class Drive extends Subsystem {
 
     public Drive() {
         transmission = new ShiftingTransmission(new Vex775Pro(), RobotMap.NUM_DRIVE_MOTORS_PER_SIDE,
-                new TalonGrayhill(), RobotMap.LOW_DRIVE_RATIO, RobotMap.HIGH_DRIVE_RATIO, RobotMap.DRIVE_SENSOR_RATIO,
+                new CTREMagEncoder(), RobotMap.LOW_DRIVE_RATIO, RobotMap.HIGH_DRIVE_RATIO, RobotMap.DRIVE_SENSOR_RATIO,
                 RobotMap.DRIVE_LOW_STATIC_FRICTION_VOLTAGE, RobotMap.DRIVE_HIGH_STATIC_FRICTION_VOLTAGE,
                 RobotMap.DRIVE_LOW_EFFICIENCY, RobotMap.DRIVE_HIGH_EFFICIENCY);
 
