@@ -75,18 +75,22 @@ public class OI {
   }
 
   public double getOperatorLeftXAxis() {
-    return operatorController.getLeftStickX();
+    double rawValue = operatorController.getLeftStickX();
+    return Math.abs(rawValue) < .05 ? 0 : rawValue;
   }
 
   public double getOperatorLeftYAxis() {
-    return operatorController.getLeftStickY();
+    double rawValue = operatorController.getLeftStickY();
+    return Math.abs(rawValue) < .05 ? 0 : rawValue;
   }
 
   public double getOperatorRightXAxis() {
-    return operatorController.getRightStickX();
+    double rawValue = operatorController.getRightStickX();
+    return Math.abs(rawValue) < .05 ? 0 : rawValue;
   }
 
   public double getOperatorRightYAxis() {
-    return operatorController.getRightStickY();
+    double rawValue = operatorController.getRightStickY();
+    return Math.abs(rawValue) < .05 ? 0 : rawValue;
   }
 }
