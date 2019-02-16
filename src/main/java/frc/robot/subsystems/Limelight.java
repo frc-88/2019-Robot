@@ -10,6 +10,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -19,7 +21,7 @@ import jaci.pathfinder.Waypoint;
 /**
  * A subsystem to interact with a Limelight vision camera over NetworkTables.
  */
-public class Limelight extends Subsystem {
+public class Limelight extends Subsystem implements PIDSource{
   private static final double HORIZONTAL_FOV = 54.0;
   // private static final double VERTICAL_FOV = 41.0;
   private static final double VIEW_PLANE_WIDTH = 2 * Math.tan(Math.toRadians(HORIZONTAL_FOV / 2));
@@ -315,5 +317,26 @@ public double getTargetAngleByCameraTransform() {
 
   @Override
   public void initDefaultCommand() {
+  }
+
+  @Override
+  public void setPIDSourceType(PIDSourceType pidSource) {
+
+  }
+
+  @Override
+  public PIDSourceType getPIDSourceType() {
+    return PIDSourceType.kDisplacement;
+  }
+
+  @Override
+  public double pidGet() {
+    double angle = getHorizontalOffsetAngle();
+
+    if (Math.abs(angle) > 5) {
+      angle = 0;
+    }
+    
+    return angle;
   }
 }

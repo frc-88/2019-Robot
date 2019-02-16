@@ -8,20 +8,31 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 
 public class SAPG extends Subsystem{
+    
+
+    private static final double Kp = 0;
+    private static final double Ki = 0;
+    private static final double Kd = 0;
 
     private TalonSRX sideMotor;
     private DoubleSolenoid deployPiston;
     private DoubleSolenoid grabPiston;
+    private PIDController sapgController;
 
     public SAPG(){
         sideMotor = new TalonSRX(RobotMap.SAPG_MOTOR_ID);
         deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
+
+        sapgController = new PIDController(Kp, Ki, Kd, Robot.m_limelight_back, sideMotor);
+        sapgController.disable();
     }
 
     public void configureTalon(){
@@ -68,6 +79,13 @@ public class SAPG extends Subsystem{
         grabPiston.set(Value.kReverse);
     }
 
+    public void enableController() {
+        sapgController.enable();
+    }
+
+    public void disableController() {
+        sapgController.disable();
+    }
 
     @Override
     protected void initDefaultCommand() {
