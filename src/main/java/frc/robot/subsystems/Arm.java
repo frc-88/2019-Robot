@@ -50,13 +50,13 @@ public class Arm extends Subsystem {
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
     elbow = new TalonSRX(RobotMap.ELBOW_ID);
-    shoulderCANifier = new CANifier(RobotMap.SHOULDER_CANIFIER_ID);
-    elbowCANifier = new CANifier(RobotMap.ELBOW_CANIFIER_ID);
+    //shoulderCANifier = new CANifier(RobotMap.SHOULDER_CANIFIER_ID);
+    //elbowCANifier = new CANifier(RobotMap.ELBOW_CANIFIER_ID);
 
     configShoulderTalon();
     configElbowTalon();
-    configShoulderCANifier();
-    configElbowCANifier();
+    //configShoulderCANifier();
+    //configElbowCANifier();
 
     initPreferences();
   }
@@ -169,6 +169,13 @@ public double getShoulderAbsolutePosition(){
   shoulderCANifier.getPWMInput(PWMChannel.PWMChannel0, _dutyCycleAndPeriods);
 
   return _dutyCycleAndPeriods[0];
+}
+
+public void setShoulder(double percentOutput){
+  shoulder.set(ControlMode.PercentOutput, percentOutput);
+}
+public void setElbow(double percentOutput){
+  elbow.set(ControlMode.PercentOutput, percentOutput);
 }
 
 public double getElbowAbsolutePosition(){

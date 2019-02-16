@@ -34,32 +34,33 @@ public class RobotMap {
   public static final int SHIFTER_LEFT_IN = 7;
   public static final int SHIFTER_RIGHT_OUT = 1;
   public static final int SHIFTER_RIGHT_IN = 6;
-  public static final int SHIFTER_LEFT_PCM = 0;
-  public static final int SHIFTER_RIGHT_PCM = 0;
+  public static final int SHIFTER_LEFT_PCM = 21;
+  public static final int SHIFTER_RIGHT_PCM = 21;
 
   // Arm
-  public static final int ELBOW_ID = 0;
-  public static final int SHOULDER_ID = 1;
-  public static final int SHOULDER_CANIFIER_ID = 11;
-  public static final int ELBOW_CANIFIER_ID = 12;
+  public static final int ELBOW_ID = 04;
+  public static final int SHOULDER_ID = 05;
+  public static final int SHOULDER_CANIFIER_ID = 20;
+  public static final int ELBOW_CANIFIER_ID = 21;
 
   // Intake
-  public static final int SAPG_MOTOR_ID = 10;
-  public static final int INTAKE_ID = 13;
+  
+  public static final int INTAKE_ID = 10;
 
   // Climber
-  public static final int CLIMBER_ID = 2;
+  public static final int CLIMBER_ID = 12;
 
   // SAPG
   public static final int SAPG_DEPLOY_FORWARD = 2;
-  public static final int SAPG_DEPLOY_REVERSE = 3;
+  public static final int SAPG_DEPLOY_REVERSE = 5;
   public static final int SAPG_GRAB_FORWARD = 4;
-  public static final int SAPG_GRAB_REVERSE = 5;
-  public static final int SAPG_DEPLOY_PCM = 0;
-  public static final int SAPG_GRAB_PCM = 0;
+  public static final int SAPG_GRAB_REVERSE = 3;
+  public static final int SAPG_DEPLOY_PCM = 21;
+  public static final int SAPG_GRAB_PCM = 21;
+  public static final int SAPG_MOTOR_ID = 06;
 
   // Compressor
-  public static final int COMPRESSOR_PCM = 1;
+  public static final int COMPRESSOR_PCM = 22;
 
   /////////////////////////////////////////////////////////////////////////////
   // Other constants

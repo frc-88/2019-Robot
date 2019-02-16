@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -44,6 +45,10 @@ public class Climber extends Subsystem {
       talon.config_kF(SLOTIDX, 0, TIMEOUTMS);
       talon.configMotionCruiseVelocity(50, TIMEOUTMS);
       talon.configMotionAcceleration(50, TIMEOUTMS);
+  }
+
+  public void set(double percentOutput) {
+    winch.set(ControlMode.PercentOutput, percentOutput);
   }
 
   @Override

@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -15,11 +16,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.SAPG;
 import frc.robot.util.TimeScheduler;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Intake;
 
 
 /**
@@ -32,11 +35,13 @@ import frc.robot.subsystems.Drive;
 public class Robot extends TimedRobot {
   public static Arm m_arm;
   public static SAPG m_sapg;
+  public static Climber m_climber;
   public static Limelight m_limelight_front;
   public static Limelight m_limelight_rear;
   public static NavX m_navx;
   public static Drive m_drive;
   public static OI m_oi;
+  public static Intake m_intake;
 
   public static TimeScheduler dashboardScheduler;
 
@@ -55,10 +60,13 @@ public class Robot extends TimedRobot {
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
 
     m_navx = new NavX();
+    m_drive = new Drive();
+    m_climber = new Climber();
+    m_intake = new Intake();
+
     //m_limelight_front = new Limelight("front");
     //m_limelight_rear = new Limelight("rear");
     m_arm = new Arm();
-    m_drive = new Drive();
     m_sapg = new SAPG();
     
     // instantiate m_oi last...it may reference subsystems
@@ -163,13 +171,13 @@ public class Robot extends TimedRobot {
   }
 
   private void initializeDashboard() {
-    dashboardScheduler = new TimeScheduler();
-    m_drive.configureShuffleboard();
+    //dashboardScheduler = new TimeScheduler();
+    //m_drive.configureShuffleboard();
   }
 
   private void writeDashboard() {
-    final long RUN_TIME = 10;
-    dashboardScheduler.run(RUN_TIME);
-    m_drive.updateShuffleboard();
+    //final long RUN_TIME = 10;
+    //dashboardScheduler.run(RUN_TIME);
+    //m_drive.updateShuffleboard();
   }
 }

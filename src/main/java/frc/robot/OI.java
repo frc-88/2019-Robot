@@ -8,8 +8,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmGoToPosition;
+import frc.robot.commands.climber.ClimberBasicControl;
+import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.navx.NavXZeroYaw;
+import frc.robot.commands.sapg.SAPGBasicControl;
+import frc.robot.commands.sapg.SAPGClose;
+import frc.robot.commands.sapg.SAPGDeploy;
+import frc.robot.commands.sapg.SAPGOpen;
+import frc.robot.commands.sapg.SAPGRetract;
 import frc.robot.util.TJController;
 
 /**
@@ -25,9 +33,18 @@ public class OI {
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
 
     // setup dashboard buttons for testing and debug
-    SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
+    //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
 
-    SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
+    //SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
+
+    SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
+    SmartDashboard.putData("SAPG Basic", new SAPGBasicControl());
+    SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
+    SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
+    SmartDashboard.putData("Deploy SAPG", new SAPGDeploy());
+    SmartDashboard.putData("Retract SAPG", new SAPGRetract());
+    SmartDashboard.putData("Open SAPG", new SAPGOpen());
+    SmartDashboard.putData("Close SAPG", new SAPGClose());
   }
 
   public double getDriverLeftXAxis() {

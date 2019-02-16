@@ -49,6 +49,12 @@ public class SAPG extends Subsystem{
     public void shiftTheSAPG(double position){
         sideMotor.set(ControlMode.Position, position);
     }
+    
+    public void set(double percentOutput){
+        sideMotor.set(ControlMode.PercentOutput, percentOutput);
+    }
+
+    
 
     public void forwardPush(){
         deployPiston.set(Value.kForward);
