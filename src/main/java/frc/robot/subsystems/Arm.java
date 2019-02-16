@@ -88,6 +88,7 @@ public class Arm extends Subsystem {
     shoulder.config_kF(SLOTIDX, 0, TIMEOUTMS);
     shoulder.configMotionCruiseVelocity(50, TIMEOUTMS);
     shoulder.configMotionAcceleration(50, TIMEOUTMS);
+    shoulder.setInverted(true);
   }
 
   private void configElbowTalon() {
@@ -99,6 +100,7 @@ public class Arm extends Subsystem {
     elbow.config_kF(SLOTIDX, 0, TIMEOUTMS);
     elbow.configMotionCruiseVelocity(50, TIMEOUTMS);
     elbow.configMotionAcceleration(50, TIMEOUTMS);
+    elbow.setInverted(false);
   }
 
   private void configTalonCommon(TalonSRX talon) {
