@@ -7,6 +7,7 @@
 
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -14,11 +15,18 @@ import frc.robot.RobotMap;
 public class ArmGoToPosition extends Command {
   private double shoulder_target;
   private double elbow_target;
+  private boolean usePrefences;
+
+  public ArmGoToPosition() {
+    requires(Robot.m_arm);
+
+    usePrefences = true;
+  }
 
   public ArmGoToPosition(double shoulder, double elbow) {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     requires(Robot.m_arm);
+
+    usePrefences = false;
     shoulder_target = shoulder;
     elbow_target = elbow;
   }
@@ -26,6 +34,12 @@ public class ArmGoToPosition extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    if (usePrefences) {
+      Preferences prefs = Preferences.getInstance();
+
+      shoulder_target = prefs.getDouble("ArmShoulderTarget", 0.0);
+      elbow_target = prefs.getDouble("ArmElbowTarget",0.0);
+    }
     Robot.m_arm.moveShoulder(shoulder_target);
     Robot.m_arm.moveElbow(elbow_target);
 

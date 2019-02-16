@@ -8,11 +8,16 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.CANifier;
+import com.ctre.phoenix.VelocityPeriod;
+import com.ctre.phoenix.CANifier.PWMChannel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
 
 /**
@@ -20,6 +25,7 @@ import frc.robot.*;
  */
 
 public class Arm extends Subsystem {
+  // TODO - check below constants against reality
   private final static double SHOULDER_LENGTH = 30.5;
   private final static double ELBOW_LENGTH = 24;
   private final static double ARM_HEIGHT = 41;
@@ -39,30 +45,43 @@ public class Arm extends Subsystem {
   private final static int TIMEOUTMS = 0;
 
   TalonSRX shoulder, elbow;
-  CANifier shoulderCan, elbowCan;	// CANifier
+  CANifier shoulderCANifier, elbowCANifier;
 
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
     elbow = new TalonSRX(RobotMap.ELBOW_ID);
-    shoulderCan=new CANifier(RobotMap.SHOULDER_CANIFIER_ID);
-    elbowCan=new CANifier(RobotMap.ELBOW_CANIFIER_ID);
+    shoulderCANifier = new CANifier(RobotMap.SHOULDER_CANIFIER_ID);
+    elbowCANifier = new CANifier(RobotMap.ELBOW_CANIFIER_ID);
 
     configShoulderTalon();
     configElbowTalon();
-    configCanifierCommon(shoulderCan);
-    configCanifierCommon(elbowCan);
+    configShoulderCANifier();
+    configElbowCANifier();
+
+    initPreferences();
   }
 
-  private void configShoulderCanifier() {
-    configCanifierCommon(shoulderCan);
+  private void configShoulderCANifier() {
+    configCANifierCommon(shoulderCANifier);
   }
 
-  private void configElbowCanifier() {
-    configCanifierCommon(elbowCan);
+  private void configElbowCANifier() {
+    configCANifierCommon(elbowCANifier);
+  }
+
+  private void configCANifierCommon(CANifier canifier) {
+    // TODO 
+    // write this
+    //  see http://www.ctr-electronics.com/downloads/api/java/html/classcom_1_1ctre_1_1phoenix_1_1_c_a_nifier.html
+    canifier.configFactoryDefault();
+
+    canifier.configVelocityMeasurementPeriod(VelocityPeriod.Period_100Ms, TIMEOUTMS);
+		canifier.configVelocityMeasurementWindow(16, TIMEOUTMS);
   }
 
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
+    // TODO determine these config values
     shoulder.config_kP(SLOTIDX, 0, TIMEOUTMS);
     shoulder.config_kI(SLOTIDX, 0, TIMEOUTMS);
     shoulder.config_kD(SLOTIDX, 0, TIMEOUTMS);
@@ -73,6 +92,7 @@ public class Arm extends Subsystem {
 
   private void configElbowTalon() {
     configTalonCommon(elbow);
+    // TODO determine these config values
     elbow.config_kP(SLOTIDX, 0, TIMEOUTMS);
     elbow.config_kI(SLOTIDX, 0, TIMEOUTMS);
     elbow.config_kD(SLOTIDX, 0, TIMEOUTMS);
@@ -97,8 +117,12 @@ public class Arm extends Subsystem {
     /* eFeedbackNotContinuous = 1, subValue/ordinal/timeoutMs = 0 */
 
   }
-  private void configCanifierCommon(CANifier canifier){
-    canifier.configFactoryDefault();
+  
+  private void initPreferences() {
+    Preferences prefs = Preferences.getInstance();
+
+    if (!prefs.containsKey("ArmShoulderTarget")) { prefs.putDouble("ArmShoulderTarget", 0.0); }
+    if (!prefs.containsKey("ArmElbowTarget")) { prefs.putDouble("ArmElbowTarget",0.0); }
   }
 
   @Override
@@ -106,6 +130,15 @@ public class Arm extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
 
+  }
+
+  public void updateDashboard() {
+    SmartDashboard.putNumber("Arm:shoulderPos", getShoulderPosition());
+    SmartDashboard.putNumber("Arm:shoulderInnerPos", shoulderCANifier.getQuadraturePosition());
+    SmartDashboard.putNumber("Arm:shoulderInnerAbs", getShoulderAbsolutePosition());
+    SmartDashboard.putNumber("Arm:elbowPos", getElbowPosition());
+    SmartDashboard.putNumber("Arm:elbowInnerPos", elbowCANifier.getQuadraturePosition());
+    SmartDashboard.putNumber("Arm:elbowInnerAbs", getElbowAbsolutePosition());
   }
 
   public void moveShoulder(double position) {
@@ -118,6 +151,8 @@ public class Arm extends Subsystem {
 
   public void stopArm() {
     // stops the movement of the arm
+    shoulder.set(ControlMode.PercentOutput, 0.0);
+    elbow.set(ControlMode.PercentOutput, 0.0);
   }
 
   public double getShoulderPosition() {
@@ -129,11 +164,19 @@ public class Arm extends Subsystem {
   }
   
 public double getShoulderAbsolutePosition(){
-  return shoulderCan.getQuadraturePosition();
+  double[] _dutyCycleAndPeriods = {0,0};
+
+  shoulderCANifier.getPWMInput(PWMChannel.PWMChannel0, _dutyCycleAndPeriods);
+
+  return _dutyCycleAndPeriods[0];
 }
 
 public double getElbowAbsolutePosition(){
-  return elbowCan.getQuadraturePosition();
+  double[] _dutyCycleAndPeriods = {0,0};
+
+  elbowCANifier.getPWMInput(PWMChannel.PWMChannel0, _dutyCycleAndPeriods);
+
+  return _dutyCycleAndPeriods[0];
 }
 
   /**

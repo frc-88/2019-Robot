@@ -185,6 +185,14 @@ public class Transmission {
     }
 
     /**
+     * Get the feedforward voltage to set the output to the given speed.
+     */
+    public double getFeedforwardVoltage(double outputSpeed) {
+        return getBackEMF(convertOutputVelocityToInput(outputSpeed))
+                + Math.signum(outputSpeed) * getStaticFrictionVoltage();
+    }
+
+    /**
      * Get the current draw from the motor at the given commanded voltage and
      * sensor velocity.
      */

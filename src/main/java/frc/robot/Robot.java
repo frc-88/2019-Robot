@@ -18,6 +18,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.SAPG;
+import frc.robot.util.TimeScheduler;
 import frc.robot.subsystems.Drive;
 
 
@@ -37,8 +38,12 @@ public class Robot extends TimedRobot {
   public static Drive m_drive;
   public static OI m_oi;
 
+  public static TimeScheduler dashboardScheduler;
+
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+
+  public static Compressor compressor;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -46,6 +51,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
+
     m_navx = new NavX();
     //m_limelight_front = new Limelight("front");
     //m_limelight_rear = new Limelight("rear");
@@ -56,8 +64,7 @@ public class Robot extends TimedRobot {
     // instantiate m_oi last...it may reference subsystems
     m_oi = new OI();
 
-    Compressor compressor = new Compressor(1);
-
+    initializeDashboard();
 
     //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -76,7 +83,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     //m_limelight_front.updateDashboard();
     //m_limelight_rear.updateDashboard();
-    m_navx.updateDashboard();
+    writeDashboard();
   }
 
   /**
@@ -153,5 +160,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  private void initializeDashboard() {
+    dashboardScheduler = new TimeScheduler();
+    m_drive.configureShuffleboard();
+  }
+
+  private void writeDashboard() {
+    final long RUN_TIME = 10;
+    dashboardScheduler.run(RUN_TIME);
+    m_drive.updateShuffleboard();
   }
 }
