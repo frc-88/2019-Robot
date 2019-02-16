@@ -20,6 +20,9 @@ public class SAPG extends Subsystem{
     private static final double Kp = 0;
     private static final double Ki = 0;
     private static final double Kd = 0;
+    private static final double leftLimit = 0;
+    private static final double rightLimit = 0;
+    private static final double center = 0;
 
     private TalonSRX sideMotor;
     private DoubleSolenoid deployPiston;
@@ -31,8 +34,8 @@ public class SAPG extends Subsystem{
         deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
 
-        sapgController = new PIDController(Kp, Ki, Kd, Robot.m_limelight_back, sideMotor);
-        sapgController.disable();
+        //sapgController = new PIDController(Kp, Ki, Kd, Robot.m_limelight_back, sideMotor);
+        //sapgController.disable();
     }
 
     public void configureTalon(){

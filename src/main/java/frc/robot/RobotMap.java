@@ -72,8 +72,8 @@ public class RobotMap {
   public static final double HIGH_DRIVE_RATIO = (1 / 17.82) * 6 * 3.14159;
   public static final double DRIVE_SENSOR_RATIO = (1 / (6 * 3.14159)) * (80/12) * 3;
 
-  public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = 0;
-  public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = 0;
+  public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = .53;
+  public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = .75;
   public static final double DRIVE_LOW_EFFICIENCY = 0;
   public static final double DRIVE_HIGH_EFFICIENCY = 0;
 

@@ -37,7 +37,7 @@ public class TimeScheduler {
             
             functions.get(curIndex).run();
 
-            curIndex++;
+            curIndex = (curIndex+1)%functions.size();
         } while (RobotController.getFPGATime() - startTime < time
                 && curIndex != startIndex);
     }

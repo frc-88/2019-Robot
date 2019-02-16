@@ -227,22 +227,22 @@ public class Drive extends Subsystem {
     }
 
     public void updateShuffleboard() {
-        long startTime;
+        //long startTime;
 
         // Talon status info
-        startTime = RobotController.getFPGATime();
+        //startTime = RobotController.getFPGATime();
         sbLeftDriveMode.setString(leftDrive.getControlMode().toString());
         sbRightDriveMode.setString(rightDrive.getControlMode().toString());
-        System.out.println("Talon status: " + (RobotController.getFPGATime() - startTime));
+       //System.out.println("Talon status: " + (RobotController.getFPGATime() - startTime));
 
         // Commanded Speeds
-        startTime = RobotController.getFPGATime();
+        //startTime = RobotController.getFPGATime();
         sbLeftCommandedSpeed.setDouble(leftCommandedSpeed);
         sbRightCommandedSpeed.setDouble(rightCommandedSpeed);
-        System.out.println("Commanded Speeds status: " + (RobotController.getFPGATime()-startTime));
+        //System.out.println("Commanded Speeds status: " + (RobotController.getFPGATime()-startTime));
 
         // Test Constant Voltage Command
-        startTime = RobotController.getFPGATime();
+        //startTime = RobotController.getFPGATime();
         constantDriveTestCommand.setVoltage(sbTestDriveVoltage.getDouble(0));
         currentLimit = sbCurrentLimit.getDouble(RobotMap.DRIVE_CURRENT_LIMIT);
         if (resetFromShift) {
@@ -250,10 +250,10 @@ public class Drive extends Subsystem {
         } else {
         maxAccel = sbMaxAccel.getDouble(RobotMap.MAX_ACCEL_LOW);
         }
-        System.out.println("Voltage Command status: " + (RobotController.getFPGATime()-startTime));
+        //System.out.println("Voltage Command status: " + (RobotController.getFPGATime()-startTime));
 
         // // Velocity PID tuning
-        startTime = RobotController.getFPGATime();
+        //startTime = RobotController.getFPGATime();
         if (resetFromShift) {
         sbVelKp.setDouble(velocityController.getKP());
         sbVelKi.setDouble(velocityController.getKI());
@@ -267,7 +267,7 @@ public class Drive extends Subsystem {
         velocityController.setIZone(sbVelIZone.getDouble(RobotMap.DRIVE_VEL_LOW_IZONE));
         velocityController.setIMax(sbVelIMax.getDouble(RobotMap.DRIVE_VEL_LOW_IMAX));
         }
-        System.out.println("Velocity PID status: " + (RobotController.getFPGATime()-startTime));
+        //System.out.println("Velocity PID status: " + (RobotController.getFPGATime()-startTime));
 
         resetFromShift = false;
     }

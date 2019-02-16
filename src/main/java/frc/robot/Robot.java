@@ -171,13 +171,13 @@ public class Robot extends TimedRobot {
   }
 
   private void initializeDashboard() {
-    //dashboardScheduler = new TimeScheduler();
-    //m_drive.configureShuffleboard();
+    dashboardScheduler = new TimeScheduler();
+    m_drive.configureShuffleboard();
   }
 
   private void writeDashboard() {
-    //final long RUN_TIME = 10;
-    //dashboardScheduler.run(RUN_TIME);
-    //m_drive.updateShuffleboard();
+    final long RUN_TIME = 10;
+    dashboardScheduler.run(RUN_TIME);
+    m_drive.updateShuffleboard();
   }
 }
