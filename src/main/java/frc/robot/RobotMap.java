@@ -108,7 +108,7 @@ public class RobotMap {
 
 
   // Misc
-  public static final int CAN_TIMEOUT = 1;
+  public static final int CAN_TIMEOUT = 0;
 
   public static final int OPERATOR_CONTROLLER_PORT = 1;
   public static final int DRIVE_CONTROLLER_PORT = 0;
