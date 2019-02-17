@@ -23,12 +23,12 @@ public class RobotMap {
   // Drivetrain
   public static final int LEFT_MASTER_DRIVE_ID = 0;
   public static final int RIGHT_MASTER_DRIVE_ID = 11;
-  public static final int LEFT_FOLLOWER00_DRIVE_ID = 1;
-  public static final int LEFT_FOLLOWER01_DRIVE_ID = 2;
-  public static final int LEFT_FOLLOWER02_DRIVE_ID = 3;
-  public static final int RIGHT_FOLLOWER00_DRIVE_ID = 13;
-  public static final int RIGHT_FOLLOWER01_DRIVE_ID = 14;
-  public static final int RIGHT_FOLLOWER02_DRIVE_ID = 15;
+  public static final int LEFT_TALON_FOLLOWER_DRIVE_ID = 3;
+  public static final int LEFT_VICTOR_FOLLOWER00_DRIVE_ID = 1;
+  public static final int LEFT_VICTOR_FOLLOWER01_DRIVE_ID = 2;
+  public static final int RIGHT_TALON_FOLLOWER_DRIVE_ID = 13;
+  public static final int RIGHT_VICTOR_FOLLOWER00_DRIVE_ID = 14;
+  public static final int RIGHT_VICTOR_FOLLOWER01_DRIVE_ID = 15;
 
   public static final int SHIFTER_LEFT_OUT = 0;
   public static final int SHIFTER_LEFT_IN = 7;
@@ -40,8 +40,8 @@ public class RobotMap {
   // Arm
   public static final int ELBOW_ID = 04;
   public static final int SHOULDER_ID = 05;
-  public static final int SHOULDER_CANIFIER_ID = 20;
-  public static final int ELBOW_CANIFIER_ID = 21;
+  public static final int SHOULDER_AUXILARY_ID = 3;
+  public static final int ELBOW_AUXILARY_ID = 13;
 
   // Intake
   
