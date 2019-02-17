@@ -12,6 +12,7 @@ import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.intake.IntakeBasicControl;
+import frc.robot.commands.intake.IntakeEjectCargo;
 import frc.robot.commands.intake.IntakeLoadCargo;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.sapg.SAPGBasicControl;
@@ -49,6 +50,7 @@ public class OI {
 
     SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo());
+    SmartDashboard.putData("Intake Eject", new IntakeEjectCargo());
 
   }
 
