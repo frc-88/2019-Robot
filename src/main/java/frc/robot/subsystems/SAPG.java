@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
@@ -27,6 +28,13 @@ public class SAPG extends Subsystem{
     private DoubleSolenoid deployPiston;
     private DoubleSolenoid grabPiston;
     private PIDController sapgController;
+
+    public void updateDashboard(){
+        SmartDashboard.putNumber("SAPG Position", getPosition());
+        SmartDashboard.putNumber("SAPG Voltage", sideMotor.getMotorOutputVoltage());
+        SmartDashboard.putNumber("SAPG Velocity", sideMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("SAPG Current", sideMotor.getOutputCurrent());
+    }
 
     public SAPG(){
         sideMotor = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
@@ -109,4 +117,7 @@ public class SAPG extends Subsystem{
 
     }
 
+    public double getPosition(){
+        return sideMotor.getSelectedSensorPosition();
+    }
 }
