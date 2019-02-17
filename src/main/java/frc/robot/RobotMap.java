@@ -46,6 +46,7 @@ public class RobotMap {
   // Intake
   
   public static final int INTAKE_ID = 10;
+  public static final int INTAKE_IR_ID = 0;
 
   // Climber
   public static final int CLIMBER_ID = 12;
@@ -113,5 +114,8 @@ public class RobotMap {
 
   public static final int OPERATOR_CONTROLLER_PORT = 1;
   public static final int DRIVE_CONTROLLER_PORT = 0;
+
+  //Intake
+  public static final double INTAKE_HAS_CARGO = 5;
 
 }
