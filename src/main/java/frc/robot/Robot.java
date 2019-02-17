@@ -101,6 +101,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    m_arm.zeroElbowMotorEncoder();
+    m_arm.zeroShoulderMotorEncoder();
   }
 
   @Override
@@ -121,6 +123,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_arm.zeroElbowMotorEncoder();
+    m_arm.zeroShoulderMotorEncoder();
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -146,6 +150,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
+    m_arm.zeroElbowMotorEncoder();
+    m_arm.zeroShoulderMotorEncoder();
+    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -181,5 +189,7 @@ public class Robot extends TimedRobot {
     dashboardScheduler.run(RUN_TIME);
     m_drive.updateShuffleboard();
     m_arm.updateDashboard();
+    m_sapg.updateDashboard();
+    m_intake.updateDashboard();
   }
 }

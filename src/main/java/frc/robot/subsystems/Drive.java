@@ -314,14 +314,14 @@ public class Drive extends Subsystem {
      *                 1 (clockwise)
      */
     public void arcadeDrive(double speed, double turn) {
-        // speed *= maxSpeed;
-        // turn *= maxSpeed;
-        // joystickSpeed = speed;
-        // speed = limitAcceleration(speed);
-        // double leftSpeed = (speed + turn);
-        // double rightSpeed = (speed - turn);
-        // basicDriveLimited(leftSpeed, rightSpeed);
-        basicDrive(speed + turn, speed - turn);
+         speed *= maxSpeed;
+         turn *= maxSpeed;
+         joystickSpeed = speed;
+         speed = limitAcceleration(speed);
+         double leftSpeed = (speed + turn);
+         double rightSpeed = (speed - turn);
+         basicDriveLimited(leftSpeed, rightSpeed);
+        //basicDrive(speed + turn, speed - turn);
     }
 
     public double limitAcceleration(double speed) {
@@ -395,8 +395,8 @@ public class Drive extends Subsystem {
     }
 
     public void shiftToLow() {
-        leftShifter.set(Value.kReverse);
-        rightShifter.set(Value.kReverse);
+        leftShifter.set(Value.kForward);
+        rightShifter.set(Value.kForward);
         leftTransmission.shiftToLow();
         rightTransmission.shiftToLow();
         leftVelocityController.setKP(RobotMap.DRIVE_VEL_LOW_KP);
@@ -414,8 +414,8 @@ public class Drive extends Subsystem {
     }
 
     public void shiftToHigh() {
-        leftShifter.set(Value.kForward);
-        rightShifter.set(Value.kForward);
+        leftShifter.set(Value.kReverse);
+        rightShifter.set(Value.kReverse);
         leftTransmission.shiftToHigh();
         rightTransmission.shiftToHigh();
         leftVelocityController.setKP(RobotMap.DRIVE_VEL_HIGH_KP);

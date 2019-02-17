@@ -30,10 +30,10 @@ public class SAPG extends Subsystem{
     private PIDController sapgController;
 
     public void updateDashboard(){
-        SmartDashboard.putNumber("SAPG Position", getPosition());
-        SmartDashboard.putNumber("SAPG Voltage", sideMotor.getMotorOutputVoltage());
-        SmartDashboard.putNumber("SAPG Velocity", sideMotor.getSelectedSensorVelocity());
-        SmartDashboard.putNumber("SAPG Current", sideMotor.getOutputCurrent());
+        SmartDashboard.putNumber("SAPG:Position", getPosition());
+        SmartDashboard.putNumber("SAPG:Voltage", sideMotor.getMotorOutputVoltage());
+        SmartDashboard.putNumber("SAPG:Velocity", sideMotor.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("SAPG:Current", sideMotor.getOutputCurrent());
     }
 
     public SAPG(){

@@ -35,7 +35,7 @@ public class OI {
     // setup dashboard buttons for testing and debug
     //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
 
-    //SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
+    SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
 
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
     SmartDashboard.putData("SAPG Basic", new SAPGBasicControl());
@@ -67,7 +67,7 @@ public class OI {
   }
 
   public boolean getHighGearButton(){
-    return driveController.getRightTrigger()<.5;
+    return driveController.getRightTrigger()>.5;
   }
 
   public boolean getForceLowGearButton() {
