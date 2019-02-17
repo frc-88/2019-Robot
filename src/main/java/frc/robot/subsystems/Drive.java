@@ -40,9 +40,9 @@ public class Drive extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
     private TJDriveModule leftDrive, rightDrive;
-    private ShiftingTransmission transmission;
+    private ShiftingTransmission leftTransmission, rightTransmission;
     private DriveConfiguration driveConfiguration;
-    private TJPIDController velocityController;
+    private TJPIDController leftVelocityController, rightVelocityController;
 
     private DoubleSolenoid leftShifter, rightShifter;
 
@@ -95,14 +95,21 @@ public class Drive extends Subsystem {
     private double joystickSpeed;
 
     public Drive() {
-        transmission = new ShiftingTransmission(new Vex775Pro(), RobotMap.NUM_DRIVE_MOTORS_PER_SIDE,
+        leftTransmission = new ShiftingTransmission(new Vex775Pro(), RobotMap.NUM_DRIVE_MOTORS_PER_SIDE,
                 new CTREMagEncoder(), RobotMap.LOW_DRIVE_RATIO, RobotMap.HIGH_DRIVE_RATIO, RobotMap.DRIVE_SENSOR_RATIO,
                 RobotMap.DRIVE_LOW_STATIC_FRICTION_VOLTAGE, RobotMap.DRIVE_HIGH_STATIC_FRICTION_VOLTAGE,
-                RobotMap.DRIVE_LOW_EFFICIENCY, RobotMap.DRIVE_HIGH_EFFICIENCY);
+                RobotMap.DRIVE_LEFT_LOW_EFFICIENCY, RobotMap.DRIVE_LEFT_HIGH_EFFICIENCY);
+        rightTransmission = new ShiftingTransmission(new Vex775Pro(), RobotMap.NUM_DRIVE_MOTORS_PER_SIDE,
+                new CTREMagEncoder(), RobotMap.LOW_DRIVE_RATIO, RobotMap.HIGH_DRIVE_RATIO, RobotMap.DRIVE_SENSOR_RATIO,
+                RobotMap.DRIVE_LOW_STATIC_FRICTION_VOLTAGE, RobotMap.DRIVE_HIGH_STATIC_FRICTION_VOLTAGE,
+                RobotMap.DRIVE_RIGHT_LOW_EFFICIENCY, RobotMap.DRIVE_RIGHT_HIGH_EFFICIENCY);
 
-        velocityController = new TJPIDController(RobotMap.DRIVE_VEL_LOW_KP, RobotMap.DRIVE_VEL_LOW_KI,
+        leftVelocityController = new TJPIDController(RobotMap.DRIVE_VEL_LOW_KP, RobotMap.DRIVE_VEL_LOW_KI,
                 RobotMap.DRIVE_VEL_LOW_KD, RobotMap.DRIVE_VEL_LOW_IZONE, RobotMap.DRIVE_VEL_LOW_IMAX);
-        transmission.setVelocityPID(velocityController);
+        rightVelocityController = new TJPIDController(RobotMap.DRIVE_VEL_LOW_KP, RobotMap.DRIVE_VEL_LOW_KI,
+                RobotMap.DRIVE_VEL_LOW_KD, RobotMap.DRIVE_VEL_LOW_IZONE, RobotMap.DRIVE_VEL_LOW_IMAX);
+        leftTransmission.setVelocityPID(leftVelocityController);
+        rightTransmission.setVelocityPID(rightVelocityController);
 
         driveConfiguration = new DriveConfiguration();
 
@@ -110,13 +117,14 @@ public class Drive extends Subsystem {
         moProKI = driveConfiguration.left.masterConfiguration.slot0.kI;
         moProKD = driveConfiguration.left.masterConfiguration.slot0.kD;
     
-        leftDrive = new TJDriveModule(driveConfiguration.left, transmission);
-        rightDrive = new TJDriveModule(driveConfiguration.right, transmission);
+        leftDrive = new TJDriveModule(driveConfiguration.left, leftTransmission);
+        rightDrive = new TJDriveModule(driveConfiguration.right, rightTransmission);
 
         leftShifter = new DoubleSolenoid(RobotMap.SHIFTER_LEFT_PCM, RobotMap.SHIFTER_LEFT_OUT, RobotMap.SHIFTER_LEFT_IN);
         rightShifter = new DoubleSolenoid(RobotMap.SHIFTER_RIGHT_PCM, RobotMap.SHIFTER_RIGHT_OUT, RobotMap.SHIFTER_RIGHT_IN);
 
-        transmission.shiftToLow();
+        leftTransmission.shiftToLow();
+        rightTransmission.shiftToLow();
         maxSpeed = RobotMap.MAX_SPEED_LOW;
     }
 
@@ -165,10 +173,10 @@ public class Drive extends Subsystem {
         sbTestDriveVoltage = Shuffleboard.getTab("TestDrive").add("Constant Voltage", 0.).getEntry();
         sbLeftPredictedCurrentDraw = Shuffleboard.getTab("TestDrive").add("Left Pred Current", 0).getEntry();
         Robot.dashboardScheduler.addFunction(() ->
-                sbLeftPredictedCurrentDraw.setDouble(transmission.getCurrentDraw(leftDrive.getMotorOutputVoltage(), leftDrive.getSelectedSensorVelocity()))); 
+                sbLeftPredictedCurrentDraw.setDouble(leftTransmission.getCurrentDraw(leftDrive.getMotorOutputVoltage(), leftDrive.getSelectedSensorVelocity()))); 
         sbRightPredictedCurrentDraw = Shuffleboard.getTab("TestDrive").add("Right Pred Current", 0).getEntry();
         Robot.dashboardScheduler.addFunction(() ->
-                sbRightPredictedCurrentDraw.setDouble(transmission.getCurrentDraw(rightDrive.getMotorOutputVoltage(), rightDrive.getSelectedSensorVelocity())));
+                sbRightPredictedCurrentDraw.setDouble(rightTransmission.getCurrentDraw(rightDrive.getMotorOutputVoltage(), rightDrive.getSelectedSensorVelocity())));
         sbCurrentLimit = Shuffleboard.getTab("TestDrive").add("Current Limit", currentLimit).getEntry();
         sbMaxAccel = Shuffleboard.getTab("TestDrive").add("Max Accel", maxAccel).getEntry();
 
@@ -256,17 +264,22 @@ public class Drive extends Subsystem {
         // // Velocity PID tuning
         //startTime = RobotController.getFPGATime();
         if (resetFromShift) {
-        sbVelKp.setDouble(velocityController.getKP());
-        sbVelKi.setDouble(velocityController.getKI());
-        sbVelKd.setDouble(velocityController.getKD());
-        sbVelIZone.setDouble(velocityController.getIZone());
-        sbVelIMax.setDouble(velocityController.getIMax());
+            sbVelKp.setDouble(leftVelocityController.getKP());
+            sbVelKi.setDouble(leftVelocityController.getKI());
+            sbVelKd.setDouble(leftVelocityController.getKD());
+            sbVelIZone.setDouble(leftVelocityController.getIZone());
+            sbVelIMax.setDouble(leftVelocityController.getIMax());
         } else {
-        velocityController.setKP(sbVelKp.getDouble(RobotMap.DRIVE_VEL_LOW_KP));
-        velocityController.setKI(sbVelKi.getDouble(RobotMap.DRIVE_VEL_LOW_KI));
-        velocityController.setKD(sbVelKd.getDouble(RobotMap.DRIVE_VEL_LOW_KD));
-        velocityController.setIZone(sbVelIZone.getDouble(RobotMap.DRIVE_VEL_LOW_IZONE));
-        velocityController.setIMax(sbVelIMax.getDouble(RobotMap.DRIVE_VEL_LOW_IMAX));
+            leftVelocityController.setKP(sbVelKp.getDouble(RobotMap.DRIVE_VEL_LOW_KP));
+            leftVelocityController.setKI(sbVelKi.getDouble(RobotMap.DRIVE_VEL_LOW_KI));
+            leftVelocityController.setKD(sbVelKd.getDouble(RobotMap.DRIVE_VEL_LOW_KD));
+            leftVelocityController.setIZone(sbVelIZone.getDouble(RobotMap.DRIVE_VEL_LOW_IZONE));
+            leftVelocityController.setIMax(sbVelIMax.getDouble(RobotMap.DRIVE_VEL_LOW_IMAX));
+            rightVelocityController.setKP(sbVelKp.getDouble(RobotMap.DRIVE_VEL_LOW_KP));
+            rightVelocityController.setKI(sbVelKi.getDouble(RobotMap.DRIVE_VEL_LOW_KI));
+            rightVelocityController.setKD(sbVelKd.getDouble(RobotMap.DRIVE_VEL_LOW_KD));
+            rightVelocityController.setIZone(sbVelIZone.getDouble(RobotMap.DRIVE_VEL_LOW_IZONE));
+            rightVelocityController.setIMax(sbVelIMax.getDouble(RobotMap.DRIVE_VEL_LOW_IMAX));
         }
         //System.out.println("Velocity PID status: " + (RobotController.getFPGATime()-startTime));
 
@@ -342,7 +355,8 @@ public class Drive extends Subsystem {
      */
 
     public void resetVelocityPID() {
-        velocityController.reset();
+        leftVelocityController.reset();
+        rightVelocityController.reset();
     }
 
     @Override
@@ -383,12 +397,18 @@ public class Drive extends Subsystem {
     public void shiftToLow() {
         leftShifter.set(Value.kReverse);
         rightShifter.set(Value.kReverse);
-        transmission.shiftToLow();
-        velocityController.setKP(RobotMap.DRIVE_VEL_LOW_KP);
-        velocityController.setKI(RobotMap.DRIVE_VEL_LOW_KI);
-        velocityController.setKD(RobotMap.DRIVE_VEL_LOW_KD);
-        velocityController.setIZone(RobotMap.DRIVE_VEL_LOW_IZONE);
-        velocityController.setIMax(RobotMap.DRIVE_VEL_LOW_IMAX);
+        leftTransmission.shiftToLow();
+        rightTransmission.shiftToLow();
+        leftVelocityController.setKP(RobotMap.DRIVE_VEL_LOW_KP);
+        leftVelocityController.setKI(RobotMap.DRIVE_VEL_LOW_KI);
+        leftVelocityController.setKD(RobotMap.DRIVE_VEL_LOW_KD);
+        leftVelocityController.setIZone(RobotMap.DRIVE_VEL_LOW_IZONE);
+        leftVelocityController.setIMax(RobotMap.DRIVE_VEL_LOW_IMAX);
+        rightVelocityController.setKP(RobotMap.DRIVE_VEL_LOW_KP);
+        rightVelocityController.setKI(RobotMap.DRIVE_VEL_LOW_KI);
+        rightVelocityController.setKD(RobotMap.DRIVE_VEL_LOW_KD);
+        rightVelocityController.setIZone(RobotMap.DRIVE_VEL_LOW_IZONE);
+        rightVelocityController.setIMax(RobotMap.DRIVE_VEL_LOW_IMAX);
         maxAccel = RobotMap.MAX_ACCEL_LOW;
         resetFromShift = true;
     }
@@ -396,18 +416,24 @@ public class Drive extends Subsystem {
     public void shiftToHigh() {
         leftShifter.set(Value.kForward);
         rightShifter.set(Value.kForward);
-        transmission.shiftToHigh();
-        velocityController.setKP(RobotMap.DRIVE_VEL_HIGH_KP);
-        velocityController.setKI(RobotMap.DRIVE_VEL_HIGH_KI);
-        velocityController.setKD(RobotMap.DRIVE_VEL_HIGH_KD);
-        velocityController.setIZone(RobotMap.DRIVE_VEL_HIGH_IZONE);
-        velocityController.setIMax(RobotMap.DRIVE_VEL_HIGH_IMAX);
+        leftTransmission.shiftToHigh();
+        rightTransmission.shiftToHigh();
+        leftVelocityController.setKP(RobotMap.DRIVE_VEL_HIGH_KP);
+        leftVelocityController.setKI(RobotMap.DRIVE_VEL_HIGH_KI);
+        leftVelocityController.setKD(RobotMap.DRIVE_VEL_HIGH_KD);
+        leftVelocityController.setIZone(RobotMap.DRIVE_VEL_HIGH_IZONE);
+        leftVelocityController.setIMax(RobotMap.DRIVE_VEL_HIGH_IMAX);
+        rightVelocityController.setKP(RobotMap.DRIVE_VEL_HIGH_KP);
+        rightVelocityController.setKI(RobotMap.DRIVE_VEL_HIGH_KI);
+        rightVelocityController.setKD(RobotMap.DRIVE_VEL_HIGH_KD);
+        rightVelocityController.setIZone(RobotMap.DRIVE_VEL_HIGH_IZONE);
+        rightVelocityController.setIMax(RobotMap.DRIVE_VEL_HIGH_IMAX);
         maxAccel = RobotMap.MAX_ACCEL_HIGH;
         resetFromShift = true;
     }
 
     public boolean isInHighGear() {
-        return transmission.isInHighGear();
+        return leftTransmission.isInHighGear();
     }
 
     public double getLeftPosition() {
@@ -451,20 +477,20 @@ public class Drive extends Subsystem {
 
             TJDriveMotionPoint tjPoint = profile.get(i);
 
-            leftPoint.arbFeedFwd = transmission.getFeedforwardVoltage(tjPoint.leftVelocity) / 12;
-            rightPoint.arbFeedFwd = transmission.getFeedforwardVoltage(tjPoint.rightVelocity) / 12;
+            leftPoint.arbFeedFwd = leftTransmission.getFeedforwardVoltage(tjPoint.leftVelocity) / 12;
+            rightPoint.arbFeedFwd = rightTransmission.getFeedforwardVoltage(tjPoint.rightVelocity) / 12;
             leftPoint.isLastPoint = (i == profile.size() - 1);
             rightPoint.isLastPoint = (i == profile.size() - 1);
-            leftPoint.position = transmission.convertOutputPositionToSensor(tjPoint.leftPosition);
-            rightPoint.position = transmission.convertOutputPositionToSensor(tjPoint.rightPosition);
+            leftPoint.position = leftTransmission.convertOutputPositionToSensor(tjPoint.leftPosition);
+            rightPoint.position = rightTransmission.convertOutputPositionToSensor(tjPoint.rightPosition);
             leftPoint.profileSlotSelect0 = 0;
             rightPoint.profileSlotSelect0 = 0;
             leftPoint.timeDur = (int) (tjPoint.dt * 1000);
             rightPoint.timeDur = (int) (tjPoint.dt * 1000);
             leftPoint.useAuxPID = false;
             rightPoint.useAuxPID = false;
-            leftPoint.velocity = transmission.convertOutputVelocityToSensor(tjPoint.leftVelocity);
-            rightPoint.velocity = transmission.convertOutputVelocityToSensor(tjPoint.rightVelocity);
+            leftPoint.velocity = leftTransmission.convertOutputVelocityToSensor(tjPoint.leftVelocity);
+            rightPoint.velocity = rightTransmission.convertOutputVelocityToSensor(tjPoint.rightVelocity);
             leftPoint.zeroPos = (i == 0);
             rightPoint.zeroPos = (i == 0);
 

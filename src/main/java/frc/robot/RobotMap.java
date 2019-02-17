@@ -69,14 +69,16 @@ public class RobotMap {
 
   // Drive
   public static final int NUM_DRIVE_MOTORS_PER_SIDE = 4;
-  public static final double LOW_DRIVE_RATIO = (1 / 60.16) * 6 * 3.14159;
-  public static final double HIGH_DRIVE_RATIO = (1 / 17.82) * 6 * 3.14159;
+  public static final double LOW_DRIVE_RATIO = (1. / 60.16) * 6. * 3.14159;
+  public static final double HIGH_DRIVE_RATIO = (1. / 17.82) * 6. * 3.14159;
   public static final double DRIVE_SENSOR_RATIO = (1. / ((6.25/12.) * 3.14159)) * (54.0/30.0) * 3.;
 
   public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = .53;
   public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = .75;
-  public static final double DRIVE_LOW_EFFICIENCY = 0;
-  public static final double DRIVE_HIGH_EFFICIENCY = 0;
+  public static final double DRIVE_LEFT_LOW_EFFICIENCY = 1;
+  public static final double DRIVE_LEFT_HIGH_EFFICIENCY = 1;
+  public static final double DRIVE_RIGHT_LOW_EFFICIENCY = 1;
+  public static final double DRIVE_RIGHT_HIGH_EFFICIENCY = 1;
 
   public static final double DRIVE_VEL_LOW_KI = 0;
   public static final double DRIVE_VEL_LOW_KP = 0;
@@ -85,8 +87,8 @@ public class RobotMap {
   public static final double DRIVE_VEL_LOW_IMAX = 0;
 
   public static final double MAX_DRIVE_VOLTAGE = 0;
-  public static final double MAX_SPEED_LOW = 6.1;
-  public static final double MAX_SPEED_HIGH = 13.2;
+  public static final double MAX_SPEED_LOW = 6;
+  public static final double MAX_SPEED_HIGH = 13;
   public static final double DRIVE_CURRENT_LIMIT = 0;
   public static final double MAX_ACCEL_LOW = 0;
   public static final double MAX_ACCEL_HIGH = 0;
