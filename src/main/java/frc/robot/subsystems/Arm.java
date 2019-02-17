@@ -155,6 +155,8 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("Arm: elbowMotorDegrees", getMotorElbowDegrees());
     SmartDashboard.putNumber("Arm: shoulderSetPoint", shoulder.getActiveTrajectoryPosition());
     SmartDashboard.putNumber("Arm: elbowSetPoint", elbow.getActiveTrajectoryPosition());
+    SmartDashboard.putBoolean("Arm: isLegal?", isLegalPosition(getShoulderDegrees(),getElbowDegrees(),false));
+    SmartDashboard.putBoolean("Arm: isLegal (HAB)?", isLegalPosition(getShoulderDegrees(),getElbowDegrees(),true));
   }
 
   public void moveShoulder(double position) {
