@@ -28,7 +28,7 @@ public class Intake extends Subsystem {
     }
 
     public boolean hasCargo() {
-        return intakeSensor.getDistance() < RobotMap.INTAKE_HAS_CARGO && intakeSensor.getDistance()>3;
+        return intakeSensor.getDistance() < RobotMap.INTAKE_HAS_CARGO && intakeSensor.getDistance()>2.85;
     }
 
     private void configTalon(TalonSRX talon) {

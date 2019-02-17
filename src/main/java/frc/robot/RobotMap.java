@@ -118,6 +118,6 @@ public class RobotMap {
   public static final int DRIVE_CONTROLLER_PORT = 0;
 
   //Intake
-  public static final double INTAKE_HAS_CARGO = 5;
+  public static final double INTAKE_HAS_CARGO = 8;
 
 }
