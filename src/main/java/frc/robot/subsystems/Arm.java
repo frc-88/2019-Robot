@@ -199,8 +199,8 @@ public double convertMotorShoulderToDegrees(double counts){
   return (((counts+960*4)*360)/4096)/4;
 }
 
-public double convertShoulderDegreesToMotor(double degrees){
-  return degrees*4*4096/360-960*4;
+public int convertShoulderDegreesToMotor(double degrees){
+  return (int)(degrees*4*4096/360-960*4);
 }
 
 public double getMotorShoulderDegrees(){
@@ -215,8 +215,8 @@ public double convertMotorElbowToDegrees(double counts){
   return((counts-373*4)*360/4096)/4;
 }
 
-public double convertElbowDegreesToMotor(double degrees){
-  return degrees*4*4096/360+373*4;
+public int convertElbowDegreesToMotor(double degrees){
+  return (int)degrees*4*4096/360+373*4;
 }
 
 public double getMotorElbowDegrees(){
@@ -249,16 +249,24 @@ public int getElbowAbsolutePosition(){
    * @param elbowAngle
    */
   public void zeroElbowMotorEncoder(){
-    int encoderPosition=getElbowAbsolutePosition()*4;
-    elbow.setSelectedSensorPosition(encoderPosition,MAIN_SLOT_IDX,TIMEOUTMS);
+    double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
+    double normalizedPos = auxEncoderPos > 0 ?
+        (auxEncoderPos + 180) % 360. - 180 :
+        (auxEncoderPos + 180) % 360. + 180;
+    int encoderPos = convertElbowDegreesToMotor(auxEncoderPos);
+    elbow.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
   }
     /**
    * zeroes shoulder motor encoder based on known shoulder angle 
    * @param shoulderAngle the angle of the shoulder
    */
   public void zeroShoulderMotorEncoder(){
-    int encoderPosition=getShoulderAbsolutePosition()*4;
-    shoulder.setSelectedSensorPosition(encoderPosition,MAIN_SLOT_IDX,TIMEOUTMS);
+    double auxEncoderPos = convertShoulderToDegrees(getShoulderAbsolutePosition());
+    double normalizedPos = auxEncoderPos > 0 ?
+        (auxEncoderPos + 180) % 360. - 180 :
+        (auxEncoderPos + 180) % 360. + 180;
+    int encoderPos = convertShoulderDegreesToMotor(normalizedPos);
+    shoulder.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
   }
 
   /**
