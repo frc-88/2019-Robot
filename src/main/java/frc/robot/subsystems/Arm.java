@@ -198,7 +198,7 @@ public double convertMotorShoulderToDegrees(double counts){
 }
 
 public int convertShoulderDegreesToMotor(double degrees){
-  return (int)degrees*4*4096/360-960*4;
+  return (int)(degrees*4*4096/360-960*4);
 }
 
 public double getMotorShoulderDegrees(){
@@ -248,7 +248,9 @@ public int getElbowAbsolutePosition(){
    */
   public void zeroElbowMotorEncoder(){
     double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
-    auxEncoderPos = ((auxEncoderPos + 180) % 360) - 180;
+    double normalizedPos = auxEncoderPos > 0 ?
+        (auxEncoderPos + 180) % 360. - 180 :
+        (auxEncoderPos + 180) % 360. + 180;
     int encoderPos = convertElbowDegreesToMotor(auxEncoderPos);
     elbow.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
   }
@@ -258,8 +260,10 @@ public int getElbowAbsolutePosition(){
    */
   public void zeroShoulderMotorEncoder(){
     double auxEncoderPos = convertShoulderToDegrees(getShoulderAbsolutePosition());
-    auxEncoderPos = ((auxEncoderPos + 180) % 360) - 180;
-    int encoderPos = convertShoulderDegreesToMotor(auxEncoderPos);
+    double normalizedPos = auxEncoderPos > 0 ?
+        (auxEncoderPos + 180) % 360. - 180 :
+        (auxEncoderPos + 180) % 360. + 180;
+    int encoderPos = convertShoulderDegreesToMotor(normalizedPos);
     shoulder.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
   }
 
