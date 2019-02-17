@@ -27,14 +27,14 @@ import frc.robot.*;
  */
 
 public class Arm extends Subsystem {
-  // TODO - check below constants against reality
-  private final static double SHOULDER_LENGTH = 30.5;
+  private final static double SHOULDER_LENGTH = 31
   private final static double ELBOW_LENGTH = 24;
   private final static double ARM_HEIGHT = 41;
-  private final static double ROBOT_LENGTH = 30;
+  private final static double ROBOT_LENGTH = 31.25;
   private final static double LEGAL_HEIGHT_LIMIT = 78;
   private final static double LEGAL_EXTENSION = 30;
   private final static double LEGAL_REACH = ROBOT_LENGTH / 2 + LEGAL_EXTENSION;
+  // TODO - check below constants against reality, above have been checked
   private final static double FORWARD_SHOULDER_LIMIT = 170;
   private final static double REVERSE_SHOULDER_LIMIT = -60;
   private final static double FORWARD_ELBOW_LIMIT = 170;
