@@ -34,7 +34,7 @@ public class OI {
     operatorController= new TJController(RobotMap.OPERATOR_CONTROLLER_PORT);
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
 
-   // intake position (165, 80)
+   // intake position (165, 85)
    // secure position (160, 10)
    // low rocket  (150,0)
    // medium rocket  (90,0)
@@ -43,7 +43,7 @@ public class OI {
    // starting config  (160,0)
 
     // intake
-    operatorController.buttonA.whenPressed(new ArmGoToPosition(165, 80));
+    operatorController.buttonA.whenPressed(new ArmGoToPosition(165, 85));
     // secure
     operatorController.buttonB.whenPressed(new ArmGoToPosition(160, 10));
     // low rocket
