@@ -17,8 +17,8 @@ import frc.robot.subsystems.Climber;
 public class ClimberClimb extends Command {
 
   private final double CLIMB_LIMIT = -20;
-  private final double SHOULDER_START_POS = 0;
-  private final double SHOULDER_END_POS = 0;
+  private final double SHOULDER_START_POS = 90;
+  private final double SHOULDER_END_POS = 129;
   private final double ELBOW_START_POS = 188;
   private final double ELBOW_END_POS = 172;
 
@@ -78,6 +78,13 @@ public class ClimberClimb extends Command {
     case 1:
 
       climber.move(CLIMB_LIMIT);
+
+      // (SHOULDER_START_POS-SHOULDER_END_POS)*(CLIMB_LIMIT/CLIMB_MAX_SPEED)
+      arm.setShoulderSpeed();
+      arm.setElbowSpeed();
+
+      arm.moveShoulder(SHOULDER_END_POS);
+      arm.moveElbow(ELBOW_END_POS);
 
       break;
 
