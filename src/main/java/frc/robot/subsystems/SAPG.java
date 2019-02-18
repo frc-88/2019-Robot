@@ -21,9 +21,9 @@ public class SAPG extends Subsystem{
     private static final double Kp = 0;
     private static final double Ki = 0;
     private static final double Kd = 0;
-    private static final double forwardLimit = 0;
-    private static final double reverseLimit = 0;
-    private static final double center = 0;
+    private static final int forwardLimit = 700;
+    private static final int reverseLimit = 325;
+    private static final int center = reverseLimit + (forwardLimit - reverseLimit)/2;
 
     private WPI_TalonSRX sideMotor;
     private DoubleSolenoid deployPiston;
@@ -45,26 +45,27 @@ public class SAPG extends Subsystem{
         sapgController = new PIDController(Kp, Ki, Kd, Robot.m_limelight_back, sideMotor);
         sapgController.disable();
 
+        configureTalon();
         initPreferences();
     }
 
-    public void configureTalon(){
+    public void configureTalon() {
         sideMotor.configFactoryDefault();
         sideMotor.setNeutralMode(NeutralMode.Coast);
         sideMotor.setInverted(false);
-        sideMotor.configFeedbackNotContinuous(false, RobotMap.CAN_TIMEOUT);
+        //sideMotor.configFeedbackNotContinuous(true, RobotMap.CAN_TIMEOUT);
         sideMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog);
         sideMotor.configMotionCruiseVelocity(5);
         sideMotor.configMotionAcceleration(5);
         sideMotor.config_kP(0, 0);
         sideMotor.config_kI(0, 0);
         sideMotor.config_kD(0, 0);
-        sideMotor.config_kF(0 , 0);
+        sideMotor.config_kF(0.5 , 0);
 
-        // sideMotor.configForwardSoftLimitThreshold(forwardLimit)
-        // sideMotor.configReverseSoftLimitThreshold(reverseLimit)
-        // sideMotor.configForwardSoftLimitEnable(true);
-        // sideMotor.configReverseSoftLimitEnable(true);
+        sideMotor.configForwardSoftLimitThreshold(forwardLimit);
+        sideMotor.configReverseSoftLimitThreshold(reverseLimit);
+        sideMotor.configForwardSoftLimitEnable(true);
+        sideMotor.configReverseSoftLimitEnable(true);
     }
 
     private void initPreferences() {

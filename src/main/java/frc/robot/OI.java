@@ -75,10 +75,12 @@ public class OI {
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
     SmartDashboard.putData("SAPG Basic", new SAPGBasicControl());
-    SmartDashboard.putData("Deploy SAPG", new SAPGDeploy());
-    SmartDashboard.putData("Retract SAPG", new SAPGRetract());
-    SmartDashboard.putData("Open SAPG", new SAPGOpen());
-    SmartDashboard.putData("Close SAPG", new SAPGClose());
+    SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
+    SmartDashboard.putData("SAPG Retract", new SAPGRetract());
+    SmartDashboard.putData("SAPG Open", new SAPGOpen());
+    SmartDashboard.putData("SAPG Close", new SAPGClose());
+    SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
+    SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
 
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
