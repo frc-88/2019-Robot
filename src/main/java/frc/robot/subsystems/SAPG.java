@@ -60,7 +60,7 @@ public class SAPG extends Subsystem{
         sideMotor.config_kP(0, 0);
         sideMotor.config_kI(0, 0);
         sideMotor.config_kD(0, 0);
-        sideMotor.config_kF(0.5 , 0);
+        sideMotor.config_kF(0 , 0);
 
         sideMotor.configForwardSoftLimitThreshold(forwardLimit);
         sideMotor.configReverseSoftLimitThreshold(reverseLimit);

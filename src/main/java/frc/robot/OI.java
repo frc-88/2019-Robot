@@ -10,6 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmGoToPosition;
+import frc.robot.commands.arm.ArmZeroElbow;
+import frc.robot.commands.arm.ArmZeroShoulder;
 import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeEjectCargo;
@@ -83,6 +85,8 @@ public class OI {
     SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
 
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
+    SmartDashboard.putData("Arm Zero Elbow", new ArmZeroElbow());
+    SmartDashboard.putData("Arm Zero Shoulder", new ArmZeroShoulder());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
     // high rocket  (28,0)
     SmartDashboard.putData("Arm High Rocket", new ArmGoToPosition(28,0));
