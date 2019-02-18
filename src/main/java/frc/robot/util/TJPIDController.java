@@ -13,6 +13,7 @@ public class TJPIDController {
     private Double kD;
     private double iZone;
     private double iMax;
+    private double tolerance;
 
     private boolean enableIZone;
     private boolean enableIMax;
@@ -27,6 +28,7 @@ public class TJPIDController {
         this.kD = kD;
         this.iZone = iZone;
         this.iMax = iMax;
+        this.tolerance = 0;
 
         this.enableIZone = true;
         this.enableIMax = true;
@@ -128,6 +130,19 @@ public class TJPIDController {
     public boolean isIMaxEnabled() {
         return this.enableIMax;
     }
+    /**
+     * Gets the tolerance for the PID
+     */
+    public double getTolerance() {
+        return this.tolerance;
+    }
+    /**
+     * Set the tolerance for the PID
+     */
+    public void setTolerance(double tolerance) {
+        this.tolerance = tolerance;
+    }
+    
 
     /**
      * Resets the controller's saved info ab out integral and derivative.
@@ -145,6 +160,10 @@ public class TJPIDController {
      */
     public double calculateOutput(double input, double setpoint) {
         double error = setpoint - input;
+
+        if (Math.abs(error) < tolerance) {
+            return 0;
+        }
 
         double output = 0;
         output += calculateP(error);

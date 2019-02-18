@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
+import frc.robot.util.TJPIDController;
 
 /**
  * Arm with a shoulder and an elbow joint, a relative encoder and absolute encoder on both.
@@ -50,6 +51,8 @@ public class Arm extends Subsystem {
   private final static int AUX_SENSOR_SLOT_IDX = 1;
   private final static int TIMEOUTMS = 0;
 
+  private TJPIDController pitchPID;
+
   TalonSRX shoulder, elbow;
   //CANifier shoulderCANifier, elbowCANifier;
 
@@ -63,6 +66,11 @@ public class Arm extends Subsystem {
     configElbowTalon();
     //configShoulderCANifier();
     //configElbowCANifier();
+
+    pitchPID = new TJPIDController(0.01, 0, 0);
+    pitchPID.setTolerance(2);
+    SmartDashboard.putNumber("arm:pitchKP", pitchPID.getKP());
+    SmartDashboard.putNumber("arm:pitchKD", pitchPID.getKD());
 
     initPreferences();
   }
@@ -160,6 +168,9 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("Arm: elbowSetPoint", elbow.getActiveTrajectoryPosition());
     SmartDashboard.putBoolean("Arm: isLegal?", isLegalPosition(getShoulderDegrees(),getElbowDegrees(),false));
     SmartDashboard.putBoolean("Arm: isLegal (HAB)?", isLegalPosition(getShoulderDegrees(),getElbowDegrees(),true));
+  
+    pitchPID.setKP(SmartDashboard.getNumber("arm:pitchKP", pitchPID.getKP()));
+    pitchPID.setKD(SmartDashboard.getNumber("arm:pitchKD", pitchPID.getKD()));
   }
 
   public void moveShoulder(double position) {
@@ -174,6 +185,10 @@ public class Arm extends Subsystem {
     // stops the movement of the arm
     shoulder.set(ControlMode.PercentOutput, 0.0);
     elbow.set(ControlMode.PercentOutput, 0.0);
+  }
+
+  public void pidPitch(double pitch) {
+    setShoulder(-pitchPID.calculateOutput(Robot.m_navx.getPitch(), pitch));
   }
 
   public double getShoulderPosition() {
@@ -220,6 +235,15 @@ public double convertMotorElbowToDegrees(double counts){
 
 public int convertElbowDegreesToMotor(double degrees){
   return (int)degrees*4*4096/360 + ELBOW_OFFSET*4;
+
+public void setShoulderSpeed(int speed){
+  shoulder.configMotionCruiseVelocity(speed*4096*4/360/10);
+  shoulder.configMotionAcceleration(speed*4096*4/360/10*2);
+}
+
+public void setElbowSpeed(int speed){
+  elbow.configMotionCruiseVelocity(speed*4096*4/360/10);
+  elbow.configMotionAcceleration(speed*4096*4/360/10*2);
 }
 
 public double getMotorElbowDegrees(){

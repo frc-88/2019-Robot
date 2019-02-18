@@ -191,5 +191,7 @@ public class Robot extends TimedRobot {
     m_arm.updateDashboard();
     m_sapg.updateDashboard();
     m_intake.updateDashboard();
+    m_climber.updateDashboard();
+    m_navx.updateDashboard();
   }
 }
