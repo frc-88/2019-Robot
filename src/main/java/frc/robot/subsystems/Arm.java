@@ -27,7 +27,7 @@ import frc.robot.*;
  */
 
 public class Arm extends Subsystem {
-  private final static double SHOULDER_LENGTH = 31
+  private final static double SHOULDER_LENGTH = 31;
   private final static double ELBOW_LENGTH = 24;
   private final static double ARM_HEIGHT = 41;
   private final static double ROBOT_LENGTH = 31.25;

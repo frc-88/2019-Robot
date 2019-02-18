@@ -34,7 +34,7 @@ public class IntakeEjectCargo extends Command {
       if (elbow > -90) speed = -speed;
     }
 
-    Robot.m_intake.set(INTAKE_SPEED);
+    Robot.m_intake.set(speed);
   }
 
   // Called repeatedly when this Command is scheduled to run
