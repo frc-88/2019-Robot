@@ -234,6 +234,16 @@ public int convertElbowDegreesToMotor(double degrees){
   return (int)degrees*4*4096/360+497*4;
 }
 
+public void setShoulderSpeed(int speed){
+  shoulder.configMotionCruiseVelocity(speed*4096*4/360/10);
+  shoulder.configMotionAcceleration(speed*4096*4/360/10*2);
+}
+
+public void setElbowSpeed(int speed){
+  elbow.configMotionCruiseVelocity(speed*4096*4/360/10);
+  elbow.configMotionAcceleration(speed*4096*4/360/10*2);
+}
+
 public double getMotorElbowDegrees(){
   return convertMotorElbowToDegrees(getElbowPosition());
 }

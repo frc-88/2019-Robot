@@ -16,7 +16,11 @@ import frc.robot.subsystems.Climber;
 
 public class ClimberClimb extends Command {
 
-  public static final double CLIMB_LIMIT = -20;
+  private final double CLIMB_LIMIT = -20;
+  private final double SHOULDER_START_POS = 0;
+  private final double SHOULDER_END_POS = 0;
+  private final double ELBOW_START_POS = 188;
+  private final double ELBOW_END_POS = 172;
 
   Climber climber;
   Arm arm;
@@ -58,6 +62,9 @@ public class ClimberClimb extends Command {
     // Get the climber to the ground
     case 0:
 
+      arm.moveShoulder(SHOULDER_START_POS);
+      arm.moveElbow(ELBOW_START_POS);
+      
       curSpeed = Math.max(curSpeed + seekingRamp, seekingSpeed);
       climber.set(curSpeed);
 
@@ -70,9 +77,6 @@ public class ClimberClimb extends Command {
 
     case 1:
 
-     // climber.set(Robot.m_oi.getOperatorRightYAxis());
-      //arm.moveElbow(Robot.m_arm.convertElbowDegreesToMotor(160));
-      //arm.pidPitch(0);
       climber.move(CLIMB_LIMIT);
 
       break;
