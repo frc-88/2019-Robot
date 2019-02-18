@@ -79,9 +79,10 @@ public class ClimberClimb extends Command {
 
       climber.move(CLIMB_LIMIT);
 
-      // (SHOULDER_START_POS-SHOULDER_END_POS)*(CLIMB_LIMIT/CLIMB_MAX_SPEED)
-      arm.setShoulderSpeed();
-      arm.setElbowSpeed();
+      // (SHOULDER_START_POS-SHOULDER_END_POS)/(CLIMB_LIMIT/CLIMB_MAX_SPEED)
+      arm.setShoulderSpeed((SHOULDER_START_POS-SHOULDER_END_POS)/(CLIMB_LIMIT/RobotMap.CLIMBER_MAX_SPEED));
+      arm.setElbowSpeed((ELBOW_START_POS-ELBOW_END_POS)/(CLIMB_LIMIT/RobotMap.CLIMBER_MAX_SPEED)
+      );
 
       arm.moveShoulder(SHOULDER_END_POS);
       arm.moveElbow(ELBOW_END_POS);
