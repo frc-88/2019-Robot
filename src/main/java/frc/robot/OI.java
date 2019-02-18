@@ -11,9 +11,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.climber.ClimberBasicControl;
+import frc.robot.commands.climber.ClimberClimb;
+import frc.robot.commands.climber.ClimberMove;
 import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeEjectCargo;
 import frc.robot.commands.intake.IntakeLoadCargo;
+import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.sapg.SAPGBasicControl;
 import frc.robot.commands.sapg.SAPGClose;
@@ -87,10 +90,16 @@ public class OI {
     // medium rocket  (90,0)
     SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPosition(90,0));
 
+    SmartDashboard.putData("Climb", new ClimberClimb());
+    SmartDashboard.putData("Move Climber", new ClimberMove());
+
 
     SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo());
     SmartDashboard.putData("Intake Eject", new IntakeEjectCargo());
+
+    SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
+    SmartDashboard.putData("Zero Pitch", new NavXZeroPitch());
 
   }
 

@@ -21,6 +21,8 @@ public class NavX extends Subsystem {
   // here. Call these from Commands.
   private AHRS m_navx = new AHRS(SPI.Port.kMXP);
 
+  private double pitchOffset = 0;
+
   public NavX() {
 
   }
@@ -33,8 +35,17 @@ public class NavX extends Subsystem {
     return m_navx.getYaw();
   }
 
+  public void zeroPitch() {
+    pitchOffset = -m_navx.getRoll();
+  }
+
+  public double getPitch() {
+    return m_navx.getRoll() + pitchOffset;
+  }
+
   public void updateDashboard() {
     SmartDashboard.putNumber("NavX Yaw", getYaw());
+    SmartDashboard.putNumber("NavX Pitch", getPitch());
   }
 
   @Override

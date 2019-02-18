@@ -63,6 +63,9 @@ public class RobotMap {
   // Compressor
   public static final int COMPRESSOR_PCM = 22;
 
+  // Pidgeon
+  public static final int PIDGEON_ID = 24;
+
   /////////////////////////////////////////////////////////////////////////////
   // Other constants
   /////////////////////////////////////////////////////////////////////////////
@@ -90,13 +93,13 @@ public class RobotMap {
   public static final double MAX_SPEED_LOW = 6;
   public static final double MAX_SPEED_HIGH = 13;
   public static final double DRIVE_CURRENT_LIMIT = 200;
-  public static final double MAX_ACCEL_LOW = 2;
-  public static final double MAX_ACCEL_HIGH = 2;
+  public static final double MAX_ACCEL_LOW = 2.5;
+  public static final double MAX_ACCEL_HIGH = 5;
 
-  public static final double SHIFT_INTO_LOW_GEAR = 0;
-  public static final double SHIFT_INTO_HIGH_GEAR = 0;
-  public static final double COMMANDED_STOP_SPEED = 0;
-  public static final double SHIFT_INTO_LOW_GEAR_STOP = 0;
+  public static final double SHIFT_INTO_LOW_GEAR = 4;
+  public static final double SHIFT_INTO_HIGH_GEAR = 5.4;
+  public static final double COMMANDED_STOP_SPEED = 1;
+  public static final double SHIFT_INTO_LOW_GEAR_STOP = 5;
 
   public static final double DRIVE_VEL_HIGH_KP = 0;
   public static final double DRIVE_VEL_HIGH_KI = 0;
@@ -110,6 +113,12 @@ public class RobotMap {
   // Arm
   public static final double ARM_TOLERANCE = 1;
 
+  // Climber
+  
+  public static final double CLIMBER_LIFTING_CURRENT = 10.0;
+  public static final double CLIMBER_SEEKING_SPEED = -1;
+  public static final double CLIMBER_SEEKING_RAMP = -0.05;
+  public static final int CLIMBER_TICKS_PER_INCH = 15908;
 
   // Misc
   public static final int CAN_TIMEOUT = 0;
