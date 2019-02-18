@@ -18,8 +18,10 @@ import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.sapg.SAPGBasicControl;
 import frc.robot.commands.sapg.SAPGClose;
 import frc.robot.commands.sapg.SAPGDeploy;
+import frc.robot.commands.sapg.SAPGGrabPanel;
 import frc.robot.commands.sapg.SAPGOpen;
 import frc.robot.commands.sapg.SAPGRetract;
+import frc.robot.commands.sapg.SAPGScorePanel;
 import frc.robot.util.TJController;
 
 /**
@@ -34,34 +36,42 @@ public class OI {
     operatorController= new TJController(RobotMap.OPERATOR_CONTROLLER_PORT);
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
 
-   // intake position (165, 85)
-   // secure position (160, 10)
-   // low rocket  (150,0)
-   // medium rocket  (90,0)
-   // high rocket  (28,0)
-   // cargo ship   (100,35)
-   // starting config  (160,0)
+    if(false) {
+    // intake position (165, 85)
+    // secure position (160, 10)
+    // low rocket  (150,0)
+    // medium rocket  (90,0)
+    // high rocket  (28,0)
+    // cargo ship   (105,35)
+    // starting config  (160,0)
 
-    // intake
-    operatorController.buttonA.whenPressed(new ArmGoToPosition(165, 85));
-    // secure
-    operatorController.buttonB.whenPressed(new ArmGoToPosition(160, 10));
-    // low rocket
-    operatorController.buttonX.whenPressed(new ArmGoToPosition(150, 0));
-    // cargo ship
-    operatorController.buttonY.whenPressed(new ArmGoToPosition(100, 35));
-    // starting config
-    operatorController.buttonStart.whenPressed(new ArmGoToPosition(160, 0));
-    
-    operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo());
-    operatorController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
-    
+      // intake
+      operatorController.buttonA.whenPressed(new ArmGoToPosition(165, 85));
+      // secure
+      operatorController.buttonB.whenPressed(new ArmGoToPosition(160, 10));
+      // low rocket
+      operatorController.buttonX.whenPressed(new ArmGoToPosition(150, 0));
+      // cargo ship
+      operatorController.buttonY.whenPressed(new ArmGoToPosition(105, 35));
+      
+      operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo());
+      operatorController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
+    } else {
+        //sapg controller
+        operatorController.buttonA.whenPressed(new SAPGDeploy());
+        operatorController.buttonB.whenPressed(new SAPGRetract());
+        operatorController.buttonX.whenPressed(new SAPGOpen());
+        operatorController.buttonY.whenPressed(new SAPGClose());
+
+        operatorController.buttonRightBumper.whenPressed(new SAPGGrabPanel());
+        operatorController.buttonLeftBumper.whenPressed(new SAPGScorePanel());
+    }
+
+      // starting config
+      operatorController.buttonStart.whenPressed(new ArmGoToPosition(160, 0));
     
     // setup dashboard buttons for testing and debug
     //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
-
-   operatorController.buttonStart.whenPressed(new ArmGoToPosition(0, 0));    
-
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
     SmartDashboard.putData("SAPG Basic", new SAPGBasicControl());

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.sapg.SAPGBasicControl;
 
 public class SAPG extends Subsystem{
     private static final double Kp = 0;
@@ -114,7 +115,7 @@ public class SAPG extends Subsystem{
 
     @Override
     protected void initDefaultCommand() {
-
+        setDefaultCommand(new SAPGBasicControl());
     }
 
     public double getPosition(){

@@ -89,7 +89,7 @@ public class Arm extends Subsystem {
     shoulder.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
-    shoulder.configMotionCruiseVelocity(40*4096*4/360/10, TIMEOUTMS);
+    shoulder.configMotionCruiseVelocity(80*4096*4/360/10, TIMEOUTMS);
     shoulder.configMotionAcceleration(200*4096*4/360/10, TIMEOUTMS);
     shoulder.setInverted(true);
     shoulder.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, 
