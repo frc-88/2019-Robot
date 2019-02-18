@@ -60,8 +60,9 @@ public class ArmGoToPosition extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Math.abs(Robot.m_arm.getShoulderPosition() - shoulder_target) < RobotMap.ARM_TOLERANCE
-        && Math.abs(Robot.m_arm.getElbowPosition() - elbow_target) < RobotMap.ARM_TOLERANCE;
+    // return Math.abs(Robot.m_arm.getShoulderPosition() - shoulder_target) < RobotMap.ARM_TOLERANCE
+    //     && Math.abs(Robot.m_arm.getElbowPosition() - elbow_target) < RobotMap.ARM_TOLERANCE;
+    return false;
   }
 
   // Called once after isFinished returns true

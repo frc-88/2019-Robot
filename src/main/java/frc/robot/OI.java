@@ -34,8 +34,33 @@ public class OI {
     operatorController= new TJController(RobotMap.OPERATOR_CONTROLLER_PORT);
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
 
+   // intake position (165, 80)
+   // secure position (160, 10)
+   // low rocket  (150,0)
+   // medium rocket  (90,0)
+   // high rocket  (28,0)
+   // cargo ship   (100,35)
+   // starting config  (160,0)
+
+    // intake
+    operatorController.buttonA.whenPressed(new ArmGoToPosition(165, 80));
+    // secure
+    operatorController.buttonB.whenPressed(new ArmGoToPosition(160, 10));
+    // low rocket
+    operatorController.buttonX.whenPressed(new ArmGoToPosition(150, 0));
+    // cargo ship
+    operatorController.buttonY.whenPressed(new ArmGoToPosition(100, 35));
+    // starting config
+    operatorController.buttonStart.whenPressed(new ArmGoToPosition(160, 0));
+    
+    operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo());
+    operatorController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
+    
+    
     // setup dashboard buttons for testing and debug
     //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
+
+   operatorController.buttonStart.whenPressed(new ArmGoToPosition(0, 0));    
 
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
@@ -47,6 +72,11 @@ public class OI {
 
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
+    // high rocket  (28,0)
+    SmartDashboard.putData("Arm High Rocket", new ArmGoToPosition(28,0));
+    // medium rocket  (90,0)
+    SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPosition(90,0));
+
 
     SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo());
