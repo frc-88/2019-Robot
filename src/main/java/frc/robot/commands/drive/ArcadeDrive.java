@@ -33,7 +33,7 @@ public class ArcadeDrive extends Command {
 
     Robot.m_drive.arcadeDrive(speed, turn);
     
-    Robot.m_drive.autoshift();
+    Robot.m_drive.setGearFromButton();
   }
   
 
