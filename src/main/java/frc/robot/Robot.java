@@ -103,6 +103,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
+    m_sapg.disableController();
   }
 
   @Override
@@ -153,7 +154,8 @@ public class Robot extends TimedRobot {
 
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    
+    m_sapg.enableController();
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

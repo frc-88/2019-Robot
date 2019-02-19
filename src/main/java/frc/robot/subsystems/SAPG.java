@@ -18,7 +18,7 @@ import frc.robot.RobotMap;
 import frc.robot.commands.sapg.SAPGBasicControl;
 
 public class SAPG extends Subsystem{
-    private static final double Track_Kp = 0.05;
+    private static final double Track_Kp = 0.08;
     private static final double Track_Ki = 0;
     private static final double Track_Kd = 0;
     private static final int forwardLimit = 660;
@@ -35,6 +35,7 @@ public class SAPG extends Subsystem{
         SmartDashboard.putNumber("SAPG:Voltage", sideMotor.getMotorOutputVoltage());
         SmartDashboard.putNumber("SAPG:Velocity", sideMotor.getSelectedSensorVelocity());
         SmartDashboard.putNumber("SAPG:Current", sideMotor.getOutputCurrent());
+        SmartDashboard.putBoolean("SAPG:Tracking", sapgController.isEnabled());
     }
 
     public SAPG(){
@@ -43,7 +44,6 @@ public class SAPG extends Subsystem{
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
 
         sapgController = new PIDController(Track_Kp, Track_Ki, Track_Kd, Robot.m_limelight_back, sideMotor);
-        sapgController.disable();
 
         configureTalon();
         initPreferences();

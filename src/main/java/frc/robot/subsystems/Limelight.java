@@ -30,7 +30,8 @@ public class Limelight extends Subsystem implements PIDSource{
   private static final double SINGLE_TARGET_EXP = -0.386;
   private static final double FULL_TARGET_C = 42.158;
   private static final double FULL_TARGET_EXP = -0.424;
-  private static final double TRACK_THRESHOLD = 12;
+  private static final double TRACK_ANGLE_THRESHOLD = 18;
+  private static final double TRACK_DISTANCE_THRESHOLD = 12;
 
   private NetworkTable _table;
   private NetworkTableEntry _ta;
@@ -338,11 +339,11 @@ public double getTargetAngleByCameraTransform() {
       angle = 0;
     }
 
-    if(Math.abs(angle) > TRACK_THRESHOLD ) {
+    if(Math.abs(angle) > TRACK_ANGLE_THRESHOLD ) {
       angle = 0;
     }
 
-    if(getTargetDistanceByCameraTransform() < 18) {
+    if(getTargetDistanceByCameraTransform() < TRACK_DISTANCE_THRESHOLD) {
       angle = 0;
     }
 
