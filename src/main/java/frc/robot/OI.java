@@ -25,6 +25,8 @@ import frc.robot.commands.sapg.SAPGGrabPanel;
 import frc.robot.commands.sapg.SAPGOpen;
 import frc.robot.commands.sapg.SAPGRetract;
 import frc.robot.commands.sapg.SAPGScorePanel;
+import frc.robot.commands.sapg.SAPGTrackStart;
+import frc.robot.commands.sapg.SAPGTrackStop;
 import frc.robot.commands.sapg.SAPGTrackTarget;
 import frc.robot.util.TJController;
 
@@ -73,7 +75,11 @@ public class OI {
 
       // starting config
       operatorController.buttonStart.whenPressed(new ArmGoToPosition(160, 0));
-    
+
+      driveController.buttonRightBumper.whenPressed(new SAPGGrabPanel());
+      driveController.buttonLeftBumper.whenPressed(new SAPGScorePanel());
+
+
     // setup dashboard buttons for testing and debug
     //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
@@ -86,6 +92,8 @@ public class OI {
     SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
     SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
     SmartDashboard.putData("SAPG Track", new SAPGTrackTarget());
+    SmartDashboard.putData("SAPG PID Go", new SAPGTrackStart());
+    SmartDashboard.putData("SAPG PID Stop", new SAPGTrackStop());
 
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());

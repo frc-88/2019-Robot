@@ -30,6 +30,7 @@ public class Limelight extends Subsystem implements PIDSource{
   private static final double SINGLE_TARGET_EXP = -0.386;
   private static final double FULL_TARGET_C = 42.158;
   private static final double FULL_TARGET_EXP = -0.424;
+  private static final double TRACK_THRESHOLD = 12;
 
   private NetworkTable _table;
   private NetworkTableEntry _ta;
@@ -307,12 +308,12 @@ public double getTargetAngleByCameraTransform() {
   }
 
   public void updateDashboard() {
-    SmartDashboard.putNumber("LL:" + name + ":SurfaceAngle", getTargetSurfaceAngle());
+//    SmartDashboard.putNumber("LL:" + name + ":SurfaceAngle", getTargetSurfaceAngle());
     SmartDashboard.putNumber("LL:" + name + ":Distance(Area)", getTargetDistanceByArea());
-    SmartDashboard.putNumber("LL:" + name + ":Angle(Transform)", getTargetDistanceByCameraTransform());
-    SmartDashboard.putNumber("LL:" + name + ":Distance(Transform)", getTargetAngleByCameraTransform());
+//    SmartDashboard.putNumber("LL:" + name + ":Angle(Transform)", getTargetAngleByCameraTransform());
+    SmartDashboard.putNumber("LL:" + name + ":Distance(Transform)", getTargetDistanceByCameraTransform());
 
-    generateWaypointsFromVision();
+    //generateWaypointsFromVision();
   }
 
   @Override
@@ -333,10 +334,18 @@ public double getTargetAngleByCameraTransform() {
   public double pidGet() {
     double angle = getHorizontalOffsetAngle();
 
-    if (Math.abs(angle) > 5) {
+    if(!hasTarget()) {
       angle = 0;
     }
-    
+
+    if(Math.abs(angle) > TRACK_THRESHOLD ) {
+      angle = 0;
+    }
+
+    if(getTargetDistanceByCameraTransform() < 18) {
+      angle = 0;
+    }
+
     return angle;
   }
 }

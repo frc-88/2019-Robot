@@ -18,9 +18,9 @@ import frc.robot.RobotMap;
 import frc.robot.commands.sapg.SAPGBasicControl;
 
 public class SAPG extends Subsystem{
-    private static final double Kp = 0;
-    private static final double Ki = 0;
-    private static final double Kd = 0;
+    private static final double Track_Kp = 0.05;
+    private static final double Track_Ki = 0;
+    private static final double Track_Kd = 0;
     private static final int forwardLimit = 660;
     private static final int reverseLimit = 320;
     private static final int center = reverseLimit + (forwardLimit - reverseLimit)/2;
@@ -42,7 +42,7 @@ public class SAPG extends Subsystem{
         deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
 
-        sapgController = new PIDController(Kp, Ki, Kd, Robot.m_limelight_back, sideMotor);
+        sapgController = new PIDController(Track_Kp, Track_Ki, Track_Kd, Robot.m_limelight_back, sideMotor);
         sapgController.disable();
 
         configureTalon();
@@ -107,6 +107,7 @@ public class SAPG extends Subsystem{
     }
 
     public void enableController() {
+        sapgController.setSetpoint(0);
         sapgController.enable();
     }
 
