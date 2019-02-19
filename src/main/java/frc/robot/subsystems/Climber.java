@@ -50,8 +50,8 @@ public class Climber extends Subsystem {
       talon.config_kI(ENCODER_PID_IDX, 0, TIMEOUTMS);
       talon.config_kD(ENCODER_PID_IDX, 0, TIMEOUTMS);
       talon.config_kF(ENCODER_PID_IDX, 0.06, TIMEOUTMS);
-      talon.configMotionCruiseVelocity((10*RobotMap.CLIMBER_TICKS_PER_INCH)/10, TIMEOUTMS); // in/s -> ticks/100ms
-      talon.configMotionAcceleration((20*RobotMap.CLIMBER_TICKS_PER_INCH)/10, TIMEOUTMS);
+      talon.configMotionCruiseVelocity((RobotMap.CLIMBER_MAX_SPEED*RobotMap.CLIMBER_TICKS_PER_INCH)/10, TIMEOUTMS); // in/s -> ticks/100ms
+      talon.configMotionAcceleration((2*RobotMap.CLIMBER_MAX_SPEED*RobotMap.CLIMBER_TICKS_PER_INCH)/10, TIMEOUTMS);
   }
 
   public void updateDashboard() {
