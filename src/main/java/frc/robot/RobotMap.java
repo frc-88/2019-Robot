@@ -76,36 +76,37 @@ public class RobotMap {
   public static final double HIGH_DRIVE_RATIO = (1. / 27.82) * (6.25/12.) * 3.14159;
   public static final double DRIVE_SENSOR_RATIO = (1. / ((6.25/12.) * 3.14159)) * (54.0/30.0) * 3.;
 
-  public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = .53;
-  public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = .75;
+  public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = .56;
+  public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = .63;
   public static final double DRIVE_LEFT_LOW_EFFICIENCY = 1;
   public static final double DRIVE_LEFT_HIGH_EFFICIENCY = 1;
   public static final double DRIVE_RIGHT_LOW_EFFICIENCY = 1;
   public static final double DRIVE_RIGHT_HIGH_EFFICIENCY = 1;
 
-  public static final double DRIVE_VEL_LOW_KI = 0;
+  public static final double DRIVE_VEL_LOW_KI = 0.06;
   public static final double DRIVE_VEL_LOW_KP = 0;
   public static final double DRIVE_VEL_LOW_KD = 0;
-  public static final double DRIVE_VEL_LOW_IZONE = 0;
-  public static final double DRIVE_VEL_LOW_IMAX = 0;
+  public static final double DRIVE_VEL_LOW_IZONE = 3;
+  public static final double DRIVE_VEL_LOW_IMAX = 3;
 
   public static final double MAX_DRIVE_VOLTAGE = 11;
-  public static final double MAX_SPEED_LOW = 6;
-  public static final double MAX_SPEED_HIGH = 13;
+  public static final double MAX_SPEED_LOW = 7;
+  public static final double MAX_SPEED_HIGH = 15;
   public static final double DRIVE_CURRENT_LIMIT = 200;
   public static final double MAX_ACCEL_LOW = 2.5;
   public static final double MAX_ACCEL_HIGH = 5;
 
   public static final double SHIFT_INTO_LOW_GEAR = 4;
-  public static final double SHIFT_INTO_HIGH_GEAR = 5.4;
+  public static final double SHIFT_INTO_HIGH_GEAR = 5;
   public static final double COMMANDED_STOP_SPEED = 1;
-  public static final double SHIFT_INTO_LOW_GEAR_STOP = 5;
+  public static final double SHIFT_INTO_LOW_GEAR_STOP = 4.5;
 
+  
   public static final double DRIVE_VEL_HIGH_KP = 0;
-  public static final double DRIVE_VEL_HIGH_KI = 0;
+  public static final double DRIVE_VEL_HIGH_KI = 0.08;
   public static final double DRIVE_VEL_HIGH_KD = 0;
-  public static final double DRIVE_VEL_HIGH_IZONE = 0;
-  public static final double DRIVE_VEL_HIGH_IMAX = 0;
+  public static final double DRIVE_VEL_HIGH_IZONE = 3;
+  public static final double DRIVE_VEL_HIGH_IMAX = 3;
 
   public static final int DRIVE_MIN_TRAJ_POINTS = 10;
 
@@ -125,8 +126,9 @@ public class RobotMap {
 
   public static final int OPERATOR_CONTROLLER_PORT = 1;
   public static final int DRIVE_CONTROLLER_PORT = 0;
+  public static final int BUTTON_BOX_PORT = 3;
 
   //Intake
-  public static final double INTAKE_HAS_CARGO = 8;
+  public static final double INTAKE_HAS_CARGO = 18;
 
 }

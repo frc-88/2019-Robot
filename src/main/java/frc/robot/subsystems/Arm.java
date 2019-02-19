@@ -44,8 +44,8 @@ public class Arm extends Subsystem {
   private final static double ROBOT_FORWARD_LIMIT = 5;
   private final static double ROBOT_REVERSE_LIMIT = 15;
 
-  private final static int SHOULDER_OFFSET = -1666;
-  private final static int ELBOW_OFFSET = -448;
+  private final static int SHOULDER_OFFSET = -1639;
+  private final static int ELBOW_OFFSET = 3651;
 
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
@@ -235,6 +235,7 @@ public double convertMotorElbowToDegrees(double counts){
 
 public int convertElbowDegreesToMotor(double degrees){
   return (int)degrees*4*4096/360 + ELBOW_OFFSET*4;
+}
 
 public void setShoulderSpeed(int speed){
   shoulder.configMotionCruiseVelocity(speed*4096*4/360/10);
@@ -277,10 +278,10 @@ public int getElbowAbsolutePosition(){
    */
   public void zeroElbowMotorEncoder(){
     double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
-    double normalizedPos = auxEncoderPos > 0 ?
+    double normalizedPos = (auxEncoderPos + 180) > 0 ?
         (auxEncoderPos + 180) % 360. - 180 :
         (auxEncoderPos + 180) % 360. + 180;
-    int encoderPos = convertElbowDegreesToMotor(auxEncoderPos);
+    int encoderPos = convertElbowDegreesToMotor(normalizedPos);
     elbow.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
   }
     /**

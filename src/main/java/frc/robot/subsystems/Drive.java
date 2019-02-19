@@ -56,6 +56,7 @@ public class Drive extends Subsystem {
     private NetworkTableEntry sbRightCurrent;
     private NetworkTableEntry sbLeftSpeed;
     private NetworkTableEntry sbRightSpeed;
+    private NetworkTableEntry sbSpeedDiff;
     private NetworkTableEntry sbLeftPos;
     private NetworkTableEntry sbRightPos;
     private NetworkTableEntry sbTestDriveVoltage;
@@ -154,6 +155,9 @@ public class Drive extends Subsystem {
         sbRightSpeed = Shuffleboard.getTab("Drivetrain").add("Right Speed",0).getEntry();
         Robot.dashboardScheduler.addFunction(() ->
                 sbRightSpeed.setDouble(getRightSpeed()));
+        sbSpeedDiff = Shuffleboard.getTab("Drivetrain").add("Speed Diff",0).getEntry();
+        Robot.dashboardScheduler.addFunction(() ->
+                sbSpeedDiff.setDouble(getRightSpeed() - getLeftSpeed()));
         sbLeftPos = Shuffleboard.getTab("Drivetrain").add("Left Pos", 0).getEntry();
         Robot.dashboardScheduler.addFunction(() ->
                 sbLeftPos.setDouble(getLeftPosition()));
@@ -263,13 +267,13 @@ public class Drive extends Subsystem {
 
         // // Velocity PID tuning
         //startTime = RobotController.getFPGATime();
-        if (resetFromShift) {
-            sbVelKp.setDouble(leftVelocityController.getKP());
-            sbVelKi.setDouble(leftVelocityController.getKI());
-            sbVelKd.setDouble(leftVelocityController.getKD());
-            sbVelIZone.setDouble(leftVelocityController.getIZone());
-            sbVelIMax.setDouble(leftVelocityController.getIMax());
-        } else {
+        //if (resetFromShift) {
+            // sbVelKp.setDouble(leftVelocityController.getKP());
+            // sbVelKi.setDouble(leftVelocityController.getKI());
+            // sbVelKd.setDouble(leftVelocityController.getKD());
+            // sbVelIZone.setDouble(leftVelocityController.getIZone());
+            // sbVelIMax.setDouble(leftVelocityController.getIMax());
+        //} else {
             leftVelocityController.setKP(sbVelKp.getDouble(RobotMap.DRIVE_VEL_LOW_KP));
             leftVelocityController.setKI(sbVelKi.getDouble(RobotMap.DRIVE_VEL_LOW_KI));
             leftVelocityController.setKD(sbVelKd.getDouble(RobotMap.DRIVE_VEL_LOW_KD));
@@ -280,7 +284,7 @@ public class Drive extends Subsystem {
             rightVelocityController.setKD(sbVelKd.getDouble(RobotMap.DRIVE_VEL_LOW_KD));
             rightVelocityController.setIZone(sbVelIZone.getDouble(RobotMap.DRIVE_VEL_LOW_IZONE));
             rightVelocityController.setIMax(sbVelIMax.getDouble(RobotMap.DRIVE_VEL_LOW_IMAX));
-        }
+        //}
         //System.out.println("Velocity PID status: " + (RobotController.getFPGATime()-startTime));
 
         resetFromShift = false;
@@ -325,6 +329,7 @@ public class Drive extends Subsystem {
     }
 
     public double limitAcceleration(double speed) {
+        System.out.println(getStraightSpeed());
         if (speed - getStraightSpeed() > 0) {
             double vel = getStraightSpeed() + maxAccel;
             if (speed < vel) {
