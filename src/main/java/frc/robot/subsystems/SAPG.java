@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -13,85 +11,76 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.commands.sapg.SAPGBasicControl;
 
 public class SAPG extends Subsystem{
-    private static final double Track_Kp = 0.08;
-    private static final double Track_Ki = 0;
-    private static final double Track_Kd = 0;
+    private static final Preferences prefs = Preferences.getInstance();
+
     private static final int forwardLimit = 660;
     private static final int reverseLimit = 320;
     private static final int center = reverseLimit + (forwardLimit - reverseLimit)/2;
 
-    private WPI_TalonSRX sideMotor;
+    private WPI_TalonSRX sapgTalon;
     private DoubleSolenoid deployPiston;
     private DoubleSolenoid grabPiston;
     private PIDController sapgController;
 
-    public void updateDashboard(){
-        SmartDashboard.putNumber("SAPG:Position", getPosition());
-        SmartDashboard.putNumber("SAPG:Voltage", sideMotor.getMotorOutputVoltage());
-        SmartDashboard.putNumber("SAPG:Velocity", sideMotor.getSelectedSensorVelocity());
-        SmartDashboard.putNumber("SAPG:Current", sideMotor.getOutputCurrent());
-        SmartDashboard.putBoolean("SAPG:Tracking", sapgController.isEnabled());
-    }
+    private double trackP;
+    private double trackI;
+    private double trackD;
+    private double trackPeriod;
 
     public SAPG(){
-        sideMotor = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
+        sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
         deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
 
-        sapgController = new PIDController(Track_Kp, Track_Ki, Track_Kd, Robot.m_limelight_back, sideMotor);
-
         configureTalon();
         initPreferences();
+        fetchPreferences();
+
+        sapgController = new PIDController(trackP, trackI, trackD, Robot.m_limelight_back, sapgTalon, trackPeriod);
     }
 
-    public void configureTalon() {
-        sideMotor.configFactoryDefault();
-        sideMotor.setNeutralMode(NeutralMode.Coast);
-        sideMotor.setInverted(false);
-        //sideMotor.configFeedbackNotContinuous(true, RobotMap.CAN_TIMEOUT);
-        sideMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog);
-        sideMotor.configMotionCruiseVelocity(5);
-        sideMotor.configMotionAcceleration(5);
-        sideMotor.config_kP(0, 0);
-        sideMotor.config_kI(0, 0);
-        sideMotor.config_kD(0, 0);
-        sideMotor.config_kF(0 , 0);
+    private void configureTalon() {
+        sapgTalon.configFactoryDefault();
+        sapgTalon.setNeutralMode(NeutralMode.Coast);
+        sapgTalon.setInverted(false);
+        sapgTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog);
 
-        sideMotor.configForwardSoftLimitThreshold(forwardLimit);
-        sideMotor.configReverseSoftLimitThreshold(reverseLimit);
-        sideMotor.configForwardSoftLimitEnable(true);
-        sideMotor.configReverseSoftLimitEnable(true);
+        sapgTalon.configForwardSoftLimitThreshold(forwardLimit);
+        sapgTalon.configReverseSoftLimitThreshold(reverseLimit);
+        sapgTalon.configForwardSoftLimitEnable(true);
+        sapgTalon.configReverseSoftLimitEnable(true);
     }
 
     private void initPreferences() {
-        Preferences prefs = Preferences.getInstance();
-    
-        if (!prefs.containsKey("SAPGTestOutput")) { prefs.putDouble("SAPGTestOutput", 0.0); }
+        if (!prefs.containsKey("SAPG:Track_P")) { prefs.putDouble("SAPG:Track_P", 0.08); }
+        if (!prefs.containsKey("SAPG:Track_I")) { prefs.putDouble("SAPG:Track_I", 0.0); }
+        if (!prefs.containsKey("SAPG:Track_D")) { prefs.putDouble("SAPG:Track_D", 0.0); }
+        if (!prefs.containsKey("SAPG:Track_Period")) { prefs.putDouble("SAPG:Track_Period", 0.01); }
     }
 
-    public void shiftTheSAPG(double position){
-        sideMotor.set(ControlMode.MotionMagic, position);
+    private void fetchPreferences() {
+        trackP = prefs.getDouble("SAPG:Track_P", 0.0);
+        trackI = prefs.getDouble("SAPG:Track_I", 0.0);
+        trackD = prefs.getDouble("SAPG:Track_D", 0.0);
+        trackPeriod = prefs.getDouble("SAPG:Track_Period", 0.0);
     }
-    
+
+
     public void set(double percentOutput){
-        sideMotor.set(ControlMode.PercentOutput, percentOutput);
-    }
-
-    public boolean atForwardLimit() {
-        return sideMotor.getSelectedSensorPosition() > (forwardLimit - 30);
-    }
-
-    public boolean atReverseLimit() {
-        return sideMotor.getSelectedSensorPosition() < (reverseLimit + 30);
+        sapgTalon.set(ControlMode.PercentOutput, percentOutput);
     }
 
     public void openTheJaws(){
         grabPiston.set(Value.kForward);
+    }
+
+    public void closeTheJaws(){
+        grabPiston.set(Value.kReverse);
     }
 
     public void forwardPush(){
@@ -102,25 +91,25 @@ public class SAPG extends Subsystem{
         deployPiston.set(Value.kReverse);
     }
 
-    public void closeTheJaws(){
-        grabPiston.set(Value.kReverse);
-    }
-
-    public void enableController() {
+    public void enableTracking() {
         sapgController.setSetpoint(0);
         sapgController.enable();
     }
 
-    public void disableController() {
+    public void disableTracking() {
         sapgController.disable();
+    }
+
+    public void updateDashboard(){
+        SmartDashboard.putNumber("SAPG:Position", sapgTalon.getSelectedSensorPosition());
+        SmartDashboard.putNumber("SAPG:Voltage", sapgTalon.getMotorOutputVoltage());
+        SmartDashboard.putNumber("SAPG:Velocity", sapgTalon.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("SAPG:Current", sapgTalon.getOutputCurrent());
+        SmartDashboard.putBoolean("SAPG:Tracking", sapgController.isEnabled());
     }
 
     @Override
     protected void initDefaultCommand() {
-        // setDefaultCommand(new SAPGBasicControl());
     }
 
-    public double getPosition(){
-        return sideMotor.getSelectedSensorPosition();
-    }
 }

@@ -19,7 +19,8 @@ public class SAPGTrackStart extends InstantCommand {
    */
   public SAPGTrackStart() {
     super();
-    Robot.m_sapg.enableController();
+    requires(Robot.m_sapg);
+    Robot.m_sapg.enableTracking();
   }
 
   // Called once when the command executes
