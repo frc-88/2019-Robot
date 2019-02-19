@@ -25,6 +25,7 @@ import frc.robot.commands.sapg.SAPGGrabPanel;
 import frc.robot.commands.sapg.SAPGOpen;
 import frc.robot.commands.sapg.SAPGRetract;
 import frc.robot.commands.sapg.SAPGScorePanel;
+import frc.robot.commands.sapg.SAPGTrackTarget;
 import frc.robot.util.TJController;
 
 /**
@@ -84,6 +85,7 @@ public class OI {
     SmartDashboard.putData("SAPG Close", new SAPGClose());
     SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
     SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
+    SmartDashboard.putData("SAPG Track", new SAPGTrackTarget());
 
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());

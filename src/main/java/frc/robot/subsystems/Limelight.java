@@ -137,13 +137,13 @@ public class Limelight extends Subsystem implements PIDSource{
 public double getTargetDistanceByCameraTransform() {
   LLCameraTransform cam = getCameraTransform();
 
-  return Math.sqrt(Math.pow(cam.x, 2) + Math.pow(cam.y, 2));
+  return Math.sqrt(Math.pow(cam.x, 2) + Math.pow(cam.z, 2));
 }
 
 public double getTargetAngleByCameraTransform() {
   LLCameraTransform cam = getCameraTransform();
 
-  return Math.toDegrees(Math.atan2(cam.y, cam.x));
+  return Math.toDegrees(Math.atan2(cam.z, cam.x));
 }
 
 

@@ -21,8 +21,8 @@ public class SAPG extends Subsystem{
     private static final double Kp = 0;
     private static final double Ki = 0;
     private static final double Kd = 0;
-    private static final int forwardLimit = 700;
-    private static final int reverseLimit = 325;
+    private static final int forwardLimit = 660;
+    private static final int reverseLimit = 320;
     private static final int center = reverseLimit + (forwardLimit - reverseLimit)/2;
 
     private WPI_TalonSRX sideMotor;
@@ -116,7 +116,7 @@ public class SAPG extends Subsystem{
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new SAPGBasicControl());
+        // setDefaultCommand(new SAPGBasicControl());
     }
 
     public double getPosition(){
