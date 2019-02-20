@@ -199,6 +199,8 @@ public class Limelight extends Subsystem {
   }
 
   public void updateDashboard() {
+    SmartDashboard.putBoolean(name + ":HasTarget", hasTarget());
+    SmartDashboard.putBoolean(name + ":IsConnected", isConnected());
     SmartDashboard.putNumber(name + ":Angle", getTargetAngle());
     SmartDashboard.putNumber(name + ":Distance", getTargetDistance());
   }
