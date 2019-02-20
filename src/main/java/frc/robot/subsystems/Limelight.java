@@ -17,8 +17,13 @@ import frc.robot.util.LLCameraTransform;
 import jaci.pathfinder.Waypoint;
 
 /**
- * A subsystem to interact with a Limelight vision camera over NetworkTables.
+ * 
+ * When the green light dims
+ * And all the cargo is safe
+ * What does Limelight see?
+ * 
  */
+
 public class Limelight extends Subsystem {
   private NetworkTable _table;
   private NetworkTableEntry _ta;

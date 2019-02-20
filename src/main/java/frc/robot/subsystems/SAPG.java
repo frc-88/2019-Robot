@@ -18,6 +18,13 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.util.SharpIR;
 
+/**
+ * 
+ *      SAPG. Is it two
+ *  Syllables or is it four?
+ * Who cares? Watch it score!
+ * 
+ */
 public class SAPG extends Subsystem implements PIDSource {
     private static final Preferences prefs = Preferences.getInstance();
 
@@ -42,14 +49,6 @@ public class SAPG extends Subsystem implements PIDSource {
     private int center = reverseLimit + (forwardLimit - reverseLimit) / 2;
     private int home = center;
     private int ticksSinceTargetLost = 0;
-
-    /**
-     * 
-     *      SAPG. Is it two
-     *  Syllables or is it four?
-     * Who cares? Watch it score!
-     * 
-     */
 
     public SAPG() {
         sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
@@ -119,7 +118,8 @@ public class SAPG extends Subsystem implements PIDSource {
     }
 
     private double dampNearLimits(double value) {
-        double position = ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2 - 1;
+        double position = ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2
+                - 1;
 
         return dampNearLimits(position, value);
     }
@@ -228,4 +228,3 @@ public class SAPG extends Subsystem implements PIDSource {
     }
 
 }
-
