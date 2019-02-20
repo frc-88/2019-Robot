@@ -84,33 +84,13 @@ public class SAPG extends Subsystem implements PIDSource {
     }
 
     private void initPreferences() {
-        if (!prefs.containsKey("SAPG:Track_P")) {
-            prefs.putDouble("SAPG:Track_P", trackP);
-        }
-
-        if (!prefs.containsKey("SAPG:Track_I")) {
-            prefs.putDouble("SAPG:Track_I", trackI);
-        }
-
-        if (!prefs.containsKey("SAPG:Track_D")) {
-            prefs.putDouble("SAPG:Track_D", trackD);
-        }
-
-        if (!prefs.containsKey("SAPG:Track_Period")) {
-            prefs.putDouble("SAPG:Track_Period", trackPeriod);
-        }
-
-        if (!prefs.containsKey("SAPG:Forward_Limit")) {
-            prefs.putDouble("SAPG:Forward_Limit", forwardLimit);
-        }
-
-        if (!prefs.containsKey("SAPG:Reverse_Limit")) {
-            prefs.putDouble("SAPG:Reverse_Limit", reverseLimit);
-        }
-
-        if (!prefs.containsKey("SAPG:Panel_Threshold")) {
-            prefs.putDouble("SAPG:Panel_Threshold", panelThreshold);
-        }
+        if (!prefs.containsKey("SAPG:Track_P")) { prefs.putDouble("SAPG:Track_P", trackP); }
+        if (!prefs.containsKey("SAPG:Track_I")) { prefs.putDouble("SAPG:Track_I", trackI); }
+        if (!prefs.containsKey("SAPG:Track_D")) { prefs.putDouble("SAPG:Track_D", trackD); }
+        if (!prefs.containsKey("SAPG:Track_Period")) { prefs.putDouble("SAPG:Track_Period", trackPeriod); }
+        if (!prefs.containsKey("SAPG:Forward_Limit")) { prefs.putDouble("SAPG:Forward_Limit", forwardLimit); }
+        if (!prefs.containsKey("SAPG:Reverse_Limit")) { prefs.putDouble("SAPG:Reverse_Limit", reverseLimit); }
+        if (!prefs.containsKey("SAPG:Panel_Threshold")) { prefs.putDouble("SAPG:Panel_Threshold", panelThreshold); }
     }
 
     public void fetchPreferences() {
