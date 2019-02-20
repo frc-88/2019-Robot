@@ -34,8 +34,7 @@ public class DriveConstantVoltage extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    System.out.println(m_voltage);
-   Robot.m_drive.basicDriveLimited(m_voltage, m_voltage);
+   Robot.m_drive.basicDrive(m_voltage, m_voltage);
   }
   
 

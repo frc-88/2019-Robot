@@ -11,16 +11,17 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class IntakeLoadCargo extends Command {
-  private static final double INTAKE_SPEED = -1.0;
+  private double speed = -1.0;
 
-  public IntakeLoadCargo() {
+  public IntakeLoadCargo(double speed) {
     requires(Robot.m_intake);
+    this.speed = speed;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_intake.set(INTAKE_SPEED);
+    Robot.m_intake.set(speed);
   }
 
   // Called repeatedly when this Command is scheduled to run
