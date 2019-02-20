@@ -53,8 +53,7 @@ public class SAPG extends Subsystem implements PIDSource {
     public SAPG() {
         sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
         configureTalon();
-        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD,
-                RobotMap.SAPG_DEPLOY_REVERSE);
+        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
         panelDetector = new SharpIR(RobotMap.SAPG_PANEL_IR_ID);
 
@@ -117,11 +116,12 @@ public class SAPG extends Subsystem implements PIDSource {
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
     }
 
-    private double dampNearLimits(double value) {
-        double position = ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2
-                - 1;
+    private double getNormalizedPosition() {
+        return ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2 - 1;
+    }
 
-        return dampNearLimits(position, value);
+    private double dampNearLimits(double value) {
+        return dampNearLimits(getNormalizedPosition(), value);
     }
 
     private double dampNearLimits(double position, double value) {
@@ -191,10 +191,21 @@ public class SAPG extends Subsystem implements PIDSource {
     public double pidGet() {
         double angle;
         // convert position to range 1 to -1, between limits
-        double position = ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2
-                - 1;
+        double position = getNormalizedPosition();
 
-        if (!Robot.m_limelight_back.hasTarget()) {
+        if (Robot.m_limelight_sapg.hasTarget()) {
+            // If we have a target, track it
+            ticksSinceTargetLost = 0;
+            angle = Robot.m_limelight_sapg.getHorizontalOffsetAngle();
+            // if angle offset is too large, hold current position
+            if (Math.abs(angle) > TRACK_ANGLE_THRESHOLD) {
+                angle = 0;
+            }
+            // if target is too close, hold current position
+            if (Robot.m_limelight_sapg.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
+                angle = 0;
+            }
+        } else {
             // if we don't have a target,
             // and we haven't seen one in a while
             // TODO and we aren't facing a wall (forward facing IR sees short distance)
@@ -204,17 +215,6 @@ public class SAPG extends Subsystem implements PIDSource {
             if (ticksSinceTargetLost++ > TRACK_TICKS_THRESHOLD) {
                 angle = position * TRACK_ANGLE_THRESHOLD;
             } else {
-                angle = 0;
-            }
-        } else {
-            ticksSinceTargetLost = 0;
-            angle = Robot.m_limelight_back.getHorizontalOffsetAngle();
-            // if angle offset is too large, hold current position
-            if (Math.abs(angle) > TRACK_ANGLE_THRESHOLD) {
-                angle = 0;
-            }
-            // if target is too close, hold current position
-            if (Robot.m_limelight_back.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
                 angle = 0;
             }
         }
