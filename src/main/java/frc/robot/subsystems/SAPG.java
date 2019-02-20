@@ -43,6 +43,14 @@ public class SAPG extends Subsystem implements PIDSource {
     private int home = center;
     private int ticksSinceTargetLost = 0;
 
+    /**
+     * 
+     *      SAPG. Is it two
+     *  Syllables or is it four?
+     * Who cares? Watch it score!
+     * 
+     */
+
     public SAPG() {
         sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
         configureTalon();
