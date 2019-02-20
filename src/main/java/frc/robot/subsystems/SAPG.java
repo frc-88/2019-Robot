@@ -33,16 +33,15 @@ public class SAPG extends Subsystem implements PIDSource {
     private PIDController sapgController;
     private SharpIR panelDetector;
 
+    private double trackP = 0.08;
+    private double trackI = 0.0;
+    private double trackD = 0.0;
+    private double trackPeriod = 0.01;
     private int forwardLimit = 1010;
     private int reverseLimit = 680;
     private int center = reverseLimit + (forwardLimit - reverseLimit) / 2;
     private int home = center;
     private int ticksSinceTargetLost = 0;
-
-    private double trackP;
-    private double trackI;
-    private double trackD;
-    private double trackPeriod;
 
     public SAPG() {
         sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
@@ -79,24 +78,37 @@ public class SAPG extends Subsystem implements PIDSource {
 
     private void initPreferences() {
         if (!prefs.containsKey("SAPG:Track_P")) {
-            prefs.putDouble("SAPG:Track_P", 0.08);
+            prefs.putDouble("SAPG:Track_P", trackP);
         }
+
         if (!prefs.containsKey("SAPG:Track_I")) {
-            prefs.putDouble("SAPG:Track_I", 0.0);
+            prefs.putDouble("SAPG:Track_I", trackI);
         }
+
         if (!prefs.containsKey("SAPG:Track_D")) {
-            prefs.putDouble("SAPG:Track_D", 0.0);
+            prefs.putDouble("SAPG:Track_D", trackD);
         }
+
         if (!prefs.containsKey("SAPG:Track_Period")) {
-            prefs.putDouble("SAPG:Track_Period", 0.01);
+            prefs.putDouble("SAPG:Track_Period", trackPeriod);
+        }
+
+        if (!prefs.containsKey("SAPG:Forward_Limit")) {
+            prefs.putDouble("SAPG:Forward_Limit", forwardLimit);
+        }
+
+        if (!prefs.containsKey("SAPG:Reverse_Limit")) {
+            prefs.putDouble("SAPG:Reverse_Limit", reverseLimit);
         }
     }
 
     private void fetchPreferences() {
-        trackP = prefs.getDouble("SAPG:Track_P", 0.0);
-        trackI = prefs.getDouble("SAPG:Track_I", 0.0);
-        trackD = prefs.getDouble("SAPG:Track_D", 0.0);
-        trackPeriod = prefs.getDouble("SAPG:Track_Period", 0.0);
+        trackP = prefs.getDouble("SAPG:Track_P", trackP);
+        trackI = prefs.getDouble("SAPG:Track_I", trackI);
+        trackD = prefs.getDouble("SAPG:Track_D", trackD);
+        trackPeriod = prefs.getDouble("SAPG:Track_Period", trackPeriod);
+        forwardLimit = prefs.getInt("SAPG:Forward_Limit",forwardLimit);
+        reverseLimit = prefs.getInt("SAPG:Reverse_Limit",reverseLimit);
     }
 
     public void set(double percentOutput) {
