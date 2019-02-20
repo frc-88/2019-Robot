@@ -59,6 +59,7 @@ public class RobotMap {
   public static final int SAPG_DEPLOY_PCM = 21;
   public static final int SAPG_GRAB_PCM = 21;
   public static final int SAPG_MOTOR_ID = 06;
+  public static final int SAPG_PANEL_IR_ID = 1;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;
