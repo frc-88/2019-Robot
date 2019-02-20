@@ -33,7 +33,6 @@ import frc.robot.commands.sapg.SAPGRetract;
 import frc.robot.commands.sapg.SAPGScorePanel;
 import frc.robot.commands.sapg.SAPGTrackStart;
 import frc.robot.commands.sapg.SAPGTrackStop;
-import frc.robot.commands.sapg.SAPGTrackTarget;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.TJController;
 
@@ -143,7 +142,6 @@ public class OI {
     SmartDashboard.putData("SAPG Close", new SAPGClose());
     SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
     SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
-    SmartDashboard.putData("SAPG Track", new SAPGTrackTarget());
     SmartDashboard.putData("SAPG PID Go", new SAPGTrackStart());
     SmartDashboard.putData("SAPG PID Stop", new SAPGTrackStop());
 

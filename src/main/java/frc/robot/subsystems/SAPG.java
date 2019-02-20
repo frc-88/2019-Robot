@@ -214,7 +214,7 @@ public class SAPG extends Subsystem implements PIDSource {
                 angle = 0;
             }
             // if target is too close, hold current position
-            if (Robot.m_limelight_back.getTargetDistanceByCameraTransform() < TRACK_DISTANCE_THRESHOLD) {
+            if (Robot.m_limelight_back.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
                 angle = 0;
             }
         }
