@@ -57,8 +57,8 @@ public class OI {
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105,35));
     new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToPosition(105,35));
-    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(80,0));
-    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(80,0));
+    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(85,0));
+    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(85,0));
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(28,0));
     new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(28,0));
     new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(160, 10));
@@ -220,6 +220,6 @@ public class OI {
   public double getOperatorRightYAxis() {
     // double rawValue = operatorController.getRightStickY();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
-    return DriveUtils.deadbandExponential(driveController.getRightStickY(), 1, .075);
+    return DriveUtils.deadbandExponential(operatorController.getRightStickY(), 1, .075);
   }
 }
