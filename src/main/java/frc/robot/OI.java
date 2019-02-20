@@ -34,6 +34,7 @@ import frc.robot.commands.sapg.SAPGScorePanel;
 import frc.robot.commands.sapg.SAPGTrackStart;
 import frc.robot.commands.sapg.SAPGTrackStop;
 import frc.robot.commands.sapg.SAPGTrackTarget;
+import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.TJController;
 
 /**
@@ -50,41 +51,51 @@ public class OI {
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
     buttonBox = new Joystick(RobotMap.BUTTON_BOX_PORT);
 
-    driveController.buttonLeftBumper.whenPressed(new SAPGGrabPanel());
-    new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanel());
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105,35));
     new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToPosition(105,35));
-    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(87,0));
-    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(87,0));
+    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(80,0));
+    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(80,0));
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(28,0));
     new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(28,0));
-    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(164, 85));
-    new JoystickButton(buttonBox, 9).whileHeld(new IntakeLoadCargo());
-    new JoystickButton(buttonBox, 13).whenPressed(new ArmGoToPosition(160, 10));
+    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(160, 10));
+    new JoystickButton(buttonBox, 13).whileHeld(new IntakeLoadCargo(1));
     
+    new JoystickButton(buttonBox, 10).whenPressed(new ConditionalCommand(
+      new IntakeEjectCargo(),
+      new IntakeLoadCargo(-1)
+    ) {
 
-    Command cargoScore = new ConditionalCommand(new IntakeEjectCargo()) {
       @Override
       protected boolean condition() {
         return Robot.m_intake.hasCargo();
       }
-    };
 
-    Command sapgScore = new ConditionalCommand(new SAPGScorePanel()) {
+    });
+    new JoystickButton(buttonBox, 10).whenPressed(new ConditionalCommand(
+      new ArmGoToPosition(164, 80)
+    ) {
+
+      @Override
+      protected boolean condition() {
+        return !Robot.m_intake.hasCargo();
+      }
+
+    });
+    new JoystickButton(buttonBox, 12).whenPressed(new ConditionalCommand(
+      new SAPGScorePanel(),
+      new SAPGGrabPanel()
+    ) {
+
       @Override
       protected boolean condition() {
         return Robot.m_sapg.hasPanel();
       }
-    };
 
-    new JoystickButton(buttonBox, 10).whenPressed(cargoScore);
-    new JoystickButton(buttonBox, 10).whenPressed(sapgScore);
-    driveController.buttonX.whenPressed(cargoScore);
-    driveController.buttonX.whenPressed(sapgScore);
+    });
 
     if(false) {
     // intake position (164, 85)
@@ -104,7 +115,7 @@ public class OI {
       // cargo ship
       operatorController.buttonY.whenPressed(new ArmGoToPosition(105, 35));
       
-      operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo());
+      operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo(-1));
       operatorController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
     } else if (false) {
         //sapg controller
@@ -150,7 +161,7 @@ public class OI {
 
 
     SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
-    SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo());
+    SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo(-1));
     SmartDashboard.putData("Intake Eject", new IntakeEjectCargo());
 
     SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
@@ -163,18 +174,21 @@ public class OI {
   }
 
   public double getDriverLeftYAxis() {
-    double rawValue = driveController.getLeftStickY();
-    return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    // double rawValue = driveController.getLeftStickY();
+    // return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    return DriveUtils.deadbandExponential(driveController.getLeftStickY(), 1, .075);
   }
 
   public double getDriverRightXAxis() {
-    double rawValue = driveController.getRightStickX();
-    return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    // double rawValue = driveController.getRightStickX();
+    // return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    return DriveUtils.deadbandExponential(driveController.getRightStickX(), 1, .075);
   }
 
   public double getDriverRightYAxis() {
-    double rawValue = driveController.getRightStickY();
-    return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    // double rawValue = driveController.getRightStickY();
+    // return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    return DriveUtils.deadbandExponential(driveController.getRightStickY(), 1, .075);
   }
 
   public boolean getHighGearButton(){
@@ -186,22 +200,26 @@ public class OI {
   }
 
   public double getOperatorLeftXAxis() {
-    double rawValue = operatorController.getLeftStickX();
-    return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    // double rawValue = operatorController.getLeftStickX();
+    // return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    return DriveUtils.deadbandExponential(operatorController.getLeftStickX(), 1, .075);
   }
 
   public double getOperatorLeftYAxis() {
-    double rawValue = operatorController.getLeftStickY();
-    return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    // double rawValue = operatorController.getLeftStickY();
+    // return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    return DriveUtils.deadbandExponential(operatorController.getLeftStickY(), 1, .075);
   }
 
   public double getOperatorRightXAxis() {
-    double rawValue = operatorController.getRightStickX();
-    return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    // double rawValue = operatorController.getRightStickX();
+    // return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    return DriveUtils.deadbandExponential(operatorController.getRightStickX(), 1, .075);
   }
 
   public double getOperatorRightYAxis() {
-    double rawValue = operatorController.getRightStickY();
-    return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    // double rawValue = operatorController.getRightStickY();
+    // return Math.abs(rawValue) < .075 ? 0 : rawValue;
+    return DriveUtils.deadbandExponential(driveController.getRightStickY(), 1, .075);
   }
 }

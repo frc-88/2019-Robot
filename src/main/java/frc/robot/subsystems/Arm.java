@@ -44,8 +44,8 @@ public class Arm extends Subsystem {
   private final static double ROBOT_FORWARD_LIMIT = 5;
   private final static double ROBOT_REVERSE_LIMIT = 15;
 
-  private final static int SHOULDER_OFFSET = -1639;
-  private final static int ELBOW_OFFSET = 3651;
+  private final static int SHOULDER_OFFSET = -961;
+  private final static int ELBOW_OFFSET = 488;
 
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
@@ -96,12 +96,12 @@ public class Arm extends Subsystem {
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
     // TODO determine these config values
-    shoulder.config_kP(MAIN_SLOT_IDX, 8, TIMEOUTMS);
+    shoulder.config_kP(MAIN_SLOT_IDX, 4, TIMEOUTMS);
     shoulder.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    shoulder.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
-    shoulder.configMotionCruiseVelocity(RobotMap.ARM_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
-    shoulder.configMotionAcceleration(2*RobotMap.ARM_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    shoulder.config_kF(MAIN_SLOT_IDX, 1.5, TIMEOUTMS);
+    shoulder.configMotionCruiseVelocity(RobotMap.SHOULDER_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    shoulder.configMotionAcceleration(2*RobotMap.SHOULDER_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
     shoulder.setInverted(true);
     shoulder.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, 
         RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
@@ -114,8 +114,8 @@ public class Arm extends Subsystem {
     elbow.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
-    elbow.configMotionCruiseVelocity(RobotMap.ARM_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
-    elbow.configMotionAcceleration(2*RobotMap.ARM_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    elbow.configMotionCruiseVelocity(RobotMap.ELBOW_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    elbow.configMotionAcceleration(2*RobotMap.ELBOW_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
     elbow.setInverted(false);
     elbow.configRemoteFeedbackFilter(RobotMap.ELBOW_AUXILARY_ID, 
         RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
@@ -124,7 +124,7 @@ public class Arm extends Subsystem {
   private void configTalonCommon(TalonSRX talon) {
     talon.configFactoryDefault();
     /* analog signal with no wrap-around (0-3.3V) */
-    talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, MAIN_SLOT_IDX, TIMEOUTMS);
+    talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, MAIN_SLOT_IDX, TIMEOUTMS);
     talon.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, AUX_SENSOR_SLOT_IDX, TIMEOUTMS);
 
     talon.configNominalOutputForward(0.0, TIMEOUTMS);
