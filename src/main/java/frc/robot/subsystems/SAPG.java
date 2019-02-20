@@ -46,7 +46,6 @@ public class SAPG extends Subsystem implements PIDSource {
     public SAPG() {
         sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
         configureTalon();
-
         deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD,
                 RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
@@ -107,12 +106,27 @@ public class SAPG extends Subsystem implements PIDSource {
         trackI = prefs.getDouble("SAPG:Track_I", trackI);
         trackD = prefs.getDouble("SAPG:Track_D", trackD);
         trackPeriod = prefs.getDouble("SAPG:Track_Period", trackPeriod);
-        forwardLimit = prefs.getInt("SAPG:Forward_Limit",forwardLimit);
-        reverseLimit = prefs.getInt("SAPG:Reverse_Limit",reverseLimit);
+        forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
+        reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
+    }
+
+    private double dampNearLimits(double value) {
+        double position = ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2 - 1;
+
+        return dampNearLimits(position, value);
+    }
+
+    private double dampNearLimits(double position, double value) {
+        // apply linear damping function near our limits
+        if (Math.abs(position) > 0.9) {
+            value *= (1 - Math.abs(position)) * 10;
+        }
+
+        return value;
     }
 
     public void set(double percentOutput) {
-        sapgTalon.set(ControlMode.PercentOutput, percentOutput);
+        sapgTalon.set(ControlMode.PercentOutput, dampNearLimits(percentOutput));
     }
 
     public void openTheJaws() {
@@ -169,7 +183,8 @@ public class SAPG extends Subsystem implements PIDSource {
     public double pidGet() {
         double angle;
         // convert position to range 1 to -1, between limits
-        double position = ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2 - 1;
+        double position = ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2
+                - 1;
 
         if (!Robot.m_limelight_back.hasTarget()) {
             // if we don't have a target,
@@ -196,12 +211,7 @@ public class SAPG extends Subsystem implements PIDSource {
             }
         }
 
-        // apply linear damping function near our limits
-        if (Math.abs(position) > 0.9) {
-            angle *= (1 - Math.abs(position)) * 10;
-        }
-
-        return angle;
+        return dampNearLimits(position, angle);
     }
 
     // Subsystem overrides
