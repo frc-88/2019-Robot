@@ -21,7 +21,7 @@ import jaci.pathfinder.Waypoint;
 /**
  * A subsystem to interact with a Limelight vision camera over NetworkTables.
  */
-public class Limelight extends Subsystem implements PIDSource{
+public class Limelight extends Subsystem{
   private static final double HORIZONTAL_FOV = 54.0;
   // private static final double VERTICAL_FOV = 41.0;
   private static final double VIEW_PLANE_WIDTH = 2 * Math.tan(Math.toRadians(HORIZONTAL_FOV / 2));
@@ -30,9 +30,7 @@ public class Limelight extends Subsystem implements PIDSource{
   private static final double SINGLE_TARGET_EXP = -0.386;
   private static final double FULL_TARGET_C = 42.158;
   private static final double FULL_TARGET_EXP = -0.424;
-  private static final double TRACK_ANGLE_THRESHOLD = 18;
-  private static final double TRACK_DISTANCE_THRESHOLD = 12;
-
+  
   private NetworkTable _table;
   private NetworkTableEntry _ta;
   private NetworkTableEntry _tv;
@@ -309,44 +307,12 @@ public double getTargetAngleByCameraTransform() {
   }
 
   public void updateDashboard() {
-//    SmartDashboard.putNumber("LL:" + name + ":SurfaceAngle", getTargetSurfaceAngle());
-    SmartDashboard.putNumber("LL:" + name + ":Distance(Area)", getTargetDistanceByArea());
-//    SmartDashboard.putNumber("LL:" + name + ":Angle(Transform)", getTargetAngleByCameraTransform());
+    SmartDashboard.putNumber("LL:" + name + ":Angle(Transform)", getTargetAngleByCameraTransform());
     SmartDashboard.putNumber("LL:" + name + ":Distance(Transform)", getTargetDistanceByCameraTransform());
-
-    //generateWaypointsFromVision();
   }
 
   @Override
   public void initDefaultCommand() {
   }
 
-  @Override
-  public void setPIDSourceType(PIDSourceType pidSource) {
-
-  }
-
-  @Override
-  public PIDSourceType getPIDSourceType() {
-    return PIDSourceType.kDisplacement;
-  }
-
-  @Override
-  public double pidGet() {
-    double angle = getHorizontalOffsetAngle();
-
-    if(!hasTarget()) {
-      angle = 0;
-    }
-
-    if(Math.abs(angle) > TRACK_ANGLE_THRESHOLD ) {
-      angle = 0;
-    }
-
-    if(getTargetDistanceByCameraTransform() < TRACK_DISTANCE_THRESHOLD) {
-      angle = 0;
-    }
-
-    return angle;
-  }
 }

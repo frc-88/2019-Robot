@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -15,19 +17,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
-public class SAPG extends Subsystem{
+public class SAPG extends Subsystem implements PIDSource{
     private static final Preferences prefs = Preferences.getInstance();
-
-    private static final int forwardLimit = 1010;
-    private static final int reverseLimit = 680;
-    private static final int center = reverseLimit + (forwardLimit - reverseLimit)/2;
-
+    
+    private static final double TRACK_ANGLE_THRESHOLD = 18;
+    private static final double TRACK_DISTANCE_THRESHOLD = 12;
+  
     private WPI_TalonSRX sapgTalon;
     private DoubleSolenoid deployPiston;
     private DoubleSolenoid grabPiston;
     private PIDController sapgController;
 
-    private int home;
+    private int forwardLimit = 1010;
+    private int reverseLimit = 680;
+    private int center = reverseLimit + (forwardLimit - reverseLimit)/2;
+    private int home = center;
 
     private double trackP;
     private double trackI;
@@ -45,7 +49,7 @@ public class SAPG extends Subsystem{
 
         home = sapgTalon.getSelectedSensorPosition();
 
-        sapgController = new PIDController(trackP, trackI, trackD, Robot.m_limelight_back, sapgTalon, trackPeriod);
+        sapgController = new PIDController(trackP, trackI, trackD, this, sapgTalon, trackPeriod);
         sapgController.setOutputRange(-1, 1);
         sapgController.setInputRange(-25,25);
         sapgController.setSetpoint(0);
@@ -77,7 +81,6 @@ public class SAPG extends Subsystem{
         trackD = prefs.getDouble("SAPG:Track_D", 0.0);
         trackPeriod = prefs.getDouble("SAPG:Track_Period", 0.0);
     }
-
 
     public void set(double percentOutput){
         sapgTalon.set(ControlMode.PercentOutput, percentOutput);
@@ -116,6 +119,48 @@ public class SAPG extends Subsystem{
         SmartDashboard.putBoolean("SAPG:Tracking", sapgController.isEnabled());
     }
 
+    // PIDSource overrides
+    @Override
+    public void setPIDSourceType(PIDSourceType pidSource) {
+        // PIDSourceType hard coded to kDisplacement
+    }
+  
+    @Override
+    public PIDSourceType getPIDSourceType() {
+      return PIDSourceType.kDisplacement;
+    }
+  
+    @Override
+    public double pidGet() {
+      double angle = Robot.m_limelight_back.getHorizontalOffsetAngle();
+      // convert position to range 1 to -1
+      double position = (sapgTalon.getSelectedSensorPosition()/(forwardLimit - reverseLimit)) *2 -1;
+      double damping;
+      
+      // TODO if we don't have a target, float towards home
+      if(!Robot.m_limelight_back.hasTarget()) {
+        angle = 0;
+      }
+  
+      // if angle offset is too large, hold current position
+      if(Math.abs(angle) > TRACK_ANGLE_THRESHOLD ) {
+        angle = 0;
+      }
+  
+      // if target is too close, hold current position
+      if(Robot.m_limelight_back.getTargetDistanceByCameraTransform() < TRACK_DISTANCE_THRESHOLD) {
+        angle = 0;
+      }
+
+      // apply linear damping function near our limits
+      if (position > 0.9) {
+            angle *= (1 - position) * 10;
+      }
+
+      return angle;
+    }
+
+    // Subsystem overrides
     @Override
     protected void initDefaultCommand() {
     }
