@@ -32,7 +32,6 @@ public class SAPG extends Subsystem implements PIDSource {
     private static final double TRACK_ANGLE_THRESHOLD = (HORIZONTAL_FOV / 2) - 2;
     private static final double TRACK_DISTANCE_THRESHOLD = 12;
     private static final double TRACK_TICKS_THRESHOLD = 1000;
-    private static final double PANEL_THRESHOLD = 6.0;
 
     private WPI_TalonSRX sapgTalon;
     private DoubleSolenoid deployPiston;
@@ -40,12 +39,15 @@ public class SAPG extends Subsystem implements PIDSource {
     private PIDController sapgController;
     private SharpIR panelDetector;
 
+    // Preferences with their default values
     private double trackP = 0.08;
     private double trackI = 0.0;
     private double trackD = 0.0;
     private double trackPeriod = 0.01;
     private int forwardLimit = 1010;
     private int reverseLimit = 680;
+    private double panelThreshold = 6.0;
+
     private int center = reverseLimit + (forwardLimit - reverseLimit) / 2;
     private int home = center;
     private int ticksSinceTargetLost = 0;
@@ -105,15 +107,20 @@ public class SAPG extends Subsystem implements PIDSource {
         if (!prefs.containsKey("SAPG:Reverse_Limit")) {
             prefs.putDouble("SAPG:Reverse_Limit", reverseLimit);
         }
+
+        if (!prefs.containsKey("SAPG:Panel_Threshold")) {
+            prefs.putDouble("SAPG:Panel_Threshold", panelThreshold);
+        }
     }
 
-    private void fetchPreferences() {
+    public void fetchPreferences() {
         trackP = prefs.getDouble("SAPG:Track_P", trackP);
         trackI = prefs.getDouble("SAPG:Track_I", trackI);
         trackD = prefs.getDouble("SAPG:Track_D", trackD);
         trackPeriod = prefs.getDouble("SAPG:Track_Period", trackPeriod);
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
+        panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
     }
 
     private double getNormalizedPosition() {
@@ -163,7 +170,7 @@ public class SAPG extends Subsystem implements PIDSource {
     }
 
     public boolean hasPanel() {
-        return panelDetector.getDistance() < PANEL_THRESHOLD;
+        return panelDetector.getDistance() < panelThreshold;
     }
 
     public void updateDashboard() {
