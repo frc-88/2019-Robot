@@ -28,6 +28,7 @@ import frc.robot.commands.sapg.SAPGBasicControl;
 import frc.robot.commands.sapg.SAPGClose;
 import frc.robot.commands.sapg.SAPGDeploy;
 import frc.robot.commands.sapg.SAPGGrabPanel;
+import frc.robot.commands.sapg.SAPGLoadPreferences;
 import frc.robot.commands.sapg.SAPGOpen;
 import frc.robot.commands.sapg.SAPGRetract;
 import frc.robot.commands.sapg.SAPGScorePanel;
@@ -144,6 +145,7 @@ public class OI {
     SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
     SmartDashboard.putData("SAPG PID Go", new SAPGTrackStart());
     SmartDashboard.putData("SAPG PID Stop", new SAPGTrackStop());
+    SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
 
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
     SmartDashboard.putData("Arm Zero Elbow", new ArmZeroElbow());
