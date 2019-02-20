@@ -18,14 +18,16 @@ import frc.robot.RobotMap;
 public class SAPG extends Subsystem{
     private static final Preferences prefs = Preferences.getInstance();
 
-    private static final int forwardLimit = 660;
-    private static final int reverseLimit = 320;
+    private static final int forwardLimit = 1010;
+    private static final int reverseLimit = 680;
     private static final int center = reverseLimit + (forwardLimit - reverseLimit)/2;
 
     private WPI_TalonSRX sapgTalon;
     private DoubleSolenoid deployPiston;
     private DoubleSolenoid grabPiston;
     private PIDController sapgController;
+
+    private int home;
 
     private double trackP;
     private double trackI;
@@ -41,7 +43,13 @@ public class SAPG extends Subsystem{
         initPreferences();
         fetchPreferences();
 
+        home = sapgTalon.getSelectedSensorPosition();
+
         sapgController = new PIDController(trackP, trackI, trackD, Robot.m_limelight_back, sapgTalon, trackPeriod);
+        sapgController.setOutputRange(-1, 1);
+        sapgController.setInputRange(-25,25);
+        sapgController.setSetpoint(0);
+        sapgController.disable();
     }
 
     private void configureTalon() {
