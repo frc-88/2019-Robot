@@ -44,6 +44,9 @@ public class Arm extends Subsystem {
   private final static double ROBOT_FORWARD_LIMIT = 5;
   private final static double ROBOT_REVERSE_LIMIT = 15;
 
+  private final static int SHOULDER_OFFSET = -961;
+  private final static int ELBOW_OFFSET = 488;
+
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
   private final static int TIMEOUTMS = 0;
@@ -93,12 +96,12 @@ public class Arm extends Subsystem {
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
     // TODO determine these config values
-    shoulder.config_kP(MAIN_SLOT_IDX, 8, TIMEOUTMS);
+    shoulder.config_kP(MAIN_SLOT_IDX, 4, TIMEOUTMS);
     shoulder.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    shoulder.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
-    shoulder.configMotionCruiseVelocity(RobotMap.ARM_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
-    shoulder.configMotionAcceleration(2*RobotMap.ARM_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    shoulder.config_kF(MAIN_SLOT_IDX, 1.5, TIMEOUTMS);
+    shoulder.configMotionCruiseVelocity(RobotMap.SHOULDER_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    shoulder.configMotionAcceleration(2*RobotMap.SHOULDER_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
     shoulder.setInverted(true);
     shoulder.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, 
         RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
@@ -111,8 +114,8 @@ public class Arm extends Subsystem {
     elbow.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
-    elbow.configMotionCruiseVelocity(RobotMap.ARM_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
-    elbow.configMotionAcceleration(2*RobotMap.ARM_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    elbow.configMotionCruiseVelocity(RobotMap.ELBOW_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    elbow.configMotionAcceleration(2*RobotMap.ELBOW_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
     elbow.setInverted(false);
     elbow.configRemoteFeedbackFilter(RobotMap.ELBOW_AUXILARY_ID, 
         RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
@@ -121,7 +124,7 @@ public class Arm extends Subsystem {
   private void configTalonCommon(TalonSRX talon) {
     talon.configFactoryDefault();
     /* analog signal with no wrap-around (0-3.3V) */
-    talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, MAIN_SLOT_IDX, TIMEOUTMS);
+    talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, MAIN_SLOT_IDX, TIMEOUTMS);
     talon.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, AUX_SENSOR_SLOT_IDX, TIMEOUTMS);
 
     talon.configNominalOutputForward(0.0, TIMEOUTMS);
@@ -202,7 +205,7 @@ public int getShoulderAbsolutePosition(){
 }
 
 public double convertShoulderToDegrees(double counts){
-  return ((counts+960)*360)/4096;
+  return ((counts - SHOULDER_OFFSET)*360)/4096;
 }
 
 public double getShoulderDegrees(){
@@ -211,11 +214,11 @@ public double getShoulderDegrees(){
 }
 
 public double convertMotorShoulderToDegrees(double counts){
-  return (((counts+960*4)*360)/4096)/4;
+  return (((counts - SHOULDER_OFFSET*4)*360)/4096)/4;
 }
 
 public int convertShoulderDegreesToMotor(double degrees){
-  return (int)(degrees*4*4096/360-960*4);
+  return (int)(degrees*4*4096/360 + SHOULDER_OFFSET*4);
 }
 
 public double getMotorShoulderDegrees(){
@@ -223,15 +226,15 @@ public double getMotorShoulderDegrees(){
 }
 
 public double convertElbowToDegrees(double counts){
-  return ((counts-497)*360)/4096;
+  return ((counts - ELBOW_OFFSET)*360)/4096;
 }
 
 public double convertMotorElbowToDegrees(double counts){
-  return((counts-497*4)*360/4096)/4;
+  return((counts - ELBOW_OFFSET*4)*360/4096)/4;
 }
 
 public int convertElbowDegreesToMotor(double degrees){
-  return (int)degrees*4*4096/360+497*4;
+  return (int)degrees*4*4096/360 + ELBOW_OFFSET*4;
 }
 
 public void setShoulderSpeed(int speed){
@@ -275,10 +278,10 @@ public int getElbowAbsolutePosition(){
    */
   public void zeroElbowMotorEncoder(){
     double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
-    double normalizedPos = auxEncoderPos > 0 ?
+    double normalizedPos = (auxEncoderPos + 180) > 0 ?
         (auxEncoderPos + 180) % 360. - 180 :
         (auxEncoderPos + 180) % 360. + 180;
-    int encoderPos = convertElbowDegreesToMotor(auxEncoderPos);
+    int encoderPos = convertElbowDegreesToMotor(normalizedPos);
     elbow.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
   }
     /**

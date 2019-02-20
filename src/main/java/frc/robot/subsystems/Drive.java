@@ -25,6 +25,7 @@ import frc.robot.commands.drive.test.DriveConstantVoltage;
 import frc.robot.commands.drive.test.DriveIncrease;
 import frc.robot.commands.drive.test.DriveIncreaseVel;
 import frc.robot.driveutil.DriveConfiguration;
+import frc.robot.driveutil.DriveUtils;
 import frc.robot.driveutil.TJDriveModule;
 import frc.robot.driveutil.TJDriveMotionPoint;
 import frc.robot.util.TJPIDController;
@@ -116,12 +117,14 @@ public class Drive extends Subsystem {
         moProKP = driveConfiguration.left.masterConfiguration.slot0.kP;
         moProKI = driveConfiguration.left.masterConfiguration.slot0.kI;
         moProKD = driveConfiguration.left.masterConfiguration.slot0.kD;
-    
+
         leftDrive = new TJDriveModule(driveConfiguration.left, leftTransmission);
         rightDrive = new TJDriveModule(driveConfiguration.right, rightTransmission);
 
-        leftShifter = new DoubleSolenoid(RobotMap.SHIFTER_LEFT_PCM, RobotMap.SHIFTER_LEFT_OUT, RobotMap.SHIFTER_LEFT_IN);
-        rightShifter = new DoubleSolenoid(RobotMap.SHIFTER_RIGHT_PCM, RobotMap.SHIFTER_RIGHT_OUT, RobotMap.SHIFTER_RIGHT_IN);
+        leftShifter = new DoubleSolenoid(RobotMap.SHIFTER_LEFT_PCM, RobotMap.SHIFTER_LEFT_OUT,
+                RobotMap.SHIFTER_LEFT_IN);
+        rightShifter = new DoubleSolenoid(RobotMap.SHIFTER_RIGHT_PCM, RobotMap.SHIFTER_RIGHT_OUT,
+                RobotMap.SHIFTER_RIGHT_IN);
 
         leftTransmission.shiftToLow();
         rightTransmission.shiftToLow();
@@ -135,31 +138,23 @@ public class Drive extends Subsystem {
 
         // Power info
         sbLeftVoltage = Shuffleboard.getTab("Drivetrain").add("Left Voltage", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() -> 
-                sbLeftVoltage.setDouble(leftDrive.getMotorOutputVoltage()));
+        Robot.dashboardScheduler.addFunction(() -> sbLeftVoltage.setDouble(leftDrive.getMotorOutputVoltage()));
         sbRightVoltage = Shuffleboard.getTab("Drivetrain").add("Right Voltage", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbRightVoltage.setDouble(rightDrive.getMotorOutputVoltage()));
+        Robot.dashboardScheduler.addFunction(() -> sbRightVoltage.setDouble(rightDrive.getMotorOutputVoltage()));
         sbLeftCurrent = Shuffleboard.getTab("Drivetrain").add("Left Current", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbLeftCurrent.setDouble(leftDrive.getTotalCurrent())); 
+        Robot.dashboardScheduler.addFunction(() -> sbLeftCurrent.setDouble(leftDrive.getTotalCurrent()));
         sbRightCurrent = Shuffleboard.getTab("Drivetrain").add("Right Current", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbRightCurrent.setDouble(rightDrive.getTotalCurrent()));
+        Robot.dashboardScheduler.addFunction(() -> sbRightCurrent.setDouble(rightDrive.getTotalCurrent()));
 
         // Get encoder info
         sbLeftSpeed = Shuffleboard.getTab("Drivetrain").add("Left Speed", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbLeftSpeed.setDouble(getLeftSpeed()));
-        sbRightSpeed = Shuffleboard.getTab("Drivetrain").add("Right Speed",0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbRightSpeed.setDouble(getRightSpeed()));
+        Robot.dashboardScheduler.addFunction(() -> sbLeftSpeed.setDouble(getLeftSpeed()));
+        sbRightSpeed = Shuffleboard.getTab("Drivetrain").add("Right Speed", 0).getEntry();
+        Robot.dashboardScheduler.addFunction(() -> sbRightSpeed.setDouble(getRightSpeed()));
         sbLeftPos = Shuffleboard.getTab("Drivetrain").add("Left Pos", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbLeftPos.setDouble(getLeftPosition()));
+        Robot.dashboardScheduler.addFunction(() -> sbLeftPos.setDouble(getLeftPosition()));
         sbRightPos = Shuffleboard.getTab("Drivetrain").add("Right Pos", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbRightPos.setDouble(getRightPosition()));
+        Robot.dashboardScheduler.addFunction(() -> sbRightPos.setDouble(getRightPosition()));
 
         // commanded speeds
         sbLeftCommandedSpeed = Shuffleboard.getTab("Drivetrain").add("Left Cmmd Spd", 0).getEntry();
@@ -172,11 +167,11 @@ public class Drive extends Subsystem {
         Shuffleboard.getTab("TestDrive").add("Increasing Drive Vel", new DriveIncreaseVel());
         sbTestDriveVoltage = Shuffleboard.getTab("TestDrive").add("Constant Voltage", 0.).getEntry();
         sbLeftPredictedCurrentDraw = Shuffleboard.getTab("TestDrive").add("Left Pred Current", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbLeftPredictedCurrentDraw.setDouble(leftTransmission.getCurrentDraw(leftDrive.getMotorOutputVoltage(), leftDrive.getSelectedSensorVelocity()))); 
+        Robot.dashboardScheduler.addFunction(() -> sbLeftPredictedCurrentDraw.setDouble(leftTransmission
+                .getCurrentDraw(leftDrive.getMotorOutputVoltage(), leftDrive.getSelectedSensorVelocity())));
         sbRightPredictedCurrentDraw = Shuffleboard.getTab("TestDrive").add("Right Pred Current", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbRightPredictedCurrentDraw.setDouble(rightTransmission.getCurrentDraw(rightDrive.getMotorOutputVoltage(), rightDrive.getSelectedSensorVelocity())));
+        Robot.dashboardScheduler.addFunction(() -> sbRightPredictedCurrentDraw.setDouble(rightTransmission
+                .getCurrentDraw(rightDrive.getMotorOutputVoltage(), rightDrive.getSelectedSensorVelocity())));
         sbCurrentLimit = Shuffleboard.getTab("TestDrive").add("Current Limit", currentLimit).getEntry();
         sbMaxAccel = Shuffleboard.getTab("TestDrive").add("Max Accel", maxAccel).getEntry();
 
@@ -189,23 +184,18 @@ public class Drive extends Subsystem {
 
         // Motion Profiling
         sbMoProLeftFF = Shuffleboard.getTab("DrivePro").add("Left FF", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbMoProLeftFF.setDouble(leftDrive.getActiveTrajectoryArbFeedFwd()));  
+        Robot.dashboardScheduler.addFunction(() -> sbMoProLeftFF.setDouble(leftDrive.getActiveTrajectoryArbFeedFwd()));
         sbMoProRightFF = Shuffleboard.getTab("DrivePro").add("Right FF", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbMoProRightFF.setDouble(rightDrive.getActiveTrajectoryArbFeedFwd()));  
+        Robot.dashboardScheduler
+                .addFunction(() -> sbMoProRightFF.setDouble(rightDrive.getActiveTrajectoryArbFeedFwd()));
         sbMoProLeftPos = Shuffleboard.getTab("DrivePro").add("Left Pos", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbMoProLeftPos.setDouble(leftDrive.getActiveTrajectoryPosition()));  
+        Robot.dashboardScheduler.addFunction(() -> sbMoProLeftPos.setDouble(leftDrive.getActiveTrajectoryPosition()));
         sbMoProRightPos = Shuffleboard.getTab("DrivePro").add("Right Pos", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbMoProRightPos.setDouble(rightDrive.getActiveTrajectoryPosition()));  
+        Robot.dashboardScheduler.addFunction(() -> sbMoProRightPos.setDouble(rightDrive.getActiveTrajectoryPosition()));
         sbMoProLeftVel = Shuffleboard.getTab("DrivePro").add("Left Vel", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbMoProLeftVel.setDouble(leftDrive.getActiveTrajectoryVelocity()));  
+        Robot.dashboardScheduler.addFunction(() -> sbMoProLeftVel.setDouble(leftDrive.getActiveTrajectoryVelocity()));
         sbMoProRightVel = Shuffleboard.getTab("DrivePro").add("Right Vel", 0).getEntry();
-        Robot.dashboardScheduler.addFunction(() ->
-                sbMoProRightVel.setDouble(rightDrive.getActiveTrajectoryVelocity()));  
+        Robot.dashboardScheduler.addFunction(() -> sbMoProRightVel.setDouble(rightDrive.getActiveTrajectoryVelocity()));
         sbMoProP = Shuffleboard.getTab("DrivePro").add("P", moProKP).getEntry();
         Robot.dashboardScheduler.addFunction(() -> {
             double newMoProP = sbMoProP.getDouble(driveConfiguration.left.masterConfiguration.slot0.kP);
@@ -236,33 +226,36 @@ public class Drive extends Subsystem {
     }
 
     public void updateShuffleboard() {
-        //long startTime;
+        // long startTime;
 
         // Talon status info
-        //startTime = RobotController.getFPGATime();
+        // startTime = RobotController.getFPGATime();
         sbLeftDriveMode.setString(leftDrive.getControlMode().toString());
         sbRightDriveMode.setString(rightDrive.getControlMode().toString());
-       //System.out.println("Talon status: " + (RobotController.getFPGATime() - startTime));
+        // System.out.println("Talon status: " + (RobotController.getFPGATime() -
+        // startTime));
 
         // Commanded Speeds
-        //startTime = RobotController.getFPGATime();
+        // startTime = RobotController.getFPGATime();
         sbLeftCommandedSpeed.setDouble(leftCommandedSpeed);
         sbRightCommandedSpeed.setDouble(rightCommandedSpeed);
-        //System.out.println("Commanded Speeds status: " + (RobotController.getFPGATime()-startTime));
+        // System.out.println("Commanded Speeds status: " +
+        // (RobotController.getFPGATime()-startTime));
 
         // Test Constant Voltage Command
-        //startTime = RobotController.getFPGATime();
+        // startTime = RobotController.getFPGATime();
         constantDriveTestCommand.setVoltage(sbTestDriveVoltage.getDouble(0));
         currentLimit = sbCurrentLimit.getDouble(RobotMap.DRIVE_CURRENT_LIMIT);
         if (resetFromShift) {
-        sbMaxAccel.setDouble(maxAccel);
+            sbMaxAccel.setDouble(maxAccel);
         } else {
-        maxAccel = sbMaxAccel.getDouble(RobotMap.MAX_ACCEL_LOW);
+            maxAccel = sbMaxAccel.getDouble(RobotMap.MAX_ACCEL_LOW);
         }
-        //System.out.println("Voltage Command status: " + (RobotController.getFPGATime()-startTime));
+        // System.out.println("Voltage Command status: " +
+        // (RobotController.getFPGATime()-startTime));
 
         // // Velocity PID tuning
-        //startTime = RobotController.getFPGATime();
+        // startTime = RobotController.getFPGATime();
         if (resetFromShift) {
             sbVelKp.setDouble(leftVelocityController.getKP());
             sbVelKi.setDouble(leftVelocityController.getKI());
@@ -281,7 +274,8 @@ public class Drive extends Subsystem {
             rightVelocityController.setIZone(sbVelIZone.getDouble(RobotMap.DRIVE_VEL_LOW_IZONE));
             rightVelocityController.setIMax(sbVelIMax.getDouble(RobotMap.DRIVE_VEL_LOW_IMAX));
         }
-        //System.out.println("Velocity PID status: " + (RobotController.getFPGATime()-startTime));
+        // System.out.println("Velocity PID status: " +
+        // (RobotController.getFPGATime()-startTime));
 
         resetFromShift = false;
     }
@@ -314,14 +308,22 @@ public class Drive extends Subsystem {
      *                 1 (clockwise)
      */
     public void arcadeDrive(double speed, double turn) {
-         speed *= maxSpeed;
-         turn *= maxSpeed;
-         joystickSpeed = speed;
-         speed = limitAcceleration(speed);
-         double leftSpeed = (speed + turn);
-         double rightSpeed = (speed - turn);
-         basicDriveLimited(leftSpeed, rightSpeed);
-        //basicDrive(speed + turn, speed - turn);
+        speed *= maxSpeed;
+        turn *= maxSpeed;
+        joystickSpeed = speed;
+
+        // speed = DriveUtils.signedPow(speed, 3);
+        // turn = DriveUtils.signedPow(speed, 3);
+
+        speed = limitAcceleration(speed);
+
+        // turn = DriveUtils.cheesyTurn(speed, turn);
+
+        double leftSpeed = (speed + turn);
+        double rightSpeed = (speed - turn);
+
+        basicDriveLimited(leftSpeed, rightSpeed);
+        // basicDrive(speed + turn, speed - turn);
     }
 
     public double limitAcceleration(double speed) {
@@ -500,12 +502,10 @@ public class Drive extends Subsystem {
     }
 
     public void runMotionProfile() {
-        leftDrive.startMotionProfile(m_leftTrajectoryBuffer, RobotMap.DRIVE_MIN_TRAJ_POINTS, 
-                ControlMode.MotionProfile);
+        leftDrive.startMotionProfile(m_leftTrajectoryBuffer, RobotMap.DRIVE_MIN_TRAJ_POINTS, ControlMode.MotionProfile);
         rightDrive.startMotionProfile(m_rightTrajectoryBuffer, RobotMap.DRIVE_MIN_TRAJ_POINTS,
                 ControlMode.MotionProfile);
 
-        
     }
 
     public boolean isProfileFinished() {
