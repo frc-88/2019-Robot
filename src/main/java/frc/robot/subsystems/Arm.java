@@ -44,6 +44,9 @@ public class Arm extends Subsystem {
   private final static double ROBOT_FORWARD_LIMIT = 5;
   private final static double ROBOT_REVERSE_LIMIT = 15;
 
+  private final static int SHOULDER_OFFSET = -1639;
+  private final static int ELBOW_OFFSET = 3651;
+
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
   private final static int TIMEOUTMS = 0;
@@ -202,7 +205,7 @@ public int getShoulderAbsolutePosition(){
 }
 
 public double convertShoulderToDegrees(double counts){
-  return ((counts+960)*360)/4096;
+  return ((counts - SHOULDER_OFFSET)*360)/4096;
 }
 
 public double getShoulderDegrees(){
@@ -211,11 +214,11 @@ public double getShoulderDegrees(){
 }
 
 public double convertMotorShoulderToDegrees(double counts){
-  return (((counts+960*4)*360)/4096)/4;
+  return (((counts - SHOULDER_OFFSET*4)*360)/4096)/4;
 }
 
 public int convertShoulderDegreesToMotor(double degrees){
-  return (int)(degrees*4*4096/360-960*4);
+  return (int)(degrees*4*4096/360 + SHOULDER_OFFSET*4);
 }
 
 public double getMotorShoulderDegrees(){
@@ -223,15 +226,15 @@ public double getMotorShoulderDegrees(){
 }
 
 public double convertElbowToDegrees(double counts){
-  return ((counts-497)*360)/4096;
+  return ((counts - ELBOW_OFFSET)*360)/4096;
 }
 
 public double convertMotorElbowToDegrees(double counts){
-  return((counts-497*4)*360/4096)/4;
+  return((counts - ELBOW_OFFSET*4)*360/4096)/4;
 }
 
 public int convertElbowDegreesToMotor(double degrees){
-  return (int)degrees*4*4096/360+497*4;
+  return (int)degrees*4*4096/360 + ELBOW_OFFSET*4;
 }
 
 public void setShoulderSpeed(int speed){
@@ -275,10 +278,10 @@ public int getElbowAbsolutePosition(){
    */
   public void zeroElbowMotorEncoder(){
     double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
-    double normalizedPos = auxEncoderPos > 0 ?
+    double normalizedPos = (auxEncoderPos + 180) > 0 ?
         (auxEncoderPos + 180) % 360. - 180 :
         (auxEncoderPos + 180) % 360. + 180;
-    int encoderPos = convertElbowDegreesToMotor(auxEncoderPos);
+    int encoderPos = convertElbowDegreesToMotor(normalizedPos);
     elbow.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
   }
     /**

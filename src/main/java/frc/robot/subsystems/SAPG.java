@@ -123,4 +123,8 @@ public class SAPG extends Subsystem{
     public double getPosition(){
         return sideMotor.getSelectedSensorPosition();
     }
+
+    public boolean hasPanel() {
+        return grabPiston.get() == Value.kForward;
+    }
 }
