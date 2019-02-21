@@ -150,6 +150,7 @@ public class SAPG extends Subsystem implements PIDSource {
     }
 
     public boolean hasPanel() {
+        // TODO add check to make sure grabber is open
         return panelDetector.getDistance() < panelThreshold;
     }
 
