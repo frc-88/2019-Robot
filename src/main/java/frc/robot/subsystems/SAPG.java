@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -25,25 +26,24 @@ import frc.robot.util.SharpIR;
  * Who cares? Watch it score!
  * 
  */
-public class SAPG extends Subsystem implements PIDSource {
+public class SAPG extends PIDSubsystem {
     private static final Preferences prefs = Preferences.getInstance();
 
     private static final double HORIZONTAL_FOV = 54.0;
     private static final double TRACK_ANGLE_THRESHOLD = (HORIZONTAL_FOV / 2) - 2;
     private static final double TRACK_DISTANCE_THRESHOLD = 12;
     private static final double TRACK_TICKS_THRESHOLD = 1000;
+    private static final double TRACK_PID_PERIOD = 0.01;
 
     private WPI_TalonSRX sapgTalon;
     private DoubleSolenoid deployPiston;
     private DoubleSolenoid grabPiston;
-    private PIDController sapgController;
     private SharpIR panelDetector;
 
     // Preferences with their default values
     private double trackP = 0.08;
     private double trackI = 0.0;
     private double trackD = 0.0;
-    private double trackPeriod = 0.01;
     private int forwardLimit = 1010;
     private int reverseLimit = 680;
     private double panelThreshold = 6.0;
@@ -53,6 +53,8 @@ public class SAPG extends Subsystem implements PIDSource {
     private int ticksSinceTargetLost = 0;
 
     public SAPG() {
+        super("SAPG", 0, 0, 0, TRACK_PID_PERIOD);
+
         sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
         configureTalon();
         deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
@@ -64,11 +66,11 @@ public class SAPG extends Subsystem implements PIDSource {
 
         home = sapgTalon.getSelectedSensorPosition();
 
-        sapgController = new PIDController(trackP, trackI, trackD, this, sapgTalon, trackPeriod);
-        sapgController.setOutputRange(-1, 1);
-        sapgController.setInputRange(-TRACK_ANGLE_THRESHOLD, TRACK_ANGLE_THRESHOLD);
-        sapgController.setSetpoint(0);
-        sapgController.disable();
+        getPIDController().setPID(trackP, trackI, trackD);
+        setOutputRange(-1, 1);
+        setInputRange(-TRACK_ANGLE_THRESHOLD, TRACK_ANGLE_THRESHOLD);
+        setSetpoint(0);
+        disable();
     }
 
     private void configureTalon() {
@@ -87,7 +89,6 @@ public class SAPG extends Subsystem implements PIDSource {
         if (!prefs.containsKey("SAPG:Track_P")) { prefs.putDouble("SAPG:Track_P", trackP); }
         if (!prefs.containsKey("SAPG:Track_I")) { prefs.putDouble("SAPG:Track_I", trackI); }
         if (!prefs.containsKey("SAPG:Track_D")) { prefs.putDouble("SAPG:Track_D", trackD); }
-        if (!prefs.containsKey("SAPG:Track_Period")) { prefs.putDouble("SAPG:Track_Period", trackPeriod); }
         if (!prefs.containsKey("SAPG:Forward_Limit")) { prefs.putDouble("SAPG:Forward_Limit", forwardLimit); }
         if (!prefs.containsKey("SAPG:Reverse_Limit")) { prefs.putDouble("SAPG:Reverse_Limit", reverseLimit); }
         if (!prefs.containsKey("SAPG:Panel_Threshold")) { prefs.putDouble("SAPG:Panel_Threshold", panelThreshold); }
@@ -97,7 +98,6 @@ public class SAPG extends Subsystem implements PIDSource {
         trackP = prefs.getDouble("SAPG:Track_P", trackP);
         trackI = prefs.getDouble("SAPG:Track_I", trackI);
         trackD = prefs.getDouble("SAPG:Track_D", trackD);
-        trackPeriod = prefs.getDouble("SAPG:Track_Period", trackPeriod);
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
@@ -140,15 +140,6 @@ public class SAPG extends Subsystem implements PIDSource {
         deployPiston.set(Value.kReverse);
     }
 
-    public void enableTracking() {
-        sapgController.setSetpoint(0);
-        sapgController.enable();
-    }
-
-    public void disableTracking() {
-        sapgController.disable();
-    }
-
     public boolean hasPanel() {
         // TODO add check to make sure grabber is open
         return panelDetector.getDistance() < panelThreshold;
@@ -160,32 +151,24 @@ public class SAPG extends Subsystem implements PIDSource {
         SmartDashboard.putNumber("SAPG:Velocity", sapgTalon.getSelectedSensorVelocity());
         SmartDashboard.putNumber("SAPG:Current", sapgTalon.getOutputCurrent());
         SmartDashboard.putNumber("SAPG:PanelDistance", panelDetector.getDistance());
-        SmartDashboard.putBoolean("SAPG:Tracking", sapgController.isEnabled());
+        SmartDashboard.putBoolean("SAPG:Tracking", getPIDController().isEnabled());
         SmartDashboard.putBoolean("SAPG:HasPanel", hasPanel());
 
         // write prefs back to the dashboard
         SmartDashboard.putNumber("SAPG:Track_P", trackP);
         SmartDashboard.putNumber("SAPG:Track_I", trackI);
         SmartDashboard.putNumber("SAPG:Track_D", trackD);
-        SmartDashboard.putNumber("SAPG:Track_Period", trackPeriod);
         SmartDashboard.putNumber("SAPG:Forward_Limit", forwardLimit);
         SmartDashboard.putNumber("SAPG:Reverse_Limit", reverseLimit);
         SmartDashboard.putNumber("SAPG:Panel_Threshold", panelThreshold);
     }
 
-    // PIDSource overrides
     @Override
-    public void setPIDSourceType(PIDSourceType pidSource) {
-        // PIDSourceType hard coded to kDisplacement
+    protected void initDefaultCommand() {
     }
 
     @Override
-    public PIDSourceType getPIDSourceType() {
-        return PIDSourceType.kDisplacement;
-    }
-
-    @Override
-    public double pidGet() {
+    protected double returnPIDInput() {
         double angle;
         // convert position to range 1 to -1, between limits
         double position = getNormalizedPosition();
@@ -219,9 +202,9 @@ public class SAPG extends Subsystem implements PIDSource {
         return dampNearLimits(position, angle);
     }
 
-    // Subsystem overrides
     @Override
-    protected void initDefaultCommand() {
+    protected void usePIDOutput(double output) {
+        set(output);
     }
 
 }

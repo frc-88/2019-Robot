@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    m_sapg.disableTracking();
+    m_sapg.disable();
   }
 
   @Override
@@ -125,6 +125,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
+    m_sapg.enable();
+
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -153,7 +155,7 @@ public class Robot extends TimedRobot {
 
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    m_sapg.enableTracking();
+    m_sapg.enable();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
