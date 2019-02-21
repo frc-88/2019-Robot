@@ -35,7 +35,7 @@ public class SAPG extends Subsystem{
         SmartDashboard.putNumber("SAPG:Voltage", sideMotor.getMotorOutputVoltage());
         SmartDashboard.putNumber("SAPG:Velocity", sideMotor.getSelectedSensorVelocity());
         SmartDashboard.putNumber("SAPG:Current", sideMotor.getOutputCurrent());
-        SmartDashboard.putBoolean("SAPG:Tracking", sapgController.isEnabled());
+        //SmartDashboard.putBoolean("SAPG:Tracking", sapgController.isEnabled());
     }
 
     public SAPG(){
@@ -43,7 +43,7 @@ public class SAPG extends Subsystem{
         deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
 
-        sapgController = new PIDController(Track_Kp, Track_Ki, Track_Kd, Robot.m_limelight_back, sideMotor);
+        //sapgController = new PIDController(Track_Kp, Track_Ki, Track_Kd, Robot.m_limelight_back, sideMotor);
 
         configureTalon();
         initPreferences();
