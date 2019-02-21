@@ -110,7 +110,6 @@ public class RobotMap {
 
   public static final int DRIVE_MIN_TRAJ_POINTS = 10;
 
-
   // Arm
   public static final double ARM_TOLERANCE = 1;
   public static final int SHOULDER_MAX_SPEED = 40;
@@ -123,14 +122,22 @@ public class RobotMap {
   public static final double CLIMBER_SEEKING_RAMP = -0.05;
   public static final int CLIMBER_TICKS_PER_INCH = 15908;
   public static final int CLIMBER_MAX_SPEED = 10;
-  // Misc
-  public static final int CAN_TIMEOUT = 0;
-
-  public static final int OPERATOR_CONTROLLER_PORT = 1;
-  public static final int DRIVE_CONTROLLER_PORT = 0;
-  public static final int BUTTON_BOX_PORT = 3;
 
   //Intake
   public static final double INTAKE_HAS_CARGO = 18;
+
+  // OI  
+  public static final int OPERATOR_CONTROLLER_PORT = 1;
+  public static final int OPERATOR_NONE = 0;
+  public static final int OPERATOR_SAPG_TEST = 1;
+  public static final int OPERATOR_ARM_TEST = 2;
+  public static final int OPERATOR_CONTROL = OPERATOR_NONE;
+
+  public static final int DRIVE_CONTROLLER_PORT = 0;
+
+  public static final int BUTTON_BOX_PORT = 3;
+
+  // Misc
+  public static final int CAN_TIMEOUT = 0;
 
 }
