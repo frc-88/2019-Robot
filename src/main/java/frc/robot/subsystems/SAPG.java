@@ -160,6 +160,7 @@ public class SAPG extends PIDSubsystem {
 
     @Override
     protected void initDefaultCommand() {
+        // No default command
     }
 
     @Override
