@@ -25,6 +25,7 @@ import frc.robot.util.TJPIDController;
  */
 
 public class Arm extends Subsystem {
+  // units in inches
   private final static double SHOULDER_LENGTH = 31;
   private final static double ELBOW_LENGTH = 24;
   private final static double ARM_HEIGHT = 41;
@@ -32,25 +33,26 @@ public class Arm extends Subsystem {
   private final static double LEGAL_HEIGHT_LIMIT = 78;
   private final static double LEGAL_EXTENSION = 30;
   private final static double LEGAL_REACH = ROBOT_LENGTH / 2 + LEGAL_EXTENSION;
+  private final static double PLATFORM_HEIGHT = 3;
   // TODO - check below constants against reality, above have been checked
+  private final static double ROBOT_TOP_LIMIT = 0;
+  private final static double ROBOT_FORWARD_LIMIT = 5;
+  private final static double ROBOT_REVERSE_LIMIT = 15;
   private final static double FORWARD_SHOULDER_LIMIT = 170;
   private final static double REVERSE_SHOULDER_LIMIT = -60;
   private final static double FORWARD_ELBOW_LIMIT = 170;
   private final static double REVERSE_ELBOW_LIMIT = -170;
-  private final static double ROBOT_TOP_LIMIT = -10;
-  private final static double ROBOT_FORWARD_LIMIT = 5;
-  private final static double ROBOT_REVERSE_LIMIT = 15;
-
-  private final static int SHOULDER_OFFSET = -1640;
-  private final static int ELBOW_OFFSET = 3665;
 
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
   private final static int TIMEOUTMS = 0;
 
-  private TJPIDController pitchPID;
 
-  TalonSRX shoulder, elbow;
+  private TalonSRX shoulder, elbow;
+  private TJPIDController pitchPID;
+  private int shoulderOffset = -1640;
+  private int elbowOffset = 3665;
+
 
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
@@ -109,8 +111,23 @@ public class Arm extends Subsystem {
   private void initPreferences() {
     Preferences prefs = Preferences.getInstance();
 
-    if (!prefs.containsKey("ArmShoulderTarget")) { prefs.putDouble("ArmShoulderTarget", 0.0); }
-    if (!prefs.containsKey("ArmElbowTarget")) { prefs.putDouble("ArmElbowTarget", 0.0); }
+    // calibration prefs: position arm straight up and use ArmCalibrate command
+    if (!prefs.containsKey("Arm:ShoulderOffset")) { prefs.putDouble("Arm:ShoulderOffset", shoulderOffset); }
+    if (!prefs.containsKey("Arm:ElbowOffset")) { prefs.putDouble("Arm:ElbowOffset", elbowOffset); }
+    // used by ArmGoToPosition
+    if (!prefs.containsKey("Arm:ShoulderTarget")) { prefs.putDouble("Arm:ShoulderTarget", 0.0); }
+    if (!prefs.containsKey("Arm:ElbowTarget")) { prefs.putDouble("Arm:ElbowTarget", 0.0); }
+  }
+
+  public void calibrate() {
+    Preferences prefs = Preferences.getInstance();
+
+    // set the current position to 0 degress and updates preferences
+    shoulderOffset = getShoulderAbsolutePosition();
+    elbowOffset = getElbowAbsolutePosition();
+
+    prefs.putDouble("Arm:ShoulderOffset", shoulderOffset);
+    prefs.putDouble("Arm:ElbowOffset", elbowOffset);
   }
 
   @Override
@@ -120,17 +137,17 @@ public class Arm extends Subsystem {
 
   public void updateDashboard() {
     SmartDashboard.putNumber("Arm:shoulderPos", getShoulderPosition());
-    SmartDashboard.putNumber("Arm:shoulderInnerAbs", getShoulderAbsolutePosition());
+    SmartDashboard.putNumber("Arm:shoulderAbs", getShoulderAbsolutePosition());
     SmartDashboard.putNumber("Arm:elbowPos", getElbowPosition());
-    SmartDashboard.putNumber("Arm:elbowInnerAbs", getElbowAbsolutePosition());
-    SmartDashboard.putNumber("Arm: shoulderDegrees", getShoulderDegrees());
-    SmartDashboard.putNumber("Arm: elbowDegrees", getElbowDegrees());
-    SmartDashboard.putNumber("Arm: shoulderMotorDegrees", getMotorShoulderDegrees());
-    SmartDashboard.putNumber("Arm: elbowMotorDegrees", getMotorElbowDegrees());
-    SmartDashboard.putNumber("Arm: shoulderSetPoint", shoulder.getActiveTrajectoryPosition());
-    SmartDashboard.putNumber("Arm: elbowSetPoint", elbow.getActiveTrajectoryPosition());
-    SmartDashboard.putBoolean("Arm: isLegal?", isLegalPosition(getShoulderDegrees(), getElbowDegrees(), false));
-    SmartDashboard.putBoolean("Arm: isLegal (HAB)?", isLegalPosition(getShoulderDegrees(), getElbowDegrees(), true));
+    SmartDashboard.putNumber("Arm:elbowAbs", getElbowAbsolutePosition());
+    SmartDashboard.putNumber("Arm:shoulderDegrees", getShoulderDegrees());
+    SmartDashboard.putNumber("Arm:elbowDegrees", getElbowDegrees());
+    SmartDashboard.putNumber("Arm:shoulderMotorDegrees", getMotorShoulderDegrees());
+    SmartDashboard.putNumber("Arm:elbowMotorDegrees", getMotorElbowDegrees());
+    SmartDashboard.putNumber("Arm:shoulderSetPoint", shoulder.getActiveTrajectoryPosition());
+    SmartDashboard.putNumber("Arm:elbowSetPoint", elbow.getActiveTrajectoryPosition());
+    SmartDashboard.putBoolean("Arm:isSafe?", isSafePosition());
+    SmartDashboard.putBoolean("Arm:isSafe(HAB)?", isSafePosition(true));
 
     pitchPID.setKP(SmartDashboard.getNumber("arm:pitchKP", pitchPID.getKP()));
     pitchPID.setKD(SmartDashboard.getNumber("arm:pitchKD", pitchPID.getKD()));
@@ -168,7 +185,7 @@ public class Arm extends Subsystem {
   }
 
   public double convertShoulderToDegrees(double counts) {
-    return ((counts - SHOULDER_OFFSET) * 360) / 4096;
+    return ((counts - shoulderOffset) * 360) / 4096;
   }
 
   public double getShoulderDegrees() {
@@ -177,11 +194,11 @@ public class Arm extends Subsystem {
   }
 
   public double convertMotorShoulderToDegrees(double counts) {
-    return (((counts - SHOULDER_OFFSET * 4) * 360) / 4096) / 4;
+    return (((counts - shoulderOffset * 4) * 360) / 4096) / 4;
   }
 
   public int convertShoulderDegreesToMotor(double degrees) {
-    return (int) (degrees * 4 * 4096 / 360 + SHOULDER_OFFSET * 4);
+    return (int) (degrees * 4 * 4096 / 360 + shoulderOffset * 4);
   }
 
   public double getMotorShoulderDegrees() {
@@ -189,15 +206,15 @@ public class Arm extends Subsystem {
   }
 
   public double convertElbowToDegrees(double counts) {
-    return ((counts - ELBOW_OFFSET) * 360) / 4096;
+    return ((counts - elbowOffset) * 360) / 4096;
   }
 
   public double convertMotorElbowToDegrees(double counts) {
-    return ((counts - ELBOW_OFFSET * 4) * 360 / 4096) / 4;
+    return ((counts - elbowOffset * 4) * 360 / 4096) / 4;
   }
 
   public int convertElbowDegreesToMotor(double degrees) {
-    return (int) degrees * 4 * 4096 / 360 + ELBOW_OFFSET * 4;
+    return (int) degrees * 4 * 4096 / 360 + elbowOffset * 4;
   }
 
   public void setShoulderSpeed(int speed) {
@@ -257,7 +274,7 @@ public class Arm extends Subsystem {
   }
 
   /**
-   * isLegalPosition
+   * isSafePosition
    * 
    * args:
    *   targetShoulderAngle  the target angle for the shoulder
@@ -266,38 +283,53 @@ public class Arm extends Subsystem {
    *                        Hab zone height limits
    * 
    * returns: 
-   *   boolean value indicating whether specified target position is legal
+   *   boolean value indicating whether specified target position is safe and legal
    */
-  public boolean isLegalPosition(double targetShoulderAngle, double targetElbowAngle, boolean inHabZone) {
+  public boolean isSafePosition() {
+    // use current position, no HAB zone restrictions
+    return isSafePosition(getShoulderDegrees(), getElbowDegrees(), false);
+  }
+
+  public boolean isSafePosition(boolean inHabZone) {
+    // use current position
+    return isSafePosition(getShoulderDegrees(), getElbowDegrees(), inHabZone);
+  }
+
+  public boolean isSafePosition(double targetShoulderAngle, double targetElbowAngle) {
+    // default no HAB zone restrictions
+    return isSafePosition(targetShoulderAngle, targetElbowAngle, inHabZone);
+  }
+
+  public boolean isSafePosition(double targetShoulderAngle, double targetElbowAngle, boolean inHabZone) {
     double shoulderX = SHOULDER_LENGTH * Math.sin(Math.toRadians(targetShoulderAngle));
     double shoulderY = SHOULDER_LENGTH * Math.cos(Math.toRadians(targetShoulderAngle));
     double elbowX = ELBOW_LENGTH * Math.sin(Math.toRadians(targetElbowAngle)) + shoulderX;
     double elbowY = ELBOW_LENGTH * Math.cos(Math.toRadians(targetElbowAngle)) + shoulderY;
-    boolean isLegal = true;
-
-    // angles should be within range
-    isLegal &= targetShoulderAngle < FORWARD_SHOULDER_LIMIT;
-    isLegal &= targetShoulderAngle > REVERSE_SHOULDER_LIMIT;
-    isLegal &= targetElbowAngle - targetShoulderAngle < FORWARD_ELBOW_LIMIT;
-    isLegal &= targetElbowAngle - targetShoulderAngle > REVERSE_ELBOW_LIMIT;
+    boolean isSafe = true;
 
     // both points must be above the ground
-    isLegal &= shoulderY > 0 - ARM_HEIGHT;
-    isLegal &= elbowY > 0 - ARM_HEIGHT;
+    isSafe &= shoulderY > 0 - ARM_HEIGHT;
+    isSafe &= elbowY > 0 - ARM_HEIGHT;
 
     // both points must not be within the robot
-    isLegal &= shoulderY > ROBOT_TOP_LIMIT || shoulderX > ROBOT_FORWARD_LIMIT || shoulderX < ROBOT_REVERSE_LIMIT;
-    isLegal &= elbowY > ROBOT_TOP_LIMIT || elbowX > ROBOT_FORWARD_LIMIT || elbowX < ROBOT_REVERSE_LIMIT;
+    isSafe &= shoulderY > ROBOT_TOP_LIMIT || shoulderX > ROBOT_FORWARD_LIMIT || shoulderX < ROBOT_REVERSE_LIMIT;
+    isSafe &= elbowY > ROBOT_TOP_LIMIT || elbowX > ROBOT_FORWARD_LIMIT || elbowX < ROBOT_REVERSE_LIMIT;
 
     // both points must not go beyond our legal reach
-    isLegal &= Math.abs(shoulderX) < LEGAL_REACH;
-    isLegal &= Math.abs(elbowX) < LEGAL_REACH;
+    isSafe &= Math.abs(shoulderX) < LEGAL_REACH;
+    isSafe &= Math.abs(elbowX) < LEGAL_REACH;
 
     // both points must be below the height limit in certain conditions
-    isLegal &= inHabZone && shoulderY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT;
-    isLegal &= inHabZone && elbowY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT;
+    isSafe &= inHabZone && shoulderY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT - PLATFORM_HEIGHT;
+    isSafe &= inHabZone && elbowY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT - PLATFORM_HEIGHT;
 
-    return isLegal;
+    // TODO angles should be within range
+    // isSafe &= targetShoulderAngle < FORWARD_SHOULDER_LIMIT;
+    // isSafe &= targetShoulderAngle > REVERSE_SHOULDER_LIMIT;
+    // isSafe &= targetElbowAngle - targetShoulderAngle < FORWARD_ELBOW_LIMIT;
+    // isSafe &= targetElbowAngle - targetShoulderAngle > REVERSE_ELBOW_LIMIT;
+    
+    return isSafe;
   }
 
 }
