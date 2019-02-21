@@ -63,8 +63,6 @@ public class Arm extends Subsystem {
 
     pitchPID = new TJPIDController(0.01, 0, 0);
     pitchPID.setTolerance(2);
-    SmartDashboard.putNumber("arm:pitchKP", pitchPID.getKP());
-    SmartDashboard.putNumber("arm:pitchKD", pitchPID.getKD());
 
     initPreferences();
   }
@@ -114,9 +112,23 @@ public class Arm extends Subsystem {
     // calibration prefs: position arm straight up and use ArmCalibrate command
     if (!prefs.containsKey("Arm:ShoulderOffset")) { prefs.putDouble("Arm:ShoulderOffset", shoulderOffset); }
     if (!prefs.containsKey("Arm:ElbowOffset")) { prefs.putDouble("Arm:ElbowOffset", elbowOffset); }
+    // tuning prefeerences
+    if (!prefs.containsKey("Arm:Pitch_P")) { prefs.putDouble("Arm:Pitch_P", pitchPID.getKP()); }
+    if (!prefs.containsKey("Arm:Pitch_I")) { prefs.putDouble("Arm:Pitch_I", pitchPID.getKP()); }
+    if (!prefs.containsKey("Arm:Pitch_D")) { prefs.putDouble("Arm:Pitch_D", pitchPID.getKP()); }
     // used by ArmGoToPosition
     if (!prefs.containsKey("Arm:ShoulderTarget")) { prefs.putDouble("Arm:ShoulderTarget", 0.0); }
     if (!prefs.containsKey("Arm:ElbowTarget")) { prefs.putDouble("Arm:ElbowTarget", 0.0); }
+  }
+
+  public void reloadPIDConstants() {
+    Preferences prefs = Preferences.getInstance();
+
+    pitchPID.setKP(prefs.getDouble("Arm:Pitch_P", pitchPID.getKP()));
+    pitchPID.setKI(prefs.getDouble("Arm:Pitch_I", pitchPID.getKI()));
+    pitchPID.setKD(prefs.getDouble("Arm:Pitch_D", pitchPID.getKD()));
+
+    pitchPID.reset();
   }
 
   public void calibrate() {
