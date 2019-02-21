@@ -297,7 +297,7 @@ public class Arm extends Subsystem {
 
   public boolean isSafePosition(double targetShoulderAngle, double targetElbowAngle) {
     // default no HAB zone restrictions
-    return isSafePosition(targetShoulderAngle, targetElbowAngle, inHabZone);
+    return isSafePosition(targetShoulderAngle, targetElbowAngle, false);
   }
 
   public boolean isSafePosition(double targetShoulderAngle, double targetElbowAngle, boolean inHabZone) {
