@@ -20,7 +20,7 @@ public class SAPGTrackStart extends InstantCommand {
   public SAPGTrackStart() {
     super();
     requires(Robot.m_sapg);
-    Robot.m_sapg.enableTracking();
+    Robot.m_sapg.enable();
   }
 
   // Called once when the command executes

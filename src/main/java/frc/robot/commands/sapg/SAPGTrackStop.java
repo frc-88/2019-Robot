@@ -20,7 +20,7 @@ public class SAPGTrackStop extends InstantCommand {
   public SAPGTrackStop() {
     super();
     requires(Robot.m_sapg);
-    Robot.m_sapg.disableTracking();
+    Robot.m_sapg.disable();
   }
 
   // Called once when the command executes
