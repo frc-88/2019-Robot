@@ -7,20 +7,17 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.CANifier;
-import com.ctre.phoenix.VelocityPeriod;
-import com.ctre.phoenix.CANifier.PWMChannel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.*;
+import frc.robot.Robot;
+import frc.robot.RobotMap;
 import frc.robot.util.TJPIDController;
 
 /**
@@ -54,18 +51,13 @@ public class Arm extends Subsystem {
   private TJPIDController pitchPID;
 
   TalonSRX shoulder, elbow;
-  //CANifier shoulderCANifier, elbowCANifier;
 
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
     elbow = new TalonSRX(RobotMap.ELBOW_ID);
-    //shoulderCANifier = new CANifier(RobotMap.SHOULDER_CANIFIER_ID);
-    //elbowCANifier = new CANifier(RobotMap.ELBOW_CANIFIER_ID);
 
     configShoulderTalon();
     configElbowTalon();
-    //configShoulderCANifier();
-    //configElbowCANifier();
 
     pitchPID = new TJPIDController(0.01, 0, 0);
     pitchPID.setTolerance(2);
@@ -75,50 +67,28 @@ public class Arm extends Subsystem {
     initPreferences();
   }
 
-  private void configShoulderCANifier() {
-    //configCANifierCommon(shoulderCANifier);
-  }
-
-  private void configElbowCANifier() {
-    //configCANifierCommon(elbowCANifier);
-  }
-
-  private void configCANifierCommon(CANifier canifier) {
-    // TODO 
-    // write this
-    //  see http://www.ctr-electronics.com/downloads/api/java/html/classcom_1_1ctre_1_1phoenix_1_1_c_a_nifier.html
-    canifier.configFactoryDefault();
-
-    canifier.configVelocityMeasurementPeriod(VelocityPeriod.Period_100Ms, TIMEOUTMS);
-		canifier.configVelocityMeasurementWindow(16, TIMEOUTMS);
-  }
-
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
-    // TODO determine these config values
     shoulder.config_kP(MAIN_SLOT_IDX, 4, TIMEOUTMS);
     shoulder.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kF(MAIN_SLOT_IDX, 1.5, TIMEOUTMS);
-    shoulder.configMotionCruiseVelocity(RobotMap.SHOULDER_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
-    shoulder.configMotionAcceleration(2*RobotMap.SHOULDER_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    shoulder.configMotionCruiseVelocity(RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
+    shoulder.configMotionAcceleration(2 * RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
     shoulder.setInverted(true);
-    shoulder.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, 
-        RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
+    shoulder.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
   }
 
   private void configElbowTalon() {
     configTalonCommon(elbow);
-    // TODO determine these config values
     elbow.config_kP(MAIN_SLOT_IDX, 8, TIMEOUTMS);
     elbow.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
-    elbow.configMotionCruiseVelocity(RobotMap.ELBOW_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
-    elbow.configMotionAcceleration(2*RobotMap.ELBOW_MAX_SPEED*4096*4/360/10, TIMEOUTMS);
+    elbow.configMotionCruiseVelocity(RobotMap.ELBOW_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
+    elbow.configMotionAcceleration(2 * RobotMap.ELBOW_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
     elbow.setInverted(false);
-    elbow.configRemoteFeedbackFilter(RobotMap.ELBOW_AUXILARY_ID, 
-        RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
+    elbow.configRemoteFeedbackFilter(RobotMap.ELBOW_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
   }
 
   private void configTalonCommon(TalonSRX talon) {
@@ -134,31 +104,24 @@ public class Arm extends Subsystem {
     talon.configPeakOutputReverse(-1.0, TIMEOUTMS);
     talon.configNeutralDeadband(0.01, TIMEOUTMS);
     talon.setNeutralMode(NeutralMode.Brake);
-
-    /* eFeedbackNotContinuous = 1, subValue/ordinal/timeoutMs = 0 */
-
   }
-  
+
   private void initPreferences() {
     Preferences prefs = Preferences.getInstance();
 
     if (!prefs.containsKey("ArmShoulderTarget")) { prefs.putDouble("ArmShoulderTarget", 0.0); }
-    if (!prefs.containsKey("ArmElbowTarget")) { prefs.putDouble("ArmElbowTarget",0.0); }
+    if (!prefs.containsKey("ArmElbowTarget")) { prefs.putDouble("ArmElbowTarget", 0.0); }
   }
 
   @Override
   public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-
+    // No default command
   }
 
   public void updateDashboard() {
     SmartDashboard.putNumber("Arm:shoulderPos", getShoulderPosition());
-    //SmartDashboard.putNumber("Arm:shoulderInnerPos", shoulderCANifier.getQuadraturePosition());
     SmartDashboard.putNumber("Arm:shoulderInnerAbs", getShoulderAbsolutePosition());
     SmartDashboard.putNumber("Arm:elbowPos", getElbowPosition());
-    //SmartDashboard.putNumber("Arm:elbowInnerPos", elbowCANifier.getQuadraturePosition());
     SmartDashboard.putNumber("Arm:elbowInnerAbs", getElbowAbsolutePosition());
     SmartDashboard.putNumber("Arm: shoulderDegrees", getShoulderDegrees());
     SmartDashboard.putNumber("Arm: elbowDegrees", getElbowDegrees());
@@ -166,9 +129,9 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("Arm: elbowMotorDegrees", getMotorElbowDegrees());
     SmartDashboard.putNumber("Arm: shoulderSetPoint", shoulder.getActiveTrajectoryPosition());
     SmartDashboard.putNumber("Arm: elbowSetPoint", elbow.getActiveTrajectoryPosition());
-    SmartDashboard.putBoolean("Arm: isLegal?", isLegalPosition(getShoulderDegrees(),getElbowDegrees(),false));
-    SmartDashboard.putBoolean("Arm: isLegal (HAB)?", isLegalPosition(getShoulderDegrees(),getElbowDegrees(),true));
-  
+    SmartDashboard.putBoolean("Arm: isLegal?", isLegalPosition(getShoulderDegrees(), getElbowDegrees(), false));
+    SmartDashboard.putBoolean("Arm: isLegal (HAB)?", isLegalPosition(getShoulderDegrees(), getElbowDegrees(), true));
+
     pitchPID.setKP(SmartDashboard.getNumber("arm:pitchKP", pitchPID.getKP()));
     pitchPID.setKD(SmartDashboard.getNumber("arm:pitchKD", pitchPID.getKD()));
   }
@@ -198,103 +161,99 @@ public class Arm extends Subsystem {
   public double getElbowPosition() {
     return elbow.getSelectedSensorPosition(MAIN_SLOT_IDX);
   }
-  
-public int getShoulderAbsolutePosition(){
 
-  return shoulder.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
-}
+  public int getShoulderAbsolutePosition() {
 
-public double convertShoulderToDegrees(double counts){
-  return ((counts - SHOULDER_OFFSET)*360)/4096;
-}
+    return shoulder.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
+  }
 
-public double getShoulderDegrees(){
-  
-  return convertShoulderToDegrees(getShoulderAbsolutePosition());
-}
+  public double convertShoulderToDegrees(double counts) {
+    return ((counts - SHOULDER_OFFSET) * 360) / 4096;
+  }
 
-public double convertMotorShoulderToDegrees(double counts){
-  return (((counts - SHOULDER_OFFSET*4)*360)/4096)/4;
-}
+  public double getShoulderDegrees() {
 
-public int convertShoulderDegreesToMotor(double degrees){
-  return (int)(degrees*4*4096/360 + SHOULDER_OFFSET*4);
-}
+    return convertShoulderToDegrees(getShoulderAbsolutePosition());
+  }
 
-public double getMotorShoulderDegrees(){
-  return convertMotorShoulderToDegrees(getShoulderPosition());
-}
+  public double convertMotorShoulderToDegrees(double counts) {
+    return (((counts - SHOULDER_OFFSET * 4) * 360) / 4096) / 4;
+  }
 
-public double convertElbowToDegrees(double counts){
-  return ((counts - ELBOW_OFFSET)*360)/4096;
-}
+  public int convertShoulderDegreesToMotor(double degrees) {
+    return (int) (degrees * 4 * 4096 / 360 + SHOULDER_OFFSET * 4);
+  }
 
-public double convertMotorElbowToDegrees(double counts){
-  return((counts - ELBOW_OFFSET*4)*360/4096)/4;
-}
+  public double getMotorShoulderDegrees() {
+    return convertMotorShoulderToDegrees(getShoulderPosition());
+  }
 
-public int convertElbowDegreesToMotor(double degrees){
-  return (int)degrees*4*4096/360 + ELBOW_OFFSET*4;
-}
+  public double convertElbowToDegrees(double counts) {
+    return ((counts - ELBOW_OFFSET) * 360) / 4096;
+  }
 
-public void setShoulderSpeed(int speed){
-  shoulder.configMotionCruiseVelocity(speed*4096*4/360/10);
-  shoulder.configMotionAcceleration(speed*4096*4/360/10*2);
-}
+  public double convertMotorElbowToDegrees(double counts) {
+    return ((counts - ELBOW_OFFSET * 4) * 360 / 4096) / 4;
+  }
 
-public void setElbowSpeed(int speed){
-  elbow.configMotionCruiseVelocity(speed*4096*4/360/10);
-  elbow.configMotionAcceleration(speed*4096*4/360/10*2);
-}
+  public int convertElbowDegreesToMotor(double degrees) {
+    return (int) degrees * 4 * 4096 / 360 + ELBOW_OFFSET * 4;
+  }
 
-public double getMotorElbowDegrees(){
-  return convertMotorElbowToDegrees(getElbowPosition());
-}
+  public void setShoulderSpeed(int speed) {
+    shoulder.configMotionCruiseVelocity(speed * 4096 * 4 / 360 / 10);
+    shoulder.configMotionAcceleration(speed * 4096 * 4 / 360 / 10 * 2);
+  }
 
-public double getElbowDegrees(){
-  return convertElbowToDegrees(getElbowAbsolutePosition());
-}
+  public void setElbowSpeed(int speed) {
+    elbow.configMotionCruiseVelocity(speed * 4096 * 4 / 360 / 10);
+    elbow.configMotionAcceleration(speed * 4096 * 4 / 360 / 10 * 2);
+  }
 
-public void setShoulder(double percentOutput){
-  shoulder.set(ControlMode.PercentOutput, percentOutput);
-}
-public void setElbow(double percentOutput){
-  elbow.set(ControlMode.PercentOutput, percentOutput);
-}
+  public double getMotorElbowDegrees() {
+    return convertMotorElbowToDegrees(getElbowPosition());
+  }
 
-public int getElbowAbsolutePosition(){
-  // double[] _dutyCycleAndPeriods = {0,0};
+  public double getElbowDegrees() {
+    return convertElbowToDegrees(getElbowAbsolutePosition());
+  }
 
-  // elbowCANifier.getPWMInput(PWMChannel.PWMChannel0, _dutyCycleAndPeriods);
+  public void setShoulder(double percentOutput) {
+    shoulder.set(ControlMode.PercentOutput, percentOutput);
+  }
 
-  // return _dutyCycleAndPeriods[0];
+  public void setElbow(double percentOutput) {
+    elbow.set(ControlMode.PercentOutput, percentOutput);
+  }
 
-  return elbow.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
-}
+  public int getElbowAbsolutePosition() {
+    return elbow.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
+  }
 
   /**
    * zeroes elbow motor encoder based on known elbow angle 
    * @param elbowAngle
    */
-  public void zeroElbowMotorEncoder(){
+  public void zeroElbowMotorEncoder() {
     double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
-    double normalizedPos = (auxEncoderPos + 180) > 0 ?
-        (auxEncoderPos + 180) % 360. - 180 :
+    double normalizedPos = (auxEncoderPos + 180) > 0 ? 
+        (auxEncoderPos + 180) % 360. - 180 : 
         (auxEncoderPos + 180) % 360. + 180;
     int encoderPos = convertElbowDegreesToMotor(normalizedPos);
-    elbow.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
+    elbow.setSelectedSensorPosition(encoderPos, MAIN_SLOT_IDX, TIMEOUTMS);
   }
-    /**
-   * zeroes shoulder motor encoder based on known shoulder angle 
-   * @param shoulderAngle the angle of the shoulder
-   */
-  public void zeroShoulderMotorEncoder(){
+
+  /**
+  * zeroes shoulder motor encoder based on known shoulder angle 
+  * @param shoulderAngle the angle of the shoulder
+  */
+  public void zeroShoulderMotorEncoder() {
     double auxEncoderPos = convertShoulderToDegrees(getShoulderAbsolutePosition());
-    double normalizedPos = auxEncoderPos > 0 ?
-        (auxEncoderPos + 180) % 360. - 180 :
+    double normalizedPos = auxEncoderPos > 0 ? 
+        (auxEncoderPos + 180) % 360. - 180 : 
         (auxEncoderPos + 180) % 360. + 180;
     int encoderPos = convertShoulderDegreesToMotor(normalizedPos);
-    shoulder.setSelectedSensorPosition(encoderPos,MAIN_SLOT_IDX,TIMEOUTMS);
+    shoulder.setSelectedSensorPosition(encoderPos, MAIN_SLOT_IDX, TIMEOUTMS);
   }
 
   /**
@@ -319,12 +278,12 @@ public int getElbowAbsolutePosition(){
     // angles should be within range
     isLegal &= targetShoulderAngle < FORWARD_SHOULDER_LIMIT;
     isLegal &= targetShoulderAngle > REVERSE_SHOULDER_LIMIT;
-    isLegal &= targetElbowAngle-targetShoulderAngle < FORWARD_ELBOW_LIMIT;
-    isLegal &= targetElbowAngle-targetShoulderAngle > REVERSE_ELBOW_LIMIT; 
+    isLegal &= targetElbowAngle - targetShoulderAngle < FORWARD_ELBOW_LIMIT;
+    isLegal &= targetElbowAngle - targetShoulderAngle > REVERSE_ELBOW_LIMIT;
 
     // both points must be above the ground
-    isLegal &= shoulderY > 0-ARM_HEIGHT;
-    isLegal &= elbowY > 0-ARM_HEIGHT;
+    isLegal &= shoulderY > 0 - ARM_HEIGHT;
+    isLegal &= elbowY > 0 - ARM_HEIGHT;
 
     // both points must not be within the robot
     isLegal &= shoulderY > ROBOT_TOP_LIMIT || shoulderX > ROBOT_FORWARD_LIMIT || shoulderX < ROBOT_REVERSE_LIMIT;
@@ -335,8 +294,8 @@ public int getElbowAbsolutePosition(){
     isLegal &= Math.abs(elbowX) < LEGAL_REACH;
 
     // both points must be below the height limit in certain conditions
-    isLegal &= inHabZone && shoulderY < LEGAL_HEIGHT_LIMIT-ARM_HEIGHT;
-    isLegal &= inHabZone && elbowY < LEGAL_HEIGHT_LIMIT-ARM_HEIGHT;
+    isLegal &= inHabZone && shoulderY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT;
+    isLegal &= inHabZone && elbowY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT;
 
     return isLegal;
   }
