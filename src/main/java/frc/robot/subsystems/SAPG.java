@@ -162,6 +162,15 @@ public class SAPG extends Subsystem implements PIDSource {
         SmartDashboard.putNumber("SAPG:PanelDistance", panelDetector.getDistance());
         SmartDashboard.putBoolean("SAPG:Tracking", sapgController.isEnabled());
         SmartDashboard.putBoolean("SAPG:HasPanel", hasPanel());
+
+        // write prefs back to the dashboard
+        SmartDashboard.putNumber("SAPG:Track_P", trackP);
+        SmartDashboard.putNumber("SAPG:Track_I", trackI);
+        SmartDashboard.putNumber("SAPG:Track_D", trackD);
+        SmartDashboard.putNumber("SAPG:Track_Period", trackPeriod);
+        SmartDashboard.putNumber("SAPG:Forward_Limit", forwardLimit);
+        SmartDashboard.putNumber("SAPG:Reverse_Limit", reverseLimit);
+        SmartDashboard.putNumber("SAPG:Panel_Threshold", panelThreshold);
     }
 
     // PIDSource overrides
