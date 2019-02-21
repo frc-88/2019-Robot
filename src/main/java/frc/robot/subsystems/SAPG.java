@@ -4,17 +4,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.util.SharpIR;
@@ -33,6 +27,9 @@ public class SAPG extends PIDSubsystem {
     private static final double TRACK_ANGLE_THRESHOLD = (HORIZONTAL_FOV / 2) - 2;
     private static final double TRACK_DISTANCE_THRESHOLD = 12;
     private static final double TRACK_TICKS_THRESHOLD = 1000;
+    private static final double TRACK_PID_DFT_P = 0.08;
+    private static final double TRACK_PID_DFT_I = 0.0;
+    private static final double TRACK_PID_DFT_D = 0.0;
     private static final double TRACK_PID_PERIOD = 0.01;
 
     private WPI_TalonSRX sapgTalon;
@@ -41,9 +38,9 @@ public class SAPG extends PIDSubsystem {
     private SharpIR panelDetector;
 
     // Preferences with their default values
-    private double trackP = 0.08;
-    private double trackI = 0.0;
-    private double trackD = 0.0;
+    private double trackP = TRACK_PID_DFT_P;
+    private double trackI = TRACK_PID_DFT_I;
+    private double trackD = TRACK_PID_DFT_D;
     private int forwardLimit = 1010;
     private int reverseLimit = 680;
     private double panelThreshold = 6.0;
@@ -53,7 +50,7 @@ public class SAPG extends PIDSubsystem {
     private int ticksSinceTargetLost = 0;
 
     public SAPG() {
-        super("SAPG", 0, 0, 0, TRACK_PID_PERIOD);
+        super("SAPG", TRACK_PID_DFT_P, TRACK_PID_DFT_I, TRACK_PID_DFT_D, TRACK_PID_PERIOD);
 
         sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
         configureTalon();
