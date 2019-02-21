@@ -13,19 +13,19 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class SAPGTrackStart extends InstantCommand {
+public class SAPGLoadPreferences extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public SAPGTrackStart() {
+  public SAPGLoadPreferences() {
     super();
     requires(Robot.m_sapg);
-    Robot.m_sapg.enableTracking();
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
+    Robot.m_sapg.fetchPreferences();
   }
 
 }

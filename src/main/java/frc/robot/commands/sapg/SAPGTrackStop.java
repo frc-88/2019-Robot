@@ -8,6 +8,7 @@
 package frc.robot.commands.sapg;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -18,8 +19,8 @@ public class SAPGTrackStop extends InstantCommand {
    */
   public SAPGTrackStop() {
     super();
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+    requires(Robot.m_sapg);
+    Robot.m_sapg.disableTracking();
   }
 
   // Called once when the command executes
