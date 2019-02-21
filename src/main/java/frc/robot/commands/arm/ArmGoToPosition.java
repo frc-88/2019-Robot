@@ -9,6 +9,7 @@ package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
@@ -27,8 +28,8 @@ public class ArmGoToPosition extends Command {
     requires(Robot.m_arm);
 
     usePrefences = false;
-    shoulder_target = shoulder;
-    elbow_target = elbow;
+    shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder);
+    elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow);
   }
 
   // Called just before this Command runs the first time
@@ -37,24 +38,31 @@ public class ArmGoToPosition extends Command {
     if (usePrefences) {
       Preferences prefs = Preferences.getInstance();
 
-      shoulder_target = prefs.getDouble("ArmShoulderTarget", 0.0);
-      elbow_target = prefs.getDouble("ArmElbowTarget",0.0);
+      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble("ArmShoulderTarget", 0.0));
+      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble("ArmElbowTarget",0.0));
     }
-    Robot.m_arm.moveShoulder(shoulder_target);
-    Robot.m_arm.moveElbow(elbow_target);
 
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.m_arm.moveShoulder(shoulder_target);
+    Robot.m_arm.moveElbow(elbow_target);
+
+    SmartDashboard.putNumber("Arm:commandShoulder", shoulder_target);
+    SmartDashboard.putNumber("Arm:commandElbow", elbow_target);
+
+    
+
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Math.abs(Robot.m_arm.getShoulderPosition() - shoulder_target) < RobotMap.ARM_TOLERANCE
-        && Math.abs(Robot.m_arm.getElbowPosition() - elbow_target) < RobotMap.ARM_TOLERANCE;
+    // return Math.abs(Robot.m_arm.getShoulderPosition() - shoulder_target) < RobotMap.ARM_TOLERANCE
+    //     && Math.abs(Robot.m_arm.getElbowPosition() - elbow_target) < RobotMap.ARM_TOLERANCE;
+    return false;
   }
 
   // Called once after isFinished returns true

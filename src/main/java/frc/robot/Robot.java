@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -15,11 +16,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.SAPG;
 import frc.robot.util.TimeScheduler;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Intake;
 
 
 /**
@@ -32,11 +35,12 @@ import frc.robot.subsystems.Drive;
 public class Robot extends TimedRobot {
   public static Arm m_arm;
   public static SAPG m_sapg;
-  public static Limelight m_limelight_front;
-  public static Limelight m_limelight_rear;
+  public static Climber m_climber;
+  public static Limelight m_limelight_sapg;
   public static NavX m_navx;
   public static Drive m_drive;
   public static OI m_oi;
+  public static Intake m_intake;
 
   public static TimeScheduler dashboardScheduler;
 
@@ -55,10 +59,13 @@ public class Robot extends TimedRobot {
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
 
     m_navx = new NavX();
-    //m_limelight_front = new Limelight("front");
-    //m_limelight_rear = new Limelight("rear");
-    m_arm = new Arm();
     m_drive = new Drive();
+    m_climber = new Climber();
+    m_intake = new Intake();
+
+    //m_limelight_front = new Limelight("limelight-front");
+    m_limelight_sapg = new Limelight("limelight-sapg");
+    m_arm = new Arm();
     m_sapg = new SAPG();
     
     // instantiate m_oi last...it may reference subsystems
@@ -93,6 +100,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    m_arm.zeroElbowMotorEncoder();
+    m_arm.zeroShoulderMotorEncoder();
+    m_sapg.disableTracking();
   }
 
   @Override
@@ -113,6 +123,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_arm.zeroElbowMotorEncoder();
+    m_arm.zeroShoulderMotorEncoder();
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -138,6 +150,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
+    m_arm.zeroElbowMotorEncoder();
+    m_arm.zeroShoulderMotorEncoder();
+    m_sapg.enableTracking();
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -165,11 +182,18 @@ public class Robot extends TimedRobot {
   private void initializeDashboard() {
     dashboardScheduler = new TimeScheduler();
     m_drive.configureShuffleboard();
+    m_arm.updateDashboard();
   }
 
   private void writeDashboard() {
     final long RUN_TIME = 10;
     dashboardScheduler.run(RUN_TIME);
     m_drive.updateShuffleboard();
+    m_arm.updateDashboard();
+    m_sapg.updateDashboard();
+    m_intake.updateDashboard();
+    m_climber.updateDashboard();
+    m_navx.updateDashboard();
+    m_limelight_sapg.updateDashboard();
   }
 }

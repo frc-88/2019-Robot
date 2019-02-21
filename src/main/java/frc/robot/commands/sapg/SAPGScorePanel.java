@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class SAPGGrabPanel extends Command {
+public class SAPGScorePanel extends Command {
 
     private int state;
     private long startTime;
     private final long PUSH_TIME=500000; // microseconds
-    private final long OPEN_TIME=500000; // microseconds
+    private final long CLOSE_TIME=500000; // microseconds
 
-  public SAPGGrabPanel() {
+  public SAPGScorePanel() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.m_sapg);
@@ -37,8 +37,7 @@ public class SAPGGrabPanel extends Command {
   protected void execute() {
       switch(state){
           case 0: 
-          //close, push out
-          Robot.m_sapg.closeTheJaws();
+          //push out
           Robot.m_sapg.forwardPush();
           if (RobotController.getFPGATime()-startTime>PUSH_TIME){
               state++;
@@ -48,16 +47,14 @@ public class SAPGGrabPanel extends Command {
           break;
           case 1:
           //open, push out
-          Robot.m_sapg.openTheJaws();
-          Robot.m_sapg.forwardPush();
-          if (RobotController.getFPGATime()-startTime>OPEN_TIME){
+          Robot.m_sapg.closeTheJaws();
+          if (RobotController.getFPGATime()-startTime>CLOSE_TIME){
             state++;
             startTime=RobotController.getFPGATime();
           }
           break;
           case 2:
           //open, pull in
-          Robot.m_sapg.openTheJaws();
           Robot.m_sapg.reversePush();
           if (RobotController.getFPGATime()-startTime>PUSH_TIME){
             state++;

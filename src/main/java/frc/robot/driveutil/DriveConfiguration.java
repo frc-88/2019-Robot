@@ -19,14 +19,14 @@ public class DriveConfiguration {
         right = new TJDriveModuleConfiguration();
 
         left.master = RobotMap.LEFT_MASTER_DRIVE_ID;
-        left.victorFollowers = new int [] {RobotMap.LEFT_FOLLOWER00_DRIVE_ID,
-            RobotMap.LEFT_FOLLOWER01_DRIVE_ID,
-            RobotMap.LEFT_FOLLOWER02_DRIVE_ID};
+        left.talonFollowers = new int[] {RobotMap.LEFT_TALON_FOLLOWER_DRIVE_ID};
+        left.victorFollowers = new int [] {RobotMap.LEFT_VICTOR_FOLLOWER00_DRIVE_ID,
+            RobotMap.LEFT_VICTOR_FOLLOWER01_DRIVE_ID};
 
         right.master = RobotMap.RIGHT_MASTER_DRIVE_ID;
-        right.victorFollowers = new int [] {RobotMap.RIGHT_FOLLOWER00_DRIVE_ID,
-            RobotMap.RIGHT_FOLLOWER01_DRIVE_ID,
-            RobotMap.RIGHT_FOLLOWER02_DRIVE_ID};
+        right.talonFollowers = new int[] {RobotMap.RIGHT_TALON_FOLLOWER_DRIVE_ID};
+        right.victorFollowers = new int [] {RobotMap.RIGHT_VICTOR_FOLLOWER00_DRIVE_ID,
+            RobotMap.RIGHT_VICTOR_FOLLOWER01_DRIVE_ID};
 
         _talonMaster = new TalonSRXConfiguration();
         _talonFollower = new TalonSRXConfiguration();
@@ -40,10 +40,15 @@ public class DriveConfiguration {
         left.masterConfiguration = _talonMaster;
         right.masterConfiguration = _talonMaster;
 
-        /* Talon SRX - Follower */
+        /* Followers */
 
+        _talonFollower.neutralDeadband = 0.01;
         _victorFollower.neutralDeadband = 0.01;
 
+        _talonFollower.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Absolute;
+
+        left.talonFollowerConfiguration = _talonFollower;
+        right.talonFollowerConfiguration = _talonFollower;
         left.victorFollowerConfiguration = _victorFollower;
         right.victorFollowerConfiguration = _victorFollower;
 

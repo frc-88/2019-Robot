@@ -1,47 +1,30 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drive;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-/**
- * An example command.  You can replace me with your own command.
- */
-public class ArcadeDrive extends Command {
-  public ArcadeDrive() {
-    // Use requires() here to declare subsystem dependencies
-    requires(Robot.m_drive);
+public class ClimberBasicControl extends Command {
+  public ClimberBasicControl() {
+    requires(Robot.m_climber);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_drive.resetVelocityPID();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double speed=Robot.m_oi.getDriverLeftYAxis();
-    double turn=Robot.m_oi.getDriverRightXAxis();
-
-    if(Math.abs(speed) < .15){
-      speed = 0;
-    }
-    if(Math.abs(turn) < .15){
-      turn = 0;
-    }
-    Robot.m_drive.arcadeDrive(speed, turn);
-    
-    Robot.m_drive.autoshift();
+    Robot.m_climber.set(Robot.m_oi.getOperatorRightYAxis());
   }
-  
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
@@ -52,13 +35,13 @@ public class ArcadeDrive extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.m_drive.basicDrive(0, 0);
+    Robot.m_climber.set(0.0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
+    Robot.m_climber.set(0.0);
   }
 }

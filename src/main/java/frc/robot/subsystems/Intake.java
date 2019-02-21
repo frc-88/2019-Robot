@@ -1,19 +1,34 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.*;
+import frc.robot.util.SharpIR;
 
 public class Intake extends Subsystem {
     TalonSRX rollerTalon;
+    SharpIR intakeSensor;
     private final static int SLOTIDX = 0;
     private final static int TIMEOUTMS = 0;
 
     public Intake() {
         rollerTalon = new TalonSRX(RobotMap.INTAKE_ID);
         configTalon(rollerTalon);
+        intakeSensor = new SharpIR(RobotMap.INTAKE_IR_ID);
+    }
+
+    public void updateDashboard(){
+        SmartDashboard.putNumber("Cargo Distance", intakeSensor.getDistance());
+        SmartDashboard.putBoolean("Has Cargo", hasCargo());
+    }
+
+    public boolean hasCargo() {
+        return intakeSensor.getDistance() < RobotMap.INTAKE_HAS_CARGO;
     }
 
     private void configTalon(TalonSRX talon) {
@@ -39,5 +54,9 @@ public class Intake extends Subsystem {
         // Set the default command for a subsystem here.
         // setDefaultCommand(new MySpecialCommand());
 
+    }
+
+    public void set(double percentOutput){
+        rollerTalon.set(ControlMode.PercentOutput, percentOutput);
     }
 }
