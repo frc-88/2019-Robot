@@ -44,7 +44,6 @@ public class SAPG extends PIDSubsystem {
     private int forwardLimit = 1010;
     private int reverseLimit = 680;
     private double panelThreshold = 6.0;
-
     private int center = reverseLimit + (forwardLimit - reverseLimit) / 2;
     private int home = center;
     private int ticksSinceTargetLost = 0;
@@ -138,8 +137,7 @@ public class SAPG extends PIDSubsystem {
     }
 
     public boolean hasPanel() {
-        // TODO add check to make sure grabber is open
-        return panelDetector.getDistance() < panelThreshold;
+        return (grabPiston.get() == Value.kForward) && (panelDetector.getDistance() < panelThreshold);
     }
 
     public void updateDashboard() {
