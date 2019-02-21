@@ -65,6 +65,7 @@ public class SAPG extends PIDSubsystem {
         getPIDController().setPID(trackP, trackI, trackD);
         setOutputRange(-1, 1);
         setInputRange(-TRACK_ANGLE_THRESHOLD, TRACK_ANGLE_THRESHOLD);
+        setAbsoluteTolerance(1);
         setSetpoint(0);
         disable();
     }
@@ -148,6 +149,7 @@ public class SAPG extends PIDSubsystem {
         SmartDashboard.putNumber("SAPG:PanelDistance", panelDetector.getDistance());
         SmartDashboard.putBoolean("SAPG:Tracking", getPIDController().isEnabled());
         SmartDashboard.putBoolean("SAPG:HasPanel", hasPanel());
+        SmartDashboard.putBoolean("SAPG:OnTarget", onTarget());
 
         // write prefs back to the dashboard
         SmartDashboard.putNumber("SAPG:Track_P", trackP);
