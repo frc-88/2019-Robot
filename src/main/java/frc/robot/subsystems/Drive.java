@@ -10,6 +10,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
+import com.ctre.phoenix.sensors.PigeonIMU;
+
 import java.util.List;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -44,6 +47,8 @@ public class Drive extends Subsystem {
     private ShiftingTransmission leftTransmission, rightTransmission;
     private DriveConfiguration driveConfiguration;
     private TJPIDController leftVelocityController, rightVelocityController;
+
+    private PigeonIMU pigeon;
 
     private DoubleSolenoid leftShifter, rightShifter;
 
@@ -80,6 +85,9 @@ public class Drive extends Subsystem {
     private NetworkTableEntry sbMoProP;
     private NetworkTableEntry sbMoProI;
     private NetworkTableEntry sbMoProD;
+    private NetworkTableEntry sbGyroP;
+    private NetworkTableEntry sbGyroI;
+    private NetworkTableEntry sbGyroD;
 
     private DriveConstantVoltage constantDriveTestCommand;
     private double currentLimit = RobotMap.DRIVE_CURRENT_LIMIT;
@@ -88,6 +96,9 @@ public class Drive extends Subsystem {
     private double moProKP;
     private double moProKI;
     private double moProKD;
+    private double gyroKP;
+    private double gyroKI;
+    private double gyroKD;
 
     boolean resetFromShift = false;
 
@@ -117,9 +128,20 @@ public class Drive extends Subsystem {
         moProKP = driveConfiguration.left.masterConfiguration.slot0.kP;
         moProKI = driveConfiguration.left.masterConfiguration.slot0.kI;
         moProKD = driveConfiguration.left.masterConfiguration.slot0.kD;
+        gyroKP = driveConfiguration.left.masterConfiguration.slot1.kP;
+        gyroKI = driveConfiguration.left.masterConfiguration.slot1.kI;
+        gyroKD = driveConfiguration.left.masterConfiguration.slot1.kD;
 
         leftDrive = new TJDriveModule(driveConfiguration.left, leftTransmission);
         rightDrive = new TJDriveModule(driveConfiguration.right, rightTransmission);
+
+        leftDrive.configAuxPIDPolarity(true);
+        rightDrive.configAuxPIDPolarity(false)
+        leftDrive.configRemoteFeedbackFilter(RobotMap.PIDEGON_ID, RemoteSensorSource.Pigeon_Yaw, 0);
+        rightDrive.configRemoteFeedbackFilter(RobotMap.PIDEGON_ID, RemoteSensorSource.Pigeon_Yaw, 0);
+
+        pigeon = new PigeonIMU(RobotMap.PIDGEON_ID);
+        pigeon.configFactoryDefault();
 
         leftShifter = new DoubleSolenoid(RobotMap.SHIFTER_LEFT_PCM, RobotMap.SHIFTER_LEFT_OUT,
                 RobotMap.SHIFTER_LEFT_IN);
@@ -221,6 +243,33 @@ public class Drive extends Subsystem {
                 moProKD = newMoProD;
                 leftDrive.config_kD(0, moProKD);
                 rightDrive.config_kD(0, moProKD);
+            }
+        });
+        sbGyroP = Shuffleboard.getTab("DrivePro").add("G_P", gyroKP).getEntry();
+        Robot.dashboardScheduler.addFunction(() -> {
+            double newGyroP = sbGyroP.getDouble(driveConfiguration.left.masterConfiguration.slot1.kP);
+            if (newGyroP != gyroKP) {
+                gryoKP = newGyroP;
+                leftDrive.config_kP(1, gryoKP);
+                rightDrive.config_kP(1, gyroKP);
+            }
+        });
+        sbGyroI = Shuffleboard.getTab("DrivePro").add("G_I", GyroKI).getEntry();
+        Robot.dashboardScheduler.addFunction(() -> {
+            double newGyroI = sbGyroI.getDouble(driveConfiguration.left.masterConfiguration.slot1.kI);
+            if (newGyroI != gyroKI) {
+                gyroKI = newGyroI;
+                leftDrive.config_kI(1, gyroKI);
+                rightDrive.config_kI(1, gyroKI);
+            }
+        });
+        sbGyroD = Shuffleboard.getTab("DrivePro").add("G_D", GyroKD).getEntry();
+        Robot.dashboardScheduler.addFunction(() -> {
+            double newGyroD = sbGyroD.getDouble(driveConfiguration.left.masterConfiguration.slot1.kD);
+            if (newGyroD != gyroKD) {
+                gyroKD = newGyroD;
+                leftDrive.config_kD(1, gyroKD);
+                rightDrive.config_kD(1, gyroKD);
             }
         });
     }
@@ -489,8 +538,10 @@ public class Drive extends Subsystem {
             rightPoint.profileSlotSelect0 = 0;
             leftPoint.timeDur = (int) (tjPoint.dt * 1000);
             rightPoint.timeDur = (int) (tjPoint.dt * 1000);
-            leftPoint.useAuxPID = false;
-            rightPoint.useAuxPID = false;
+            leftPoint.useAuxPID = true;
+            rightPoint.useAuxPID = true;
+            leftPoint.auxiliaryPos = tjPoint.heading;
+            rightPoint.auxiliaryPos = tjPoint.heading;
             leftPoint.velocity = leftTransmission.convertOutputVelocityToSensor(tjPoint.leftVelocity);
             rightPoint.velocity = rightTransmission.convertOutputVelocityToSensor(tjPoint.rightVelocity);
             leftPoint.zeroPos = (i == 0);
@@ -506,6 +557,11 @@ public class Drive extends Subsystem {
         rightDrive.startMotionProfile(m_rightTrajectoryBuffer, RobotMap.DRIVE_MIN_TRAJ_POINTS,
                 ControlMode.MotionProfile);
 
+    }
+
+    // Sets the current pigeon angle to the given one (in degrees)
+    public void setPigeonAngle(double angle) {
+        pigeon.setYaw(angle);
     }
 
     public boolean isProfileFinished() {

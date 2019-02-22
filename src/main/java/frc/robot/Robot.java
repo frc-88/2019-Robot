@@ -125,7 +125,10 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
+
     m_autonomousCommand = m_chooser.getSelected();
+
+    m_drive.setPigeonAngle(180);
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
