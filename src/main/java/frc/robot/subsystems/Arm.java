@@ -312,6 +312,11 @@ public class Arm extends Subsystem {
     return isSafePosition(targetShoulderAngle, targetElbowAngle, false);
   }
 
+  public boolean isSafePosition(double [] target) {
+    // default no HAB zone restrictions
+    return isSafePosition(target[0], target[1], false);
+  }
+
   public boolean isSafePosition(double targetShoulderAngle, double targetElbowAngle, boolean inHabZone) {
     double shoulderX = SHOULDER_LENGTH * Math.sin(Math.toRadians(targetShoulderAngle));
     double shoulderY = SHOULDER_LENGTH * Math.cos(Math.toRadians(targetShoulderAngle));

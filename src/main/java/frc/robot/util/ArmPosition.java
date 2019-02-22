@@ -10,7 +10,7 @@ package frc.robot.util;
 /**
  * Add your docs here.
  */
-public class ArmPosition {
+public final class ArmPosition {
     public static final double [] HOME = {160, 10};
     public static final double [] START = {165, 0};
     public static final double [] INTAKE = {160, 85};
