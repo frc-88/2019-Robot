@@ -76,7 +76,10 @@ public class SAPG extends Subsystem implements PIDSource {
         sapgTalon.setNeutralMode(NeutralMode.Coast);
         sapgTalon.setInverted(false);
         sapgTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog);
+        setLimits();
+    }
 
+    private void setLimits() {
         sapgTalon.configForwardSoftLimitThreshold(forwardLimit);
         sapgTalon.configReverseSoftLimitThreshold(reverseLimit);
         sapgTalon.configForwardSoftLimitEnable(true);
@@ -101,6 +104,7 @@ public class SAPG extends Subsystem implements PIDSource {
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
+        setLimits();
     }
 
     private double getNormalizedPosition() {
@@ -113,15 +117,15 @@ public class SAPG extends Subsystem implements PIDSource {
 
     private double dampNearLimits(double position, double value) {
         // apply linear damping function near our limits
-        if (Math.abs(position) > 0.9) {
-            value *= (1 - Math.abs(position)) * 10;
-        }
+        // if (Math.abs(position) > 0.9) {
+        //     value *= (1 - Math.abs(position)) * 10;
+        // }
 
         return value;
     }
 
     public void set(double percentOutput) {
-        sapgTalon.set(ControlMode.PercentOutput, dampNearLimits(percentOutput));
+        sapgTalon.set(ControlMode.PercentOutput, percentOutput);
     }
 
     public void openTheJaws() {
