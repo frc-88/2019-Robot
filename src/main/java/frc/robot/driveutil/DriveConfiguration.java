@@ -36,6 +36,15 @@ public class DriveConfiguration {
         _talonMaster.primaryPID.selectedFeedbackSensor = FeedbackDevice.QuadEncoder; 
         _talonMaster.neutralDeadband = 0.01;
         _talonMaster.voltageCompSaturation = 12;
+        _talonMaster.auxiliaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
+
+        _talonMaster.slot0.kP = 0;
+        _talonMaster.slot0.kI = 0;
+        _talonMaster.slot0.kD = 0;
+
+        _talonMaster.slot1.kP = 0;
+        _talonMaster.slot1.kI = 0;
+        _talonMaster.slot1.kD = 0;
 
         left.masterConfiguration = _talonMaster;
         right.masterConfiguration = _talonMaster;
