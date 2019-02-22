@@ -44,8 +44,8 @@ public class Arm extends Subsystem {
   private final static double ROBOT_FORWARD_LIMIT = 5;
   private final static double ROBOT_REVERSE_LIMIT = 15;
 
-  private final static int SHOULDER_OFFSET = -1640;
-  private final static int ELBOW_OFFSET = 3665;
+  private final static int SHOULDER_OFFSET = -5043;
+  private final static int ELBOW_OFFSET = 433;
 
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
