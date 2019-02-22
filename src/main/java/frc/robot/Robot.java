@@ -175,6 +175,8 @@ public class Robot extends TimedRobot {
 
     m_drive.setPigeonAngle(180);
 
+    m_drive.setPigeonAngle(180);
+
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
      * switch(autoSelected) { case "My Auto": autonomousCommand = new
