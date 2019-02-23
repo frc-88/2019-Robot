@@ -135,9 +135,9 @@ public class Drive extends Subsystem {
         rightDrive = new TJDriveModule(driveConfiguration.right, rightTransmission);
 
         leftDrive.configAuxPIDPolarity(true);
-        rightDrive.configAuxPIDPolarity(false)
-        leftDrive.configRemoteFeedbackFilter(RobotMap.PIDEGON_ID, RemoteSensorSource.Pigeon_Yaw, 0);
-        rightDrive.configRemoteFeedbackFilter(RobotMap.PIDEGON_ID, RemoteSensorSource.Pigeon_Yaw, 0);
+        rightDrive.configAuxPIDPolarity(false);
+        leftDrive.configRemoteFeedbackFilter(RobotMap.PIDGEON_ID, RemoteSensorSource.Pigeon_Yaw, 0);
+        rightDrive.configRemoteFeedbackFilter(RobotMap.PIDGEON_ID, RemoteSensorSource.Pigeon_Yaw, 0);
 
         pigeon = new PigeonIMU(RobotMap.PIDGEON_ID);
         pigeon.configFactoryDefault();
@@ -250,12 +250,12 @@ public class Drive extends Subsystem {
         Robot.dashboardScheduler.addFunction(() -> {
             double newGyroP = sbGyroP.getDouble(driveConfiguration.left.masterConfiguration.slot1.kP);
             if (newGyroP != gyroKP) {
-                gryoKP = newGyroP;
-                leftDrive.config_kP(1, gryoKP);
+                gyroKP = newGyroP;
+                leftDrive.config_kP(1, gyroKP);
                 rightDrive.config_kP(1, gyroKP);
             }
         });
-        sbGyroI = Shuffleboard.getTab("DrivePro").add("G_I", GyroKI).getEntry();
+        sbGyroI = Shuffleboard.getTab("DrivePro").add("G_I", gyroKI).getEntry();
         Robot.dashboardScheduler.addFunction(() -> {
             double newGyroI = sbGyroI.getDouble(driveConfiguration.left.masterConfiguration.slot1.kI);
             if (newGyroI != gyroKI) {
@@ -264,7 +264,7 @@ public class Drive extends Subsystem {
                 rightDrive.config_kI(1, gyroKI);
             }
         });
-        sbGyroD = Shuffleboard.getTab("DrivePro").add("G_D", GyroKD).getEntry();
+        sbGyroD = Shuffleboard.getTab("DrivePro").add("G_D", gyroKD).getEntry();
         Robot.dashboardScheduler.addFunction(() -> {
             double newGyroD = sbGyroD.getDouble(driveConfiguration.left.masterConfiguration.slot1.kD);
             if (newGyroD != gyroKD) {
@@ -415,15 +415,9 @@ public class Drive extends Subsystem {
 
     }
 
-    /*
-     * 
-     * Old versions of arcade drive:
-     * 
-     * public void arcadeDrive(double speed, double turn) { double leftSpeed = speed
-     * + turn; double rightSpeed = speed - turn; basicDrive(leftSpeed, rightSpeed);
-     * 
-     * }
-     */
+    public void stop() {
+        this.basicDrive(0, 0);
+    }
 
     public void resetVelocityPID() {
         leftVelocityController.reset();

@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.commands.drive.DriveProfile;
+import frc.robot.driveutil.DriveProfiles;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
@@ -53,6 +54,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    //DriveProfiles.init();
+
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
     m_drive = new Drive();
@@ -121,7 +125,8 @@ public class Robot extends TimedRobot {
     //m_sapg.enable();
     m_arm.configureBrakeMode();
 
-    m_autonomousCommand = m_chooser.getSelected();
+    //m_autonomousCommand = m_chooser.getSelected();
+    m_autonomousCommand = new DriveProfile(DriveProfiles.straightTest);
 
     m_drive.setPigeonAngle(180);
 
