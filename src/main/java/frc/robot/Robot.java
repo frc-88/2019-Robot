@@ -23,6 +23,8 @@ import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberClimb2;
 import frc.robot.commands.climber.ClimberFullPrep;
 import frc.robot.commands.climber.ClimberFullPrep2;
+import frc.robot.commands.drive.DriveProfile;
+import frc.robot.driveutil.DriveProfiles;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
@@ -75,6 +77,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 
     CameraServer.getInstance().startAutomaticCapture();
+    //DriveProfiles.init();
 
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
@@ -168,6 +171,7 @@ public class Robot extends TimedRobot {
     m_limelight_sapg.camDriver();
 
     m_navx.zeroPitch();
+    //m_autonomousCommand = new DriveProfile(DriveProfiles.straightTest);
 
     m_drive.setPigeonAngle(180);
 
