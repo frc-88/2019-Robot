@@ -59,15 +59,9 @@ public class SAPG extends PIDSubsystem {
         initPreferences();
         fetchPreferences();
         configureTalon();
+        configurePIDController();
 
         home = sapgTalon.getSelectedSensorPosition();
-
-        getPIDController().setPID(trackP, trackI, trackD);
-        setOutputRange(-1, 1);
-        setInputRange(-TRACK_ANGLE_THRESHOLD, TRACK_ANGLE_THRESHOLD);
-        setAbsoluteTolerance(1);
-        setSetpoint(0);
-        disable();
     }
 
     private void configureTalon() {
@@ -80,6 +74,16 @@ public class SAPG extends PIDSubsystem {
         sapgTalon.configReverseSoftLimitThreshold(reverseLimit);
         sapgTalon.configForwardSoftLimitEnable(true);
         sapgTalon.configReverseSoftLimitEnable(true);
+    }
+
+    private void configurePIDController() {
+        disable();
+        getPIDController().reset();
+        getPIDController().setPID(trackP, trackI, trackD);
+        setOutputRange(-1, 1);
+        setInputRange(-TRACK_ANGLE_THRESHOLD, TRACK_ANGLE_THRESHOLD);
+        setAbsoluteTolerance(1);
+        setSetpoint(0);
     }
 
     private void initPreferences() {
@@ -100,6 +104,7 @@ public class SAPG extends PIDSubsystem {
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
 
         configureTalon();
+        configurePIDController();
     }
 
     private double getNormalizedPosition() {
