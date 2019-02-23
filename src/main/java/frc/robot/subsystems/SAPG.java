@@ -98,6 +98,8 @@ public class SAPG extends PIDSubsystem {
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
+
+        configureTalon();
     }
 
     private double getNormalizedPosition() {
