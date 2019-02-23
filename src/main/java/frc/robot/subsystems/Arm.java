@@ -69,10 +69,10 @@ public class Arm extends Subsystem {
 
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
-    shoulder.config_kP(MAIN_SLOT_IDX, 4, TIMEOUTMS);
+    shoulder.config_kP(MAIN_SLOT_IDX, 16, TIMEOUTMS);
     shoulder.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    shoulder.config_kF(MAIN_SLOT_IDX, 1.5, TIMEOUTMS);
+    shoulder.config_kF(MAIN_SLOT_IDX, 6, TIMEOUTMS);
     shoulder.configMotionCruiseVelocity(RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
     shoulder.configMotionAcceleration(2 * RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
     shoulder.setInverted(true);
@@ -179,6 +179,18 @@ public class Arm extends Subsystem {
     elbow.set(ControlMode.PercentOutput, 0.0);
   }
 
+  /**
+   * When set, feedforward is reduced on the shoulder because it will be
+   * lifting a lot of weight (how else do you think it got so beefy?)
+   */
+  public void liftMode(boolean on) {
+    if (on) {
+      shoulder.config_kF(0, 32);
+    } else {
+      shoulder.config_kF(0, 16);
+    }
+  }
+
   public void pidPitch(double pitch) {
     setShoulder(-pitchPID.calculateOutput(Robot.m_navx.getPitch(), pitch));
   }
@@ -227,6 +239,11 @@ public class Arm extends Subsystem {
 
   public int convertElbowDegreesToMotor(double degrees) {
     return (int) degrees * 4 * 4096 / 360 + elbowOffset * 4;
+  }
+
+  public boolean targetReached() {
+    return Math.abs(convertMotorShoulderToDegrees(shoulder.getClosedLoopError())) < RobotMap.ARM_TOLERANCE
+        && Math.abs(convertMotorElbowToDegrees(elbow.getClosedLoopError())) < RobotMap.ARM_TOLERANCE;
   }
 
   public void setShoulderSpeed(int speed) {

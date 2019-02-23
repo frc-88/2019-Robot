@@ -90,4 +90,8 @@ public class Climber extends Subsystem {
   public void zeroEncoder(){
     winch.setSelectedSensorPosition(0);
   }
+
+  public boolean targetReached() {
+    return Math.abs((winch.getClosedLoopError() * 1.)/RobotMap.CLIMBER_TICKS_PER_INCH) < RobotMap.CLIMBER_TOLERANCE;
+  }
 }
