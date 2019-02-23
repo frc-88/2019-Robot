@@ -94,7 +94,7 @@ public class RobotMap {
   public static final double MAX_SPEED_LOW = 6;
   public static final double MAX_SPEED_HIGH = 13;
   public static final double DRIVE_CURRENT_LIMIT = 200;
-  public static final double MAX_ACCEL_LOW = 2.5;
+  public static final double MAX_ACCEL_LOW = 2.2;
   public static final double MAX_ACCEL_HIGH = 5;
 
   public static final double SHIFT_INTO_LOW_GEAR = 4;

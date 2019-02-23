@@ -103,7 +103,16 @@ public class SAPG extends PIDSubsystem {
     }
 
     private double getNormalizedPosition() {
-        return ((double)(sapgTalon.getSelectedSensorPosition() - reverseLimit) / (double)(forwardLimit - reverseLimit)) * 2 - 1;
+        double normPos = ((double)(sapgTalon.getSelectedSensorPosition() - reverseLimit) / (double)(forwardLimit - reverseLimit)) * 2 - 1;
+        
+        if (normPos < -1) {
+            normPos = -1;
+        } 
+        
+        if (normPos > 1) {
+            normPos = 1;
+        }
+        return normPos;
     }
 
     private double dampNearLimits(double value) {
@@ -112,8 +121,8 @@ public class SAPG extends PIDSubsystem {
 
     private double dampNearLimits(double position, double value) {
         // apply linear damping function near our limits
-        if (Math.abs(position) > 0.9) {
-            value *= (1 - Math.abs(position)) * 10;
+        if (Math.abs(position) > 0.8 && Math.signum(position) == Math.signum(value)) {
+            value *= (1 - Math.abs(position)) * 5;
         }
 
         return value;

@@ -366,4 +366,22 @@ public class Arm extends Subsystem {
     return isSafe;
   }
 
+  public double getArmDistanceFromBase() {
+    double supportX = 0;
+    double supportY = ARM_HEIGHT;
+    double shoulderX = SHOULDER_LENGTH * Math.cos(getMotorShoulderDegrees());
+    double shoulderY = SHOULDER_LENGTH * Math.sin(getMotorShoulderDegrees());
+    double elbowX = ELBOW_LENGTH * Math.cos(getMotorElbowDegrees());
+    double elbowY = ELBOW_LENGTH * Math.sin(getMotorElbowDegrees());
+
+    double x1 = supportX + shoulderX + elbowX;
+    double y1 = supportY + shoulderY + elbowY;
+
+    double x2 = supportX + shoulderX;
+    double y2 = supportY + shoulderY;
+
+    return Math.max(Math.sqrt(x1*x1 + y1*y1), Math.sqrt(x2*x2 + y2*y2));
+
+  }
+
 }
