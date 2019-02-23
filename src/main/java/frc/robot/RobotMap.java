@@ -59,7 +59,7 @@ public class RobotMap {
   public static final int SAPG_DEPLOY_PCM = 21;
   public static final int SAPG_GRAB_PCM = 21;
   public static final int SAPG_MOTOR_ID = 06;
-  public static final int SAPG_PANEL_IR_ID = 1;
+  public static final int SAPG_PANEL_IR_ID = 2;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;
@@ -95,7 +95,10 @@ public class RobotMap {
   public static final double MAX_SPEED_HIGH = 13;
   public static final double DRIVE_CURRENT_LIMIT = 200;
   public static final double MAX_ACCEL_LOW = 2.2;
-  public static final double MAX_ACCEL_HIGH = 5;
+  public static final double MAX_ACCEL_HIGH = 4.5;
+  public static final double MAX_ACCEL_LOW_TIPPY = 1.8;
+  public static final double MAX_ACCEL_HIGH_TIPPY = 3.5;
+  public static final double ARM_TIPPY_DISTANCE = 66;
 
   public static final double SHIFT_INTO_LOW_GEAR = 4;
   public static final double SHIFT_INTO_HIGH_GEAR = 5.4;
@@ -108,11 +111,14 @@ public class RobotMap {
   public static final double DRIVE_VEL_HIGH_IZONE = 0;
   public static final double DRIVE_VEL_HIGH_IMAX = 0;
 
+  public static final int DRIVE_SPEED_EXP = 3;
+  public static final int DRIVE_TURN_EXP = 2;
+
   public static final int DRIVE_MIN_TRAJ_POINTS = 10;
 
   // Arm
   public static final double ARM_TOLERANCE = 1;
-  public static final int SHOULDER_MAX_SPEED = 40;
+  public static final int SHOULDER_MAX_SPEED = 80;
   public static final int ELBOW_MAX_SPEED = 80;
 
   // Climber

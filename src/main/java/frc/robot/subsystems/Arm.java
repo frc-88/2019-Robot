@@ -34,6 +34,7 @@ public class Arm extends Subsystem {
   private final static double LEGAL_EXTENSION = 30;
   private final static double LEGAL_REACH = ROBOT_LENGTH / 2 + LEGAL_EXTENSION;
   private final static double PLATFORM_HEIGHT = 3;
+  private final static double CALEF_INCH = 1;
   // TODO - check below constants against reality, above have been checked
   private final static double ROBOT_TOP_LIMIT = 0;
   private final static double ROBOT_FORWARD_LIMIT = 5;
@@ -50,8 +51,8 @@ public class Arm extends Subsystem {
 
   private TalonSRX shoulder, elbow;
   private TJPIDController pitchPID;
-  private int shoulderOffset = -1640;
-  private int elbowOffset = 3665;
+  private int shoulderOffset = -940;
+  private int elbowOffset = 415;
 
 
   public Arm() {
@@ -69,10 +70,10 @@ public class Arm extends Subsystem {
 
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
-    shoulder.config_kP(MAIN_SLOT_IDX, 16, TIMEOUTMS);
+    shoulder.config_kP(MAIN_SLOT_IDX, 8, TIMEOUTMS);
     shoulder.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    shoulder.config_kF(MAIN_SLOT_IDX, 6, TIMEOUTMS);
+    shoulder.config_kF(MAIN_SLOT_IDX, 3, TIMEOUTMS);
     shoulder.configMotionCruiseVelocity(RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
     shoulder.configMotionAcceleration(2 * RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
     shoulder.setInverted(true);
@@ -104,6 +105,16 @@ public class Arm extends Subsystem {
     talon.configPeakOutputReverse(-1.0, TIMEOUTMS);
     talon.configNeutralDeadband(0.01, TIMEOUTMS);
     talon.setNeutralMode(NeutralMode.Brake);
+  }
+
+  public void configureBrakeMode() {
+    shoulder.setNeutralMode(NeutralMode.Brake);
+    elbow.setNeutralMode(NeutralMode.Brake);
+  }
+
+  public void configureCoastMode() {
+    shoulder.setNeutralMode(NeutralMode.Coast);
+    elbow.setNeutralMode(NeutralMode.Coast);
   }
 
   private void initPreferences() {
@@ -160,6 +171,7 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("Arm:elbowSetPoint", elbow.getActiveTrajectoryPosition());
     SmartDashboard.putBoolean("Arm:isSafe?", isSafePosition());
     SmartDashboard.putBoolean("Arm:isSafe(HAB)?", isSafePosition(true));
+    SmartDashboard.putNumber("Arm:distFromBase", getDistanceFromBase());
 
     pitchPID.setKP(SmartDashboard.getNumber("arm:pitchKP", pitchPID.getKP()));
     pitchPID.setKD(SmartDashboard.getNumber("arm:pitchKD", pitchPID.getKD()));
@@ -185,9 +197,9 @@ public class Arm extends Subsystem {
    */
   public void liftMode(boolean on) {
     if (on) {
-      shoulder.config_kF(0, 32);
-    } else {
       shoulder.config_kF(0, 16);
+    } else {
+      shoulder.config_kF(0, 8);
     }
   }
 
@@ -295,7 +307,7 @@ public class Arm extends Subsystem {
   */
   public void zeroShoulderMotorEncoder() {
     double auxEncoderPos = convertShoulderToDegrees(getShoulderAbsolutePosition());
-    double normalizedPos = auxEncoderPos > 0 ? 
+    double normalizedPos = (auxEncoderPos + 180) > 0 ? 
         (auxEncoderPos + 180) % 360. - 180 : 
         (auxEncoderPos + 180) % 360. + 180;
     int encoderPos = convertShoulderDegreesToMotor(normalizedPos);
@@ -341,6 +353,11 @@ public class Arm extends Subsystem {
     double elbowY = ELBOW_LENGTH * Math.cos(Math.toRadians(targetElbowAngle)) + shoulderY;
     boolean isSafe = true;
 
+    SmartDashboard.putNumber("Arm:shoulderX", shoulderX);
+    SmartDashboard.putNumber("Arm:shoulderY", shoulderY);
+    SmartDashboard.putNumber("Arm:elbowX", elbowX);
+    SmartDashboard.putNumber("Arm:elbowY", elbowY);
+
     // both points must be above the ground
     isSafe &= shoulderY > 0 - ARM_HEIGHT;
     isSafe &= elbowY > 0 - ARM_HEIGHT;
@@ -354,8 +371,10 @@ public class Arm extends Subsystem {
     isSafe &= Math.abs(elbowX) < LEGAL_REACH;
 
     // both points must be below the height limit in certain conditions
-    isSafe &= inHabZone && shoulderY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT - PLATFORM_HEIGHT;
-    isSafe &= inHabZone && elbowY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT - PLATFORM_HEIGHT;
+    if (inHabZone) {
+      isSafe &= shoulderY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT - PLATFORM_HEIGHT;
+      isSafe &= elbowY < LEGAL_HEIGHT_LIMIT - ARM_HEIGHT - PLATFORM_HEIGHT;
+    }
 
     // TODO angles should be within range
     // isSafe &= targetShoulderAngle < FORWARD_SHOULDER_LIMIT;
@@ -366,13 +385,13 @@ public class Arm extends Subsystem {
     return isSafe;
   }
 
-  public double getArmDistanceFromBase() {
+  public double getDistanceFromBase() {
     double supportX = 0;
     double supportY = ARM_HEIGHT;
-    double shoulderX = SHOULDER_LENGTH * Math.cos(getMotorShoulderDegrees());
-    double shoulderY = SHOULDER_LENGTH * Math.sin(getMotorShoulderDegrees());
-    double elbowX = ELBOW_LENGTH * Math.cos(getMotorElbowDegrees());
-    double elbowY = ELBOW_LENGTH * Math.sin(getMotorElbowDegrees());
+    double shoulderX = SHOULDER_LENGTH * Math.sin(Math.toRadians(getMotorShoulderDegrees()));
+    double shoulderY = SHOULDER_LENGTH * Math.cos(Math.toRadians(getMotorShoulderDegrees()));
+    double elbowX = ELBOW_LENGTH * Math.sin(Math.toRadians(getMotorElbowDegrees()));
+    double elbowY = ELBOW_LENGTH * Math.cos(Math.toRadians(getMotorElbowDegrees()));
 
     double x1 = supportX + shoulderX + elbowX;
     double y1 = supportY + shoulderY + elbowY;

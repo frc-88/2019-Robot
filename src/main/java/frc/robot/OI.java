@@ -31,10 +31,12 @@ import frc.robot.commands.sapg.SAPGBasicControl;
 import frc.robot.commands.sapg.SAPGClose;
 import frc.robot.commands.sapg.SAPGDeploy;
 import frc.robot.commands.sapg.SAPGGrabPanel;
+import frc.robot.commands.sapg.SAPGGrabPanelAwesome;
 import frc.robot.commands.sapg.SAPGLoadPreferences;
 import frc.robot.commands.sapg.SAPGOpen;
 import frc.robot.commands.sapg.SAPGRetract;
 import frc.robot.commands.sapg.SAPGScorePanel;
+import frc.robot.commands.sapg.SAPGScorePanelAwesome;
 import frc.robot.commands.sapg.SAPGTrackStart;
 import frc.robot.commands.sapg.SAPGTrackStop;
 import frc.robot.driveutil.DriveUtils;
@@ -60,16 +62,19 @@ public class OI {
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105, 35));
-    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToPosition(105, 35));
+    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToPosition(-98, -26));
     new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(85, 0));
-    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(85, 0));
+    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(-85, 0));
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(28, 0));
-    new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(28, 0));
+    new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(-30, 0));
     new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(160, 10));
     new JoystickButton(buttonBox, 13).whileHeld(new IntakeLoadCargo(1));
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(164, 80)));
-    new JoystickButton(buttonBox, 12).whenPressed(new HavePanelCommand(new SAPGScorePanel(), new SAPGGrabPanel()));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(164, 85)));
+    new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
+    new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
+    new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
+    new JoystickButton(buttonBox, 11).whenReleased(new SAPGScorePanelAwesome());
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:

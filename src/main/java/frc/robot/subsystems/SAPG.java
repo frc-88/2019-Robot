@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.util.SharpIR;
 
 /**
@@ -43,7 +44,7 @@ public class SAPG extends PIDSubsystem {
     private double trackD = TRACK_PID_DFT_D;
     private int forwardLimit = 1010;
     private int reverseLimit = 80;
-    private double panelThreshold = 6.0;
+    private double panelThreshold = 4.5;
     private int center = reverseLimit + (forwardLimit - reverseLimit) / 2;
     private int home = center;
     private int ticksSinceTargetLost = 0;
@@ -157,6 +158,10 @@ public class SAPG extends PIDSubsystem {
         return (grabPiston.get() == Value.kForward) && (panelDetector.getDistance() < panelThreshold);
     }
 
+    public double getPanelDistance() {
+        return panelDetector.getDistance();
+    }
+
     public void updateDashboard() {
         SmartDashboard.putNumber("SAPG:Position", sapgTalon.getSelectedSensorPosition());
         SmartDashboard.putNumber("SAPG:Voltage", sapgTalon.getMotorOutputVoltage());
@@ -166,6 +171,7 @@ public class SAPG extends PIDSubsystem {
         SmartDashboard.putBoolean("SAPG:Tracking", getPIDController().isEnabled());
         SmartDashboard.putBoolean("SAPG:HasPanel", hasPanel());
         SmartDashboard.putBoolean("SAPG:OnTarget", onTarget());
+        SmartDashboard.putNumber("SAPG:PanelDistance", getPanelDistance());
 
         // write prefs back to the dashboard
         SmartDashboard.putNumber("SAPG:Track_P", trackP);
@@ -178,7 +184,7 @@ public class SAPG extends PIDSubsystem {
 
     @Override
     protected void initDefaultCommand() {
-        // No default command
+        setDefaultCommand(new SAPGDefault());
     }
 
     @Override
