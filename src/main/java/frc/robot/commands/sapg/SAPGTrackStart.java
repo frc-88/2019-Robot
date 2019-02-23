@@ -20,12 +20,12 @@ public class SAPGTrackStart extends InstantCommand {
   public SAPGTrackStart() {
     super();
     requires(Robot.m_sapg);
-    Robot.m_sapg.enable();
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
+    Robot.m_sapg.enable();
   }
 
 }

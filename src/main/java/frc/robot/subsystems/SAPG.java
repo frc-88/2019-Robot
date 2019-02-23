@@ -42,7 +42,7 @@ public class SAPG extends PIDSubsystem {
     private double trackI = TRACK_PID_DFT_I;
     private double trackD = TRACK_PID_DFT_D;
     private int forwardLimit = 1010;
-    private int reverseLimit = 680;
+    private int reverseLimit = 80;
     private double panelThreshold = 6.0;
     private int center = reverseLimit + (forwardLimit - reverseLimit) / 2;
     private int home = center;
@@ -52,13 +52,13 @@ public class SAPG extends PIDSubsystem {
         super("SAPG", TRACK_PID_DFT_P, TRACK_PID_DFT_I, TRACK_PID_DFT_D, TRACK_PID_PERIOD);
 
         sapgTalon = new WPI_TalonSRX(RobotMap.SAPG_MOTOR_ID);
-        configureTalon();
         deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
         panelDetector = new SharpIR(RobotMap.SAPG_PANEL_IR_ID);
 
         initPreferences();
         fetchPreferences();
+        configureTalon();
 
         home = sapgTalon.getSelectedSensorPosition();
 
@@ -101,7 +101,7 @@ public class SAPG extends PIDSubsystem {
     }
 
     private double getNormalizedPosition() {
-        return ((sapgTalon.getSelectedSensorPosition() - reverseLimit) / (forwardLimit - reverseLimit)) * 2 - 1;
+        return ((double)(sapgTalon.getSelectedSensorPosition() - reverseLimit) / (double)(forwardLimit - reverseLimit)) * 2 - 1;
     }
 
     private double dampNearLimits(double value) {
@@ -197,7 +197,8 @@ public class SAPG extends PIDSubsystem {
             }
         }
 
-        return dampNearLimits(position, angle);
+        //return dampNearLimits(position, angle);
+        return angle;
     }
 
     @Override
