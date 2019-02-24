@@ -17,7 +17,7 @@ public class SAPGGrabPanelAwesome extends Command {
   private long startTime;
   private final long PUSH_TIME = 500000; // microseconds
   private final long CLOSE_TIME = 500000; // microseconds
-  private final double STOP_DISTANCE = 8; // inches
+  private final double STOP_DISTANCE = 7; // inches
 
   public SAPGGrabPanelAwesome() {
     requires(Robot.m_drive);

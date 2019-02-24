@@ -310,11 +310,11 @@ public class Drive extends Subsystem {
         DriveUtils.signedPow(speed, RobotMap.DRIVE_SPEED_EXP);
         DriveUtils.signedPow(turn, RobotMap.DRIVE_TURN_EXP);
 
-        turn = DriveUtils.cheesyTurn(speed, turn);
+        // turn = DriveUtils.cheesyTurn(speed, turn);
 
-        if (SmartDashboard.getBoolean("ReverseTurnKyle", false) && speed < 0) {
-            turn *= -1;
-        }
+        // if (SmartDashboard.getBoolean("ReverseTurnKyle", true) && getStraightSpeed() < 0.2) {
+        //     turn *= -1;
+        // }
 
         // speed = DriveUtils.signedPow(speed, 3);
         // turn = DriveUtils.signedPow(speed, 3);
