@@ -222,7 +222,7 @@ public class Drive extends Subsystem {
             }
         });
 
-        SmartDashboard.putBoolean("ReverseTurnKyle", false);
+        SmartDashboard.putBoolean("ReverseTurnKyle", true);
     }
 
     public void updateShuffleboard() {
