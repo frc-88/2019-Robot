@@ -23,8 +23,10 @@ import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberMove;
 import frc.robot.commands.intake.IntakeBasicControl;
+import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.commands.intake.IntakeEjectCargo;
 import frc.robot.commands.intake.IntakeLoadCargo;
+import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.sapg.SAPGBasicControl;
@@ -59,6 +61,8 @@ public class OI {
 
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
+    new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(.25));
+    new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(-.25));
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105, 35));
@@ -68,7 +72,8 @@ public class OI {
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(28, 0));
     new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(-30, 0));
     new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(160, 10));
-    new JoystickButton(buttonBox, 13).whileHeld(new IntakeLoadCargo(1));
+    new JoystickButton(buttonBox, 17).whenPressed(new IntakeLoadCargo(1));
+    new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(164, 85)));
     new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());

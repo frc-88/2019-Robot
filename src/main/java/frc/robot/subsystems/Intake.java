@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.*;
+import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.util.SharpIR;
 
 public class Intake extends Subsystem {
@@ -51,8 +52,7 @@ public class Intake extends Subsystem {
     }
 
     public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        // setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new IntakeDefault());
 
     }
 
