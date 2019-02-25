@@ -10,8 +10,8 @@ package frc.robot.commands.sapg;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class SAPGBasicControl extends Command {
-  public SAPGBasicControl() {
+public class SAPGDefault extends Command {
+  public SAPGDefault() {
     requires(Robot.m_sapg);
   }
 
@@ -23,7 +23,10 @@ public class SAPGBasicControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_sapg.set(Robot.m_oi.getOperatorRightXAxis());
+    if (!Robot.m_sapg.hasPanel()) {
+      Robot.m_sapg.close();
+    }
+    Robot.m_sapg.reversePush();
   }
 
   // Make this return true when this Command no longer needs to run execute()

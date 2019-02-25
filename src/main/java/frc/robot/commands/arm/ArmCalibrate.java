@@ -5,27 +5,32 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
 /**
- * Add your docs here.
+ * ArmCalibrate
+ * 
+ * This command is used to calibrate the arm.
+ * First, pose the arm so that both joints are
+ * pointed straight up. Hold that position and
+ * run the ArmCalibrate command.
  */
-public class SAPGTrackStart extends InstantCommand {
+public class ArmCalibrate extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public SAPGTrackStart() {
+  public ArmCalibrate() {
     super();
-    requires(Robot.m_sapg);
+    requires(Robot.m_arm);
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_sapg.enable();
+    Robot.m_arm.calibrate();
   }
 
 }

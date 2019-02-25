@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.drive.ArcadeDrive;
@@ -65,7 +66,6 @@ public class Drive extends Subsystem {
     private NetworkTableEntry sbCurrentLimit;
     private NetworkTableEntry sbLeftCommandedSpeed;
     private NetworkTableEntry sbRightCommandedSpeed;
-    private NetworkTableEntry sbMaxAccel;
     private NetworkTableEntry sbVelKp;
     private NetworkTableEntry sbVelKi;
     private NetworkTableEntry sbVelKd;
@@ -83,7 +83,6 @@ public class Drive extends Subsystem {
 
     private DriveConstantVoltage constantDriveTestCommand;
     private double currentLimit = RobotMap.DRIVE_CURRENT_LIMIT;
-    private double maxAccel = RobotMap.MAX_ACCEL_LOW;
 
     private double moProKP;
     private double moProKI;
@@ -173,7 +172,6 @@ public class Drive extends Subsystem {
         Robot.dashboardScheduler.addFunction(() -> sbRightPredictedCurrentDraw.setDouble(rightTransmission
                 .getCurrentDraw(rightDrive.getMotorOutputVoltage(), rightDrive.getSelectedSensorVelocity())));
         sbCurrentLimit = Shuffleboard.getTab("TestDrive").add("Current Limit", currentLimit).getEntry();
-        sbMaxAccel = Shuffleboard.getTab("TestDrive").add("Max Accel", maxAccel).getEntry();
 
         // Velocity PID tuning
         sbVelKp = Shuffleboard.getTab("DriveVel").add("kP", RobotMap.DRIVE_VEL_LOW_KP).getEntry();
@@ -223,6 +221,8 @@ public class Drive extends Subsystem {
                 rightDrive.config_kD(0, moProKD);
             }
         });
+
+        SmartDashboard.putBoolean("ReverseTurnKyle", true);
     }
 
     public void updateShuffleboard() {
@@ -246,11 +246,6 @@ public class Drive extends Subsystem {
         // startTime = RobotController.getFPGATime();
         constantDriveTestCommand.setVoltage(sbTestDriveVoltage.getDouble(0));
         currentLimit = sbCurrentLimit.getDouble(RobotMap.DRIVE_CURRENT_LIMIT);
-        if (resetFromShift) {
-            sbMaxAccel.setDouble(maxAccel);
-        } else {
-            maxAccel = sbMaxAccel.getDouble(RobotMap.MAX_ACCEL_LOW);
-        }
         // System.out.println("Voltage Command status: " +
         // (RobotController.getFPGATime()-startTime));
 
@@ -312,6 +307,15 @@ public class Drive extends Subsystem {
         turn *= maxSpeed;
         joystickSpeed = speed;
 
+        DriveUtils.signedPow(speed, RobotMap.DRIVE_SPEED_EXP);
+        DriveUtils.signedPow(turn, RobotMap.DRIVE_TURN_EXP);
+
+        // turn = DriveUtils.cheesyTurn(speed, turn);
+
+        // if (SmartDashboard.getBoolean("ReverseTurnKyle", true) && getStraightSpeed() < 0.2) {
+        //     turn *= -1;
+        // }
+
         // speed = DriveUtils.signedPow(speed, 3);
         // turn = DriveUtils.signedPow(speed, 3);
 
@@ -327,6 +331,21 @@ public class Drive extends Subsystem {
     }
 
     public double limitAcceleration(double speed) {
+        double maxAccel;
+        if (isInHighGear()) {
+            if (Robot.m_arm.getDistanceFromBase() >= RobotMap.ARM_TIPPY_DISTANCE) {
+                maxAccel = RobotMap.MAX_ACCEL_HIGH_TIPPY;
+            } else {
+                maxAccel = RobotMap.MAX_ACCEL_HIGH;
+            }
+        } else {
+            if (Robot.m_arm.getDistanceFromBase() >= RobotMap.ARM_TIPPY_DISTANCE) {
+                maxAccel = RobotMap.MAX_ACCEL_LOW_TIPPY;
+            } else {
+                maxAccel = RobotMap.MAX_ACCEL_LOW;
+            }
+        }
+
         if (speed - getStraightSpeed() > 0) {
             double vel = getStraightSpeed() + maxAccel;
             if (speed < vel) {
@@ -411,7 +430,6 @@ public class Drive extends Subsystem {
         rightVelocityController.setKD(RobotMap.DRIVE_VEL_LOW_KD);
         rightVelocityController.setIZone(RobotMap.DRIVE_VEL_LOW_IZONE);
         rightVelocityController.setIMax(RobotMap.DRIVE_VEL_LOW_IMAX);
-        maxAccel = RobotMap.MAX_ACCEL_LOW;
         resetFromShift = true;
     }
 
@@ -430,7 +448,6 @@ public class Drive extends Subsystem {
         rightVelocityController.setKD(RobotMap.DRIVE_VEL_HIGH_KD);
         rightVelocityController.setIZone(RobotMap.DRIVE_VEL_HIGH_IZONE);
         rightVelocityController.setIMax(RobotMap.DRIVE_VEL_HIGH_IMAX);
-        maxAccel = RobotMap.MAX_ACCEL_HIGH;
         resetFromShift = true;
     }
 

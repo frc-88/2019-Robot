@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -41,13 +40,12 @@ public class Robot extends TimedRobot {
   public static Drive m_drive;
   public static OI m_oi;
   public static Intake m_intake;
+  public static Compressor compressor;
 
   public static TimeScheduler dashboardScheduler;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-
-  public static Compressor compressor;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -55,15 +53,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
-
     m_navx = new NavX();
     m_drive = new Drive();
     m_climber = new Climber();
     m_intake = new Intake();
-
-    //m_limelight_front = new Limelight("limelight-front");
     m_limelight_sapg = new Limelight("limelight-sapg");
     m_arm = new Arm();
     m_sapg = new SAPG();
@@ -88,8 +82,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    //m_limelight_front.updateDashboard();
-    //m_limelight_rear.updateDashboard();
     writeDashboard();
   }
 
@@ -102,7 +94,8 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    m_sapg.disableTracking();
+    m_sapg.disable();
+    m_arm.configureCoastMode();
   }
 
   @Override
@@ -125,6 +118,9 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
+    //m_sapg.enable();
+    m_arm.configureBrakeMode();
+
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -150,10 +146,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    m_sapg.enableTracking();
+    //m_sapg.enable();
+    m_arm.configureBrakeMode();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -182,12 +178,12 @@ public class Robot extends TimedRobot {
   private void initializeDashboard() {
     dashboardScheduler = new TimeScheduler();
     m_drive.configureShuffleboard();
-    m_arm.updateDashboard();
   }
 
   private void writeDashboard() {
-    final long RUN_TIME = 10;
+    final long RUN_TIME = 2;
     dashboardScheduler.run(RUN_TIME);
+
     m_drive.updateShuffleboard();
     m_arm.updateDashboard();
     m_sapg.updateDashboard();

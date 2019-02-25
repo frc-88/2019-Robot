@@ -11,17 +11,18 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class SAPGScorePanel extends Command {
+public class SAPGScorePanelAwesome extends Command {
 
     private int state;
     private long startTime;
     private final long PUSH_TIME=500000; // microseconds
     private final long CLOSE_TIME=500000; // microseconds
 
-  public SAPGScorePanel() {
+  public SAPGScorePanelAwesome() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.m_sapg);
+    requires(Robot.m_drive);
   }
 
   // Called just before this Command runs the first time
@@ -29,6 +30,8 @@ public class SAPGScorePanel extends Command {
   protected void initialize() {
       state=0;
       startTime=RobotController.getFPGATime();
+      Robot.m_drive.arcadeDrive(0, 0);
+      Robot.m_sapg.disable();
 
   }
 
@@ -38,6 +41,8 @@ public class SAPGScorePanel extends Command {
       switch(state){
           case 0: 
           //push out
+          Robot.m_drive.arcadeDrive(0, 0);
+          Robot.m_sapg.disable();
           Robot.m_sapg.forwardPush();
           Robot.m_sapg.openTheJaws();
           if (RobotController.getFPGATime()-startTime>PUSH_TIME){
@@ -48,6 +53,8 @@ public class SAPGScorePanel extends Command {
           break;
           case 1:
           //open, push out
+          Robot.m_drive.arcadeDrive(0, 0);
+          Robot.m_sapg.disable();
           Robot.m_sapg.closeTheJaws();
           if (RobotController.getFPGATime()-startTime>CLOSE_TIME){
             state++;
@@ -56,6 +63,8 @@ public class SAPGScorePanel extends Command {
           break;
           case 2:
           //open, pull in
+          Robot.m_drive.arcadeDrive(0, 0);
+          Robot.m_sapg.disable();
           Robot.m_sapg.reversePush();
           if (RobotController.getFPGATime()-startTime>PUSH_TIME){
             state++;
@@ -76,11 +85,13 @@ public class SAPGScorePanel extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.m_drive.arcadeDrive(0, 0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

@@ -31,12 +31,6 @@ public class ArcadeDrive extends Command {
     double speed=Robot.m_oi.getDriverLeftYAxis();
     double turn=Robot.m_oi.getDriverRightXAxis();
 
-    if(Math.abs(speed) < .15){
-      speed = 0;
-    }
-    if(Math.abs(turn) < .15){
-      turn = 0;
-    }
     Robot.m_drive.arcadeDrive(speed, turn);
     
     Robot.m_drive.autoshift();
