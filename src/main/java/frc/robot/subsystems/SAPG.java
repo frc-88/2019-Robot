@@ -70,10 +70,7 @@ public class SAPG extends PIDSubsystem {
         sapgTalon.setNeutralMode(NeutralMode.Coast);
         sapgTalon.setInverted(false);
         sapgTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog);
-        setLimits();
-    }
 
-    private void setLimits() {
         sapgTalon.configForwardSoftLimitThreshold(forwardLimit);
         sapgTalon.configReverseSoftLimitThreshold(reverseLimit);
         sapgTalon.configForwardSoftLimitEnable(true);
@@ -138,7 +135,7 @@ public class SAPG extends PIDSubsystem {
     }
 
     public void set(double percentOutput) {
-        sapgTalon.set(ControlMode.PercentOutput, percentOutput);
+        sapgTalon.set(ControlMode.PercentOutput, dampNearLimits(percentOutput));
     }
 
     public void openTheJaws() {
