@@ -30,6 +30,7 @@ import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.sapg.SAPGBasicControl;
+import frc.robot.commands.sapg.SAPGCenter;
 import frc.robot.commands.sapg.SAPGClose;
 import frc.robot.commands.sapg.SAPGDeploy;
 import frc.robot.commands.sapg.SAPGGrabPanel;
@@ -75,7 +76,7 @@ public class OI {
     new JoystickButton(buttonBox, 17).whenPressed(new IntakeLoadCargo(1));
     new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(164, 85)));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(164, 80)));
     new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
@@ -115,6 +116,7 @@ public class OI {
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
     SmartDashboard.putData("SAPG Basic", new SAPGBasicControl());
+    SmartDashboard.putData("SAPG Center", new SAPGCenter());
     SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
     SmartDashboard.putData("SAPG Retract", new SAPGRetract());
     SmartDashboard.putData("SAPG Open", new SAPGOpen());
@@ -126,15 +128,15 @@ public class OI {
     SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
 
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
-    SmartDashboard.putData("Arm Zero Elbow", new ArmCalibrate());
+    SmartDashboard.putData("Arm Calibrate", new ArmCalibrate());
     SmartDashboard.putData("Arm Zero Elbow", new ArmZeroElbow());
     SmartDashboard.putData("Arm Zero Shoulder", new ArmZeroShoulder());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
-    SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPositionSafe());
-    SmartDashboard.putData("Arm Start", new ArmGoToPositionSafe(ArmPosition.START));
-    SmartDashboard.putData("Arm High Rocket", new ArmGoToPositionSafe(ArmPosition.HIGH_ROCKET_FRONT));
-    SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPositionSafe(ArmPosition.MEDIUM_ROCKET_FRONT));
-    SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
+    SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPosition());
+    // SmartDashboard.putData("Arm Start", new ArmGoToPositionSafe(ArmPosition.START));
+    SmartDashboard.putData("Arm High Rocket", new ArmGoToPosition(28, 0));
+    // SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPositionSafe(ArmPosition.MEDIUM_ROCKET_FRONT));
+    // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
 
     SmartDashboard.putData("Climb", new ClimberClimb());
     SmartDashboard.putData("Move Climber", new ClimberMove());

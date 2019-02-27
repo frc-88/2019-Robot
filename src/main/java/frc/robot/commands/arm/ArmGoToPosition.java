@@ -15,6 +15,8 @@ import frc.robot.Robot;
 public class ArmGoToPosition extends Command {
   private double shoulder_target;
   private double elbow_target;
+  private double shoulder_degrees;
+  private double elbow_degrees;
   private boolean usePrefences;
 
   public ArmGoToPosition() {
@@ -26,9 +28,10 @@ public class ArmGoToPosition extends Command {
   public ArmGoToPosition(double shoulder, double elbow) {
     requires(Robot.m_arm);
 
+    shoulder_degrees = shoulder;
+    elbow_degrees = elbow;
+
     usePrefences = false;
-    shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder);
-    elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow);
   }
 
   // Called just before this Command runs the first time
@@ -39,8 +42,10 @@ public class ArmGoToPosition extends Command {
 
       shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble("ArmShoulderTarget", 0.0));
       elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble("ArmElbowTarget",0.0));
-    }
-
+    } else {
+      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder_degrees);
+      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow_degrees);
+      }
   }
 
   // Called repeatedly when this Command is scheduled to run
