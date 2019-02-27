@@ -61,8 +61,8 @@ public class OI {
 
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
-    new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(.25));
-    new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(-.25));
+    new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(0.5));
+    new JoystickButton(buttonBox, 13).whenReleased(new IntakeManual(0.0));
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105, 35));
