@@ -125,7 +125,13 @@ public class Limelight extends Subsystem {
   // by reading the “camtran�? networktable number array.
 
   public LLCameraTransform getCameraTransform() {
-    return new LLCameraTransform(_camtran.getNumberArray(new Number[0]));
+    Number [] transform = _camtran.getNumberArray(new Number[0]);
+
+    if (transform.length == 0) {
+      transform = new Number [] {0, 0, 0, 0, 0, 0};
+    }
+
+    return new LLCameraTransform(transform);
   }
 
   public double getTargetDistance() {
