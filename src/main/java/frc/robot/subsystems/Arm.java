@@ -21,7 +21,11 @@ import frc.robot.RobotMap;
 import frc.robot.util.TJPIDController;
 
 /**
- * Arm with a shoulder and an elbow joint, a relative encoder and absolute encoder on both.
+ * 
+ * a big beefy arm
+ * it can bend in two places
+ * elbow and shoulder
+ * 
  */
 
 public class Arm extends Subsystem {

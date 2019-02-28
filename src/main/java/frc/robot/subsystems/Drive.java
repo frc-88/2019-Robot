@@ -36,7 +36,11 @@ import frc.robot.util.transmission.TalonGrayhill;
 import frc.robot.util.transmission.Vex775Pro;
 
 /**
- * An example subsystem. You can replace me with your own Subsystem.
+ * 
+ * 775 motors
+ * give our big tank drive power
+ * and speed oh yes speed
+ * 
  */
 public class Drive extends Subsystem {
     // Put methods for controlling this subsystem
