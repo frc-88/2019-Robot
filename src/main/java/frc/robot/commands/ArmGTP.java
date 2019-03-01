@@ -16,7 +16,7 @@ public class ArmGTP extends ConditionalCommand {
 	private double[] m_target;
 
 	public ArmGTP(double[] target) {
-		super(new ArmGoToPositionSafe(target));
+		super(new ArmGoToPositionSafe(target[0], target[1]));
 		m_target = target;
 	}
 
