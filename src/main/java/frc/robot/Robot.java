@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 
     CameraServer.getInstance().startAutomaticCapture();
-    //DriveProfiles.init();
+    DriveProfiles.init();
 
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
@@ -177,7 +177,7 @@ public class Robot extends TimedRobot {
 
     m_drive.setPigeonAngle(180);
 
-    m_autonomousCommand = m_chooser.getSelected();
+    //m_autonomousCommand = m_chooser.getSelected();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
