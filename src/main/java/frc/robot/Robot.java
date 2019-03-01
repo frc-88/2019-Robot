@@ -55,8 +55,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    //DriveProfiles.init();
-
+    DriveProfiles.init();
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
     m_drive = new Drive();
