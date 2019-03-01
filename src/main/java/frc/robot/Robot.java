@@ -71,9 +71,11 @@ public class Robot extends TimedRobot {
 
     initializeDashboard();
     // Autonomous mode selector
-    m_chooser.addOption("Straight 8", new DriveProfile(DriveProfiles.straightTest));
-    m_chooser.addOption("Left 5x5", new DriveProfile(DriveProfiles.leftTurnTest));
-    m_chooser.addOption("Right 5x5", new DriveProfile(DriveProfiles.leftTurnTest));
+    m_chooser.addOption("Straight 8", new DriveProfile(DriveProfiles.straight8));
+    m_chooser.addOption("Left Park", new DriveProfile(DriveProfiles.leftPark));
+    m_chooser.addOption("Right Park", new DriveProfile(DriveProfiles.rightPark));
+    m_chooser.addOption("TEST:Left 5x5", new DriveProfile(DriveProfiles.leftTurnTest));
+    m_chooser.addOption("TEST:Right 5x5", new DriveProfile(DriveProfiles.leftTurnTest));
 
     SmartDashboard.putData("SANDSTORM!", m_chooser);
   }
