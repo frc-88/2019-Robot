@@ -8,9 +8,13 @@ import java.util.List;
 public class DriveProfiles {
 
     public static List<TJDriveMotionPoint> straightTest;
+    public static List<TJDriveMotionPoint> leftTurnTest;
+    public static List<TJDriveMotionPoint> rightTurnTest;
 
     public static void init() {
-        straightTest = TJDriveMotion.loadStaticProfile("straightTest", false);
+        straightTest = TJDriveMotion.loadStaticProfile("StraightTest", false);
+        leftTurnTest = TJDriveMotion.loadStaticProfile("LeftTurnTest", false);
+        rightTurnTest = TJDriveMotion.loadStaticProfile("RightTurnTest", false);
     }
 
 }
