@@ -132,7 +132,7 @@ public class OI {
     SmartDashboard.putData("Arm Zero Elbow", new ArmZeroElbow());
     SmartDashboard.putData("Arm Zero Shoulder", new ArmZeroShoulder());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
-    SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPosition());
+    SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPositionSafe());
     // SmartDashboard.putData("Arm Start", new ArmGoToPositionSafe(ArmPosition.START));
     SmartDashboard.putData("Arm High Rocket", new ArmGoToPosition(28, 0));
     // SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPositionSafe(ArmPosition.MEDIUM_ROCKET_FRONT));
