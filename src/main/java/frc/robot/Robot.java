@@ -96,6 +96,7 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     m_sapg.disable();
     m_arm.configureCoastMode();
+    m_limelight_sapg.ledOff();
   }
 
   @Override
@@ -120,6 +121,7 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     //m_sapg.enable();
     m_arm.configureBrakeMode();
+    m_limelight_sapg.ledPipeline();
 
     m_autonomousCommand = m_chooser.getSelected();
 
@@ -150,6 +152,7 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     //m_sapg.enable();
     m_arm.configureBrakeMode();
+    m_limelight_sapg.ledPipeline();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
