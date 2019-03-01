@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.sapg.SAPGCenter;
 import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.util.SharpIR;
 
@@ -103,12 +104,13 @@ public class SAPG extends PIDSubsystem {
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
+        center = reverseLimit + (forwardLimit - reverseLimit) / 2;
 
         configureTalon();
         configurePIDController();
     }
 
-    private double getNormalizedPosition() {
+    public double getNormalizedPosition() {
         double normPos = ((double)(sapgTalon.getSelectedSensorPosition() - reverseLimit) / (double)(forwardLimit - reverseLimit)) * 2 - 1;
         
         if (normPos < -1) {
@@ -162,6 +164,10 @@ public class SAPG extends PIDSubsystem {
         return panelDetector.getDistance();
     }
 
+    public int getCenter() {
+        return center;
+    }
+
     public void updateDashboard() {
         SmartDashboard.putNumber("SAPG:Position", sapgTalon.getSelectedSensorPosition());
         SmartDashboard.putNumber("SAPG:Voltage", sapgTalon.getMotorOutputVoltage());
@@ -172,6 +178,7 @@ public class SAPG extends PIDSubsystem {
         SmartDashboard.putBoolean("SAPG:HasPanel", hasPanel());
         SmartDashboard.putBoolean("SAPG:OnTarget", onTarget());
         SmartDashboard.putNumber("SAPG:PanelDistance", getPanelDistance());
+        SmartDashboard.putNumber("SAPG:Center", center);
 
         // write prefs back to the dashboard
         SmartDashboard.putNumber("SAPG:Track_P", trackP);
@@ -184,7 +191,7 @@ public class SAPG extends PIDSubsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new SAPGDefault());
+        setDefaultCommand(new SAPGCenter());
     }
 
     @Override

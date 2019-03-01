@@ -21,7 +21,11 @@ import frc.robot.RobotMap;
 import frc.robot.util.TJPIDController;
 
 /**
- * Arm with a shoulder and an elbow joint, a relative encoder and absolute encoder on both.
+ * 
+ * a big beefy arm
+ * it can bend in two places
+ * elbow and shoulder
+ * 
  */
 
 public class Arm extends Subsystem {
@@ -66,6 +70,7 @@ public class Arm extends Subsystem {
     pitchPID.setTolerance(2);
 
     initPreferences();
+    fetchPreferences();
   }
 
   private void configShoulderTalon() {
@@ -132,6 +137,13 @@ public class Arm extends Subsystem {
     if (!prefs.containsKey("Arm:ElbowTarget")) { prefs.putDouble("Arm:ElbowTarget", 0.0); }
   }
 
+  private void fetchPreferences() {
+    Preferences prefs = Preferences.getInstance();
+
+    shoulderOffset = prefs.getInt("Arm:ShoulderOffset", shoulderOffset);
+    elbowOffset = prefs.getInt("Arm:ElbowOffset", elbowOffset);
+  }
+
   public void reloadPIDConstants() {
     Preferences prefs = Preferences.getInstance();
 
@@ -151,6 +163,9 @@ public class Arm extends Subsystem {
 
     prefs.putDouble("Arm:ShoulderOffset", shoulderOffset);
     prefs.putDouble("Arm:ElbowOffset", elbowOffset);
+
+    zeroElbowMotorEncoder();
+    zeroShoulderMotorEncoder();
   }
 
   @Override
@@ -172,6 +187,9 @@ public class Arm extends Subsystem {
     SmartDashboard.putBoolean("Arm:isSafe?", isSafePosition());
     SmartDashboard.putBoolean("Arm:isSafe(HAB)?", isSafePosition(true));
     SmartDashboard.putNumber("Arm:distFromBase", getDistanceFromBase());
+
+    SmartDashboard.putNumber("Arm:shoulder offset", shoulderOffset);
+    SmartDashboard.putNumber("Arm:elbow offset", elbowOffset);
 
     pitchPID.setKP(SmartDashboard.getNumber("arm:pitchKP", pitchPID.getKP()));
     pitchPID.setKD(SmartDashboard.getNumber("arm:pitchKD", pitchPID.getKD()));

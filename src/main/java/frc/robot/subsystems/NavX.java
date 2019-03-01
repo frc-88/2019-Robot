@@ -14,7 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
 
 /**
- * Add your docs here.
+ * 
+ * North, south, east and west
+ * Forward, back, and side to side
+ * We know where we are
+ * 
  */
 public class NavX extends Subsystem {
   // Put methods for controlling this subsystem
