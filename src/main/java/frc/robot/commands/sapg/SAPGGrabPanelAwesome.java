@@ -28,6 +28,7 @@ public class SAPGGrabPanelAwesome extends Command {
   @Override
   protected void initialize() {
     state = 0;
+    Robot.m_limelight_sapg.ledPipeline();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -98,6 +99,7 @@ public class SAPGGrabPanelAwesome extends Command {
   protected void end() {
     Robot.m_drive.arcadeDrive(0, 0);
     Robot.m_sapg.disable();
+    Robot.m_limelight_sapg.ledOff();
   }
 
   // Called when another command which requires one or more of the same

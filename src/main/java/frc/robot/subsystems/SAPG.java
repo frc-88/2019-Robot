@@ -29,9 +29,9 @@ public class SAPG extends PIDSubsystem {
     private static final double TRACK_ANGLE_THRESHOLD = (HORIZONTAL_FOV / 2) - 2;
     private static final double TRACK_DISTANCE_THRESHOLD = 12;
     private static final double TRACK_TICKS_THRESHOLD = 1000;
-    private static final double TRACK_PID_DFT_P = 0.08;
+    private static final double TRACK_PID_DFT_P = 0.07;
     private static final double TRACK_PID_DFT_I = 0.0;
-    private static final double TRACK_PID_DFT_D = 0.0;
+    private static final double TRACK_PID_DFT_D = 0.12;
     private static final double TRACK_PID_PERIOD = 0.01;
 
     private WPI_TalonSRX sapgTalon;

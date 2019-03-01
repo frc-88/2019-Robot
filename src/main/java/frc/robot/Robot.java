@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -53,6 +54,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    CameraServer.getInstance().startAutomaticCapture();
+
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
     m_drive = new Drive();
@@ -66,6 +70,8 @@ public class Robot extends TimedRobot {
     m_oi = new OI();
 
     initializeDashboard();
+
+    m_limelight_sapg.ledOff();
 
     //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -121,7 +127,7 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     //m_sapg.enable();
     m_arm.configureBrakeMode();
-    m_limelight_sapg.ledPipeline();
+    m_limelight_sapg.ledOff();
 
     m_autonomousCommand = m_chooser.getSelected();
 
@@ -152,7 +158,7 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     //m_sapg.enable();
     m_arm.configureBrakeMode();
-    m_limelight_sapg.ledPipeline();
+    m_limelight_sapg.ledOff();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

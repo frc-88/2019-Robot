@@ -184,11 +184,13 @@ public class TJPIDController {
 
         if (enableIMax) {
             if (m_accum > 0) {
-                m_accum = Math.min(m_accum, iMax);
+                m_accum = Math.min(m_accum, iMax/kI);
             } else {
-                m_accum = Math.max(m_accum, -iMax);
+                m_accum = Math.max(m_accum, -iMax/kI);
             }
         }
+
+        System.out.println(kI*m_accum);
 
         return kI * m_accum;
     }
