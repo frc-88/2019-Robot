@@ -22,6 +22,7 @@ import frc.robot.commands.arm.ArmZeroShoulder;
 import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberMove;
+import frc.robot.commands.drive.DriveProfile;
 import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeEjectCargo;
 import frc.robot.commands.intake.IntakeLoadCargo;
@@ -39,6 +40,7 @@ import frc.robot.commands.sapg.SAPGScorePanel;
 import frc.robot.commands.sapg.SAPGScorePanelAwesome;
 import frc.robot.commands.sapg.SAPGTrackStart;
 import frc.robot.commands.sapg.SAPGTrackStop;
+import frc.robot.driveutil.DriveProfiles;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.TJController;
@@ -137,6 +139,10 @@ public class OI {
     SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo(-1));
     SmartDashboard.putData("Intake Eject", new IntakeEjectCargo());
+
+    SmartDashboard.putData("Drive Straight 8", new DriveProfile(DriveProfiles.straightTest));
+    SmartDashboard.putData("Drive Left 5x5", new DriveProfile(DriveProfiles.leftTurnTest));
+    SmartDashboard.putData("Drive Right 5x5", new DriveProfile(DriveProfiles.rightTurnTest));
 
     SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
     SmartDashboard.putData("Zero Pitch", new NavXZeroPitch());

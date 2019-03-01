@@ -70,10 +70,12 @@ public class Robot extends TimedRobot {
     m_oi = new OI();
 
     initializeDashboard();
+    // Autonomous mode selector
+    m_chooser.addOption("Straight 8", new DriveProfile(DriveProfiles.straightTest));
+    m_chooser.addOption("Left 5x5", new DriveProfile(DriveProfiles.leftTurnTest));
+    m_chooser.addOption("Right 5x5", new DriveProfile(DriveProfiles.leftTurnTest));
 
-    //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
+    SmartDashboard.putData("SANDSTORM!", m_chooser);
   }
 
   /**
@@ -124,11 +126,9 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     //m_sapg.enable();
     m_arm.configureBrakeMode();
-
-    //m_autonomousCommand = m_chooser.getSelected();
-    m_autonomousCommand = new DriveProfile(DriveProfiles.straightTest);
-
     m_drive.setPigeonAngle(180);
+
+    m_autonomousCommand = m_chooser.getSelected();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
