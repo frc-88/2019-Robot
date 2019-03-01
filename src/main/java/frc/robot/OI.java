@@ -63,7 +63,7 @@ public class OI {
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
     new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(0.5));
-    new JoystickButton(buttonBox, 13).whenReleased(new IntakeManual(0.0));
+    new JoystickButton(buttonBox, 13).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105, 35));
@@ -73,7 +73,7 @@ public class OI {
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(28, 0));
     new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(-30, 0));
     new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(160, 10));
-    new JoystickButton(buttonBox, 17).whenPressed(new IntakeLoadCargo(1));
+    new JoystickButton(buttonBox, 17).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(164, 80)));
