@@ -64,6 +64,8 @@ public class SAPG extends PIDSubsystem {
         configurePIDController();
 
         home = sapgTalon.getSelectedSensorPosition();
+
+        openTheJaws();
     }
 
     private void configureTalon() {
