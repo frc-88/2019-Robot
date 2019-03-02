@@ -193,7 +193,7 @@ public class SAPG extends PIDSubsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new SAPGCenter());
+        setDefaultCommand(new SAPGDefault());
     }
 
     @Override
