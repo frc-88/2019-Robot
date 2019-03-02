@@ -72,7 +72,7 @@ public class OI {
     new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(-85, 0));
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(28, 0));
     new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(-30, 0));
-    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(160, 10));
+    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(158, 2));
     new JoystickButton(buttonBox, 17).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
