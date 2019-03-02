@@ -404,7 +404,7 @@ public class Drive extends Subsystem {
     public void autoshift() {
         if (Robot.m_oi.getForceLowGearButton()) {
             this.shiftToLow();
-            maxSpeed = RobotMap.MAX_SPEED_LOW;
+            maxSpeed = RobotMap.MAX_SPEED_FORCE_LOW;
         } else {
             if (isInHighGear() && Math.abs(getStraightSpeed()) <= RobotMap.SHIFT_INTO_LOW_GEAR) {
                 shiftToLow();

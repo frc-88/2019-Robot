@@ -91,8 +91,10 @@ public class RobotMap {
   public static final double DRIVE_VEL_LOW_IMAX = 3;
 
   public static final double MAX_DRIVE_VOLTAGE = 11;
-  public static final double MAX_SPEED_LOW = 6.5;
-  public static final double MAX_SPEED_HIGH = 14;
+  public static final double MAX_SPEED_LOW = 6.25;
+  public static final double MAX_SPEED_HIGH = 13.5;
+  public static final double MAX_SPEED_FORCE_LOW = 4;
+
   public static final double DRIVE_CURRENT_LIMIT = 200;
   public static final double MAX_ACCEL_LOW = 2.2;
   public static final double MAX_ACCEL_HIGH = 4.5;
@@ -118,7 +120,7 @@ public class RobotMap {
 
   // Arm
   public static final double ARM_TOLERANCE = 1;
-  public static final int SHOULDER_MAX_SPEED = 80;
+  public static final int SHOULDER_MAX_SPEED = 120;
   public static final int ELBOW_MAX_SPEED = 80;
 
   // Climber

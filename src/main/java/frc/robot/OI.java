@@ -66,7 +66,7 @@ public class OI {
     new JoystickButton(buttonBox, 13).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(150, 0));
-    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105, 35));
+    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105, 33));
     new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToPosition(-98, -26));
     new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(85, 0));
     new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(-85, 0));
@@ -76,7 +76,7 @@ public class OI {
     new JoystickButton(buttonBox, 17).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(164, 80)));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(160, 80)));
     new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
@@ -135,6 +135,8 @@ public class OI {
     SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPositionSafe());
     // SmartDashboard.putData("Arm Start", new ArmGoToPositionSafe(ArmPosition.START));
     SmartDashboard.putData("Arm High Rocket", new ArmGoToPosition(28, 0));
+    SmartDashboard.putData("Arm Cargo Ship",new ArmGoToPosition(105, 33));
+    SmartDashboard.putData("Arm Starting Position", new ArmGoToPosition(150, 0));
     // SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPositionSafe(ArmPosition.MEDIUM_ROCKET_FRONT));
     // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
 
