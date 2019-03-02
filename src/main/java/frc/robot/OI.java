@@ -9,12 +9,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.HaveCargoCommand;
 import frc.robot.commands.HavePanelCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmCalibrate;
+import frc.robot.commands.arm.ArmEStop;
 import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.arm.ArmGoToPositionSafe;
 import frc.robot.commands.arm.ArmZeroElbow;
@@ -81,6 +83,16 @@ public class OI {
     new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
     new JoystickButton(buttonBox, 11).whenReleased(new SAPGScorePanelAwesome());
+    new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
+    new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
+
+    new Trigger(){
+    
+      @Override
+      public boolean get() {
+        return Robot.m_arm.shoulderSkipped() || Robot.m_arm.elbowSkipped();
+      }
+    }.whenActive(new ArmEStop());;
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
@@ -204,5 +216,9 @@ public class OI {
     // double rawValue = operatorController.getRightStickY();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
     return DriveUtils.deadbandExponential(operatorController.getRightStickY(), 1, .075);
+  }
+
+  public boolean getArmResetButton() {
+    return new JoystickButton(buttonBox, 15).get();
   }
 }

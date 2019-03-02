@@ -421,4 +421,20 @@ public class Arm extends Subsystem {
 
   }
 
+public boolean shoulderSkipped() {
+  double auxEncoderPos = convertShoulderToDegrees(getShoulderAbsolutePosition());
+  double normalizedPos = (auxEncoderPos + 180) > 0 ? 
+      (auxEncoderPos + 180) % 360. - 180 : 
+      (auxEncoderPos + 180) % 360. + 180;
+	return Math.abs(normalizedPos - getMotorShoulderDegrees()) > 30;
+}
+
+public boolean elbowSkipped() {
+	double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
+  double normalizedPos = (auxEncoderPos + 180) > 0 ? 
+      (auxEncoderPos + 180) % 360. - 180 : 
+      (auxEncoderPos + 180) % 360. + 180;
+	return Math.abs(normalizedPos - getMotorElbowDegrees()) > 30;
+}
+
 }
