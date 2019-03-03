@@ -31,7 +31,23 @@ public class Intake extends Subsystem {
     }
 
     public void updateDashboard(){
-        SmartDashboard.putNumber("Cargo Distance", intakeSensor.getDistance());
+        double distance = intakeSensor.getDistance();
+        boolean objectSeen = false;
+        
+        if (distance < 20) {
+            if (!objectSeen) {
+                System.out.format("<TJ2>object seen!</TJ2>%n", distance);
+                objectSeen = true;
+            }
+            System.out.format("<TJ2>%f.5</TJ2>%n", distance);
+        } else {
+            if (objectSeen) {
+                System.out.format("<TJ2>object gone!</TJ2>%n", distance);
+                objectSeen = false;
+            }
+        }
+
+        SmartDashboard.putNumber("Cargo Distance", distance);
         SmartDashboard.putBoolean("Has Cargo", hasCargo());
     }
 
