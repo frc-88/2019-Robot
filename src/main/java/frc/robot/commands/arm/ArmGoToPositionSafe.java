@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class ArmGoToPositionSafe extends Command {
-  private double shoulderTarget;
-  private double elbowTarget;
-  private double shoulderTargetDegrees;
-  private double elbowTargetDegrees;
+  private double shoulder_target;
+  private double elbow_target;
+  private double shoulder_degrees;
+  private double elbow_degrees;
   private boolean usePreferences;
   private boolean targetSafe;
 
@@ -24,22 +24,12 @@ public class ArmGoToPositionSafe extends Command {
     usePreferences = true;
   }
 
-  public ArmGoToPositionSafe(double [] target) {
-    requires(Robot.m_arm);
-    saveArguments(target[0], target[1]);
-  }
-
   public ArmGoToPositionSafe(double shoulder, double elbow) {
     requires(Robot.m_arm);
-    saveArguments(shoulder, elbow);
-  }
+    shoulder_degrees = shoulder;
+    elbow_degrees = elbow;
 
-  private void saveArguments(double shoulder, double elbow) {
     usePreferences = false;
-    shoulderTargetDegrees = shoulder;
-    shoulderTarget = Robot.m_arm.convertShoulderDegreesToMotor(shoulderTargetDegrees);
-    elbowTargetDegrees = elbow;
-    elbowTarget = Robot.m_arm.convertElbowDegreesToMotor(elbowTargetDegrees);
   }
 
   // Called just before this Command runs the first time
@@ -48,13 +38,14 @@ public class ArmGoToPositionSafe extends Command {
     if (usePreferences) {
       Preferences prefs = Preferences.getInstance();
 
-      shoulderTargetDegrees = prefs.getDouble("ArmShoulderTarget", 0.0);
-      elbowTargetDegrees = prefs.getDouble("ArmElbowTarget",0.0);
-      shoulderTarget = Robot.m_arm.convertShoulderDegreesToMotor(shoulderTargetDegrees);
-      elbowTarget = Robot.m_arm.convertElbowDegreesToMotor(elbowTargetDegrees);
+      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble("ArmShoulderTarget", 0.0));
+      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble("ArmElbowTarget", 0.0));
+    } else {
+      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder_degrees);
+      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow_degrees);
     }
 
-    targetSafe = Robot.m_arm.isSafePosition(shoulderTargetDegrees, elbowTargetDegrees);
+    targetSafe = Robot.m_arm.isSafePosition(shoulder_degrees, elbow_degrees);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -62,8 +53,8 @@ public class ArmGoToPositionSafe extends Command {
   protected void execute() {
     if (targetSafe) {
       // what if we only did this every 10 cycles?
-      Robot.m_arm.moveShoulder(shoulderTarget);
-      Robot.m_arm.moveElbow(elbowTarget);
+      Robot.m_arm.moveShoulder(shoulder_target);
+      Robot.m_arm.moveElbow(elbow_target);
     }
   }
 

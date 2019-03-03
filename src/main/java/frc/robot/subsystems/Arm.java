@@ -21,7 +21,11 @@ import frc.robot.RobotMap;
 import frc.robot.util.TJPIDController;
 
 /**
- * Arm with a shoulder and an elbow joint, a relative encoder and absolute encoder on both.
+ * 
+ * a big beefy arm
+ * it can bend in two places
+ * elbow and shoulder
+ * 
  */
 
 public class Arm extends Subsystem {
@@ -416,5 +420,21 @@ public class Arm extends Subsystem {
     return Math.max(Math.sqrt(x1*x1 + y1*y1), Math.sqrt(x2*x2 + y2*y2));
 
   }
+
+public boolean shoulderSkipped() {
+  double auxEncoderPos = convertShoulderToDegrees(getShoulderAbsolutePosition());
+  double normalizedPos = (auxEncoderPos + 180) > 0 ? 
+      (auxEncoderPos + 180) % 360. - 180 : 
+      (auxEncoderPos + 180) % 360. + 180;
+	return Math.abs(normalizedPos - getMotorShoulderDegrees()) > 30;
+}
+
+public boolean elbowSkipped() {
+	double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
+  double normalizedPos = (auxEncoderPos + 180) > 0 ? 
+      (auxEncoderPos + 180) % 360. - 180 : 
+      (auxEncoderPos + 180) % 360. + 180;
+	return Math.abs(normalizedPos - getMotorElbowDegrees()) > 30;
+}
 
 }

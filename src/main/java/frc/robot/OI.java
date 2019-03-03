@@ -9,12 +9,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.HaveCargoCommand;
 import frc.robot.commands.HavePanelCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmCalibrate;
+import frc.robot.commands.arm.ArmEStop;
 import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.arm.ArmGoToPositionSafe;
 import frc.robot.commands.arm.ArmZeroElbow;
@@ -63,24 +65,34 @@ public class OI {
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
     new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(0.5));
-    new JoystickButton(buttonBox, 13).whenReleased(new IntakeManual(0.0));
+    new JoystickButton(buttonBox, 13).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(150, 0));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(150, 0));
-    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105, 35));
+    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(105, 33));
     new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToPosition(-98, -26));
     new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(85, 0));
     new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(-85, 0));
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(28, 0));
     new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(-30, 0));
-    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(160, 10));
-    new JoystickButton(buttonBox, 17).whenPressed(new IntakeLoadCargo(1));
+    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(158, 2));
+    new JoystickButton(buttonBox, 17).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(164, 80)));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(160, 81)));
     new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
     new JoystickButton(buttonBox, 11).whenReleased(new SAPGScorePanelAwesome());
+    new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
+    new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
+
+    new Trigger(){
+    
+      @Override
+      public boolean get() {
+        return Robot.m_arm.shoulderSkipped() || Robot.m_arm.elbowSkipped();
+      }
+    }.whenActive(new ArmEStop());;
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
@@ -132,9 +144,11 @@ public class OI {
     SmartDashboard.putData("Arm Zero Elbow", new ArmZeroElbow());
     SmartDashboard.putData("Arm Zero Shoulder", new ArmZeroShoulder());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
-    SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPosition());
+    SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPositionSafe());
     // SmartDashboard.putData("Arm Start", new ArmGoToPositionSafe(ArmPosition.START));
     SmartDashboard.putData("Arm High Rocket", new ArmGoToPosition(28, 0));
+    SmartDashboard.putData("Arm Cargo Ship",new ArmGoToPosition(105, 33));
+    SmartDashboard.putData("Arm Starting Position", new ArmGoToPosition(150, 0));
     // SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPositionSafe(ArmPosition.MEDIUM_ROCKET_FRONT));
     // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
 
@@ -202,5 +216,9 @@ public class OI {
     // double rawValue = operatorController.getRightStickY();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
     return DriveUtils.deadbandExponential(operatorController.getRightStickY(), 1, .075);
+  }
+
+  public boolean getArmResetButton() {
+    return new JoystickButton(buttonBox, 15).get();
   }
 }

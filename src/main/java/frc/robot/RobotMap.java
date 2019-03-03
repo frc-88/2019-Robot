@@ -79,20 +79,22 @@ public class RobotMap {
 
   public static final double DRIVE_LOW_STATIC_FRICTION_VOLTAGE = .53;
   public static final double DRIVE_HIGH_STATIC_FRICTION_VOLTAGE = .75;
-  public static final double DRIVE_LEFT_LOW_EFFICIENCY = 1;
-  public static final double DRIVE_LEFT_HIGH_EFFICIENCY = 1;
-  public static final double DRIVE_RIGHT_LOW_EFFICIENCY = 1;
-  public static final double DRIVE_RIGHT_HIGH_EFFICIENCY = 1;
+  public static final double DRIVE_LEFT_LOW_EFFICIENCY = .95;
+  public static final double DRIVE_LEFT_HIGH_EFFICIENCY = .95;
+  public static final double DRIVE_RIGHT_LOW_EFFICIENCY =.9;
+  public static final double DRIVE_RIGHT_HIGH_EFFICIENCY = .9;
 
-  public static final double DRIVE_VEL_LOW_KI = 0;
+  public static final double DRIVE_VEL_LOW_KI = 0.016;
   public static final double DRIVE_VEL_LOW_KP = 0;
   public static final double DRIVE_VEL_LOW_KD = 0;
-  public static final double DRIVE_VEL_LOW_IZONE = 0;
-  public static final double DRIVE_VEL_LOW_IMAX = 0;
+  public static final double DRIVE_VEL_LOW_IZONE = 3;
+  public static final double DRIVE_VEL_LOW_IMAX = 3;
 
   public static final double MAX_DRIVE_VOLTAGE = 11;
-  public static final double MAX_SPEED_LOW = 6;
-  public static final double MAX_SPEED_HIGH = 13;
+  public static final double MAX_SPEED_LOW = 6.25;
+  public static final double MAX_SPEED_HIGH = 13.5;
+  public static final double MAX_SPEED_FORCE_LOW = 4;
+
   public static final double DRIVE_CURRENT_LIMIT = 200;
   public static final double MAX_ACCEL_LOW = 2.2;
   public static final double MAX_ACCEL_HIGH = 4.5;
@@ -106,10 +108,10 @@ public class RobotMap {
   public static final double SHIFT_INTO_LOW_GEAR_STOP = 5;
 
   public static final double DRIVE_VEL_HIGH_KP = 0;
-  public static final double DRIVE_VEL_HIGH_KI = 0;
+  public static final double DRIVE_VEL_HIGH_KI = 0.01;
   public static final double DRIVE_VEL_HIGH_KD = 0;
-  public static final double DRIVE_VEL_HIGH_IZONE = 0;
-  public static final double DRIVE_VEL_HIGH_IMAX = 0;
+  public static final double DRIVE_VEL_HIGH_IZONE = 3;
+  public static final double DRIVE_VEL_HIGH_IMAX = 3;
 
   public static final int DRIVE_SPEED_EXP = 3;
   public static final int DRIVE_TURN_EXP = 2;
@@ -118,7 +120,7 @@ public class RobotMap {
 
   // Arm
   public static final double ARM_TOLERANCE = 1;
-  public static final int SHOULDER_MAX_SPEED = 80;
+  public static final int SHOULDER_MAX_SPEED = 120;
   public static final int ELBOW_MAX_SPEED = 80;
 
   // Climber
