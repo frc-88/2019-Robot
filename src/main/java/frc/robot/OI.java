@@ -78,7 +78,7 @@ public class OI {
     new JoystickButton(buttonBox, 17).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(160, 81)));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition(160, 82)));
     new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
@@ -216,6 +216,7 @@ public class OI {
     // double rawValue = operatorController.getRightStickY();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
     return DriveUtils.deadbandExponential(operatorController.getRightStickY(), 1, .075);
+
   }
 
   public boolean getArmResetButton() {
