@@ -36,13 +36,13 @@ public class Intake extends Subsystem {
         
         if (distance < 20) {
             if (!objectSeen) {
-                System.out.format("<TJ2>object seen!</TJ2>%n", distance);
+                System.out.print("<TJ2>object seen!</TJ2>%n");
                 objectSeen = true;
             }
             System.out.format("<TJ2>%f.5</TJ2>%n", distance);
         } else {
             if (objectSeen) {
-                System.out.format("<TJ2>object gone!</TJ2>%n", distance);
+                System.out.print("<TJ2>object gone!</TJ2>%n");
                 objectSeen = false;
             }
         }
