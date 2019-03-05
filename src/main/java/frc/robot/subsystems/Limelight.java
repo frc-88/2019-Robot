@@ -166,53 +166,16 @@ public class Limelight extends Subsystem {
   }
 
   public Waypoint[] generateWaypointsFromVision() {
+    LLCameraTransform cam = getCameraTransform();
     double yaw = Robot.m_navx.getYaw();
-    double x = getTargetDistance() * Math.sin(Math.toRadians(getHorizontalOffsetAngle()));
-    double y = getTargetDistance() * Math.cos(Math.toRadians(getHorizontalOffsetAngle()));
-    double theta = getTargetAngle();
-    if (theta < -180) {
-      theta += 360;
-    } else if (theta > 180) {
-      theta -= 360;
-    }
+    double yawOffset = yaw - cam.yaw;
 
-    double xprime = x - 12 * Math.cos(Math.toRadians(90 - theta));
-    double yprime = y - 12 * Math.sin(Math.toRadians(90 - theta));
-
-    SmartDashboard.putNumber("theta", theta);
-
-    // rotate coordinate system based on yaw
-    theta = yaw - theta;
-    double rotation = Math.toRadians(yaw);
-    double newX = x * Math.cos(rotation) - y * Math.sin(rotation);
-    double newY = x * Math.sin(rotation) + y * Math.cos(rotation);
-    double newXprime = xprime * Math.cos(rotation) - yprime * Math.sin(rotation);
-    double newYprime = xprime * Math.sin(rotation) + yprime * Math.cos(rotation);
-
-    // if (Math.abs(theta) < 10) {
-    //   theta = 0;
-    // } else if (Math.abs(theta)-30 < 10) {
-    //   theta = 30 * Math.signum(theta);
-    // } else if (Math.abs(theta)-90 < 10) {
-    //   theta = 90 * Math.signum(theta);
-    // } else if (Math.abs(theta)-150 < 10) {
-    //   theta = 150 * Math.signum(theta);
-    // } else if (Math.abs(theta)-180 < 10) {
-    //   theta = 180 * Math.signum(theta);
-    // }
-
-    SmartDashboard.putNumber("x", x);
-    SmartDashboard.putNumber("xprime", xprime);
-    SmartDashboard.putNumber("y", y);
-    SmartDashboard.putNumber("yprime", yprime);
-    SmartDashboard.putNumber("newx", newX);
-    SmartDashboard.putNumber("newxprime", newXprime);
-    SmartDashboard.putNumber("newy", newY);
-    SmartDashboard.putNumber("newyprime", newYprime);
-    SmartDashboard.putNumber("theta_final", theta);
+    SmartDashboard.putNumber("x", cam.x);
+    SmartDashboard.putNumber("y", cam.y);
+    SmartDashboard.putNumber("yawOffset", yawOffset);
 
     // 3 Waypoints
-    return new Waypoint[] { new Waypoint(0, 0, yaw), new Waypoint(xprime, yprime, theta), new Waypoint(x, y, theta) };
+    return new Waypoint[] { new Waypoint(cam.x, cam.y, cam.yaw), new Waypoint(0, 3, 0), new Waypoint(0, 1.5, 0) };
   }
 
   public void setPipeline(double pipeline) {
@@ -226,7 +189,6 @@ public class Limelight extends Subsystem {
   public void updateDashboard() {
     SmartDashboard.putBoolean(name + ":HasTarget", hasTarget());
     SmartDashboard.putBoolean(name + ":IsConnected", isConnected());
-    SmartDashboard.putNumber(name + ":Angle", getTargetAngle());
     SmartDashboard.putNumber(name + ":Distance", getTargetDistance());
   }
 
