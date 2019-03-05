@@ -32,6 +32,8 @@ public class SAPGScorePanelAwesome extends Command {
       startTime=RobotController.getFPGATime();
       Robot.m_drive.arcadeDrive(0, 0);
       Robot.m_sapg.disable();
+      Robot.m_limelight_sapg.ledOff();
+      Robot.m_limelight_sapg.camDriver();
 
   }
 
@@ -42,8 +44,6 @@ public class SAPGScorePanelAwesome extends Command {
           case 0: 
           //push out
           Robot.m_drive.arcadeDrive(0, 0);
-          Robot.m_sapg.disable();
-          Robot.m_limelight_sapg.ledOff();
           Robot.m_sapg.forwardPush();
           Robot.m_sapg.openTheJaws();
           if (RobotController.getFPGATime()-startTime>PUSH_TIME){
@@ -55,8 +55,6 @@ public class SAPGScorePanelAwesome extends Command {
           case 1:
           //open, push out
           Robot.m_drive.arcadeDrive(0, 0);
-          Robot.m_sapg.disable();
-          Robot.m_limelight_sapg.ledOff();
           Robot.m_sapg.closeTheJaws();
           if (RobotController.getFPGATime()-startTime>CLOSE_TIME){
             state++;
@@ -66,8 +64,6 @@ public class SAPGScorePanelAwesome extends Command {
           case 2:
           //open, pull in
           Robot.m_drive.arcadeDrive(0, 0);
-          Robot.m_sapg.disable();
-          Robot.m_limelight_sapg.ledOff();
           Robot.m_sapg.reversePush();
           if (RobotController.getFPGATime()-startTime>PUSH_TIME){
             state++;

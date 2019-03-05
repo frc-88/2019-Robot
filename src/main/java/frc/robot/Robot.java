@@ -72,6 +72,7 @@ public class Robot extends TimedRobot {
     initializeDashboard();
 
     m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -102,7 +103,6 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     m_sapg.disable();
     m_arm.configureCoastMode();
-    m_limelight_sapg.ledOff();
   }
 
   @Override
@@ -110,6 +110,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
 
     m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
   }
 
   /**
@@ -129,7 +130,9 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     //m_sapg.enable();
     m_arm.configureBrakeMode();
+
     m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     m_autonomousCommand = m_chooser.getSelected();
 
@@ -160,7 +163,9 @@ public class Robot extends TimedRobot {
     m_arm.zeroShoulderMotorEncoder();
     //m_sapg.enable();
     m_arm.configureBrakeMode();
+
     m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

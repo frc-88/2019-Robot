@@ -28,6 +28,7 @@ public class SAPGGrabPanelAwesome extends Command {
   @Override
   protected void initialize() {
     state = 0;
+    Robot.m_limelight_sapg.camVision();
     Robot.m_limelight_sapg.ledPipeline();
   }
 
@@ -100,6 +101,7 @@ public class SAPGGrabPanelAwesome extends Command {
     Robot.m_drive.arcadeDrive(0, 0);
     Robot.m_sapg.disable();
     Robot.m_limelight_sapg.ledOff();
+    Robot.m_limelight_sapg.camDriver();
   }
 
   // Called when another command which requires one or more of the same
