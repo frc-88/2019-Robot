@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.sapg.SAPGCenter;
 import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.util.SharpIR;
 
@@ -28,9 +29,9 @@ public class SAPG extends PIDSubsystem {
     private static final double TRACK_ANGLE_THRESHOLD = (HORIZONTAL_FOV / 2) - 2;
     private static final double TRACK_DISTANCE_THRESHOLD = 12;
     private static final double TRACK_TICKS_THRESHOLD = 1000;
-    private static final double TRACK_PID_DFT_P = 0.08;
+    private static final double TRACK_PID_DFT_P = 0.07;
     private static final double TRACK_PID_DFT_I = 0.0;
-    private static final double TRACK_PID_DFT_D = 0.0;
+    private static final double TRACK_PID_DFT_D = 0.12;
     private static final double TRACK_PID_PERIOD = 0.01;
 
     private WPI_TalonSRX sapgTalon;
@@ -63,6 +64,8 @@ public class SAPG extends PIDSubsystem {
         configurePIDController();
 
         home = sapgTalon.getSelectedSensorPosition();
+
+        openTheJaws();
     }
 
     private void configureTalon() {
@@ -103,12 +106,13 @@ public class SAPG extends PIDSubsystem {
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
+        center = reverseLimit + (forwardLimit - reverseLimit) / 2;
 
         configureTalon();
         configurePIDController();
     }
 
-    private double getNormalizedPosition() {
+    public double getNormalizedPosition() {
         double normPos = ((double)(sapgTalon.getSelectedSensorPosition() - reverseLimit) / (double)(forwardLimit - reverseLimit)) * 2 - 1;
         
         if (normPos < -1) {
@@ -162,6 +166,10 @@ public class SAPG extends PIDSubsystem {
         return panelDetector.getDistance();
     }
 
+    public int getCenter() {
+        return center;
+    }
+
     public void updateDashboard() {
         SmartDashboard.putNumber("SAPG:Position", sapgTalon.getSelectedSensorPosition());
         SmartDashboard.putNumber("SAPG:Voltage", sapgTalon.getMotorOutputVoltage());
@@ -172,6 +180,7 @@ public class SAPG extends PIDSubsystem {
         SmartDashboard.putBoolean("SAPG:HasPanel", hasPanel());
         SmartDashboard.putBoolean("SAPG:OnTarget", onTarget());
         SmartDashboard.putNumber("SAPG:PanelDistance", getPanelDistance());
+        SmartDashboard.putNumber("SAPG:Center", center);
 
         // write prefs back to the dashboard
         SmartDashboard.putNumber("SAPG:Track_P", trackP);

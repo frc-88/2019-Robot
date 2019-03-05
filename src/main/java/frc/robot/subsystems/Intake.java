@@ -8,8 +8,16 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.*;
+import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.util.SharpIR;
 
+/**
+ * 
+ * Cargo Everywhere
+ * Time to put them back in bins
+ * Get me a panel!
+ * 
+ */
 public class Intake extends Subsystem {
     TalonSRX rollerTalon;
     SharpIR intakeSensor;
@@ -23,7 +31,23 @@ public class Intake extends Subsystem {
     }
 
     public void updateDashboard(){
-        SmartDashboard.putNumber("Cargo Distance", intakeSensor.getDistance());
+        double distance = intakeSensor.getDistance();
+        boolean objectSeen = false;
+        
+        if (distance < 20) {
+            if (!objectSeen) {
+                System.out.print("<TJ2>object seen!</TJ2>%n");
+                objectSeen = true;
+            }
+            System.out.format("<TJ2>%f.5</TJ2>%n", distance);
+        } else {
+            if (objectSeen) {
+                System.out.print("<TJ2>object gone!</TJ2>%n");
+                objectSeen = false;
+            }
+        }
+
+        SmartDashboard.putNumber("Cargo Distance", distance);
         SmartDashboard.putBoolean("Has Cargo", hasCargo());
     }
 
@@ -51,8 +75,7 @@ public class Intake extends Subsystem {
     }
 
     public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        // setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new IntakeDefault());
 
     }
 

@@ -26,6 +26,7 @@ public class SAPGTrackStart extends InstantCommand {
   @Override
   protected void initialize() {
     Robot.m_sapg.enable();
+    Robot.m_limelight_sapg.ledPipeline();
   }
 
 }

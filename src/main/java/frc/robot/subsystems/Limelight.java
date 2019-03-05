@@ -32,6 +32,7 @@ public class Limelight extends Subsystem {
   private NetworkTableEntry _ty;
   private NetworkTableEntry _ts;
   private NetworkTableEntry _camtran;
+  private NetworkTableEntry _ledMode;
   private NetworkTableEntry _pipeline;
   private NetworkTableEntry _getpipe;
 
@@ -64,6 +65,7 @@ public class Limelight extends Subsystem {
     _ty = _table.getEntry("ty");
     _ts = _table.getEntry("ts");
     _camtran = _table.getEntry("camtran");
+    _ledMode = _table.getEntry("ledMode");
 
     setPipeline(0);
   }
@@ -121,11 +123,34 @@ public class Limelight extends Subsystem {
     return _ts.getDouble(0.0);
   }
 
+  public void ledPipeline() {
+    _ledMode.setNumber(0);
+  }
+
+  public void ledOff() {
+    _ledMode.setNumber(1);
+  }
+
+  public void ledBlink() {
+    _ledMode.setNumber(2);
+  }
+
+  public void ledOn() {
+    _ledMode.setNumber(3);
+  }
+
+
   // Read all 6 dimensions of your camera’s transform (x,y,z,pitch,yaw,roll)
   // by reading the “camtran�? networktable number array.
 
   public LLCameraTransform getCameraTransform() {
-    return new LLCameraTransform(_camtran.getNumberArray(new Number[0]));
+    Number [] transform = _camtran.getNumberArray(new Number[0]);
+
+    if (transform.length == 0) {
+      transform = new Number [] {0, 0, 0, 0, 0, 0};
+    }
+
+    return new LLCameraTransform(transform);
   }
 
   public double getTargetDistance() {
