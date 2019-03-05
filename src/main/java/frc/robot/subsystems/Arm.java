@@ -135,6 +135,9 @@ public class Arm extends Subsystem {
     // used by ArmGoToPosition
     if (!prefs.containsKey("Arm:ShoulderTarget")) { prefs.putDouble("Arm:ShoulderTarget", 0.0); }
     if (!prefs.containsKey("Arm:ElbowTarget")) { prefs.putDouble("Arm:ElbowTarget", 0.0); }
+    // arm positions adjustable by preference
+    if (!prefs.containsKey("Arm:intake_shoulder")) { prefs.putDouble("Arm:intake_shoulder", 160); }
+    if (!prefs.containsKey("Arm:intake_elbow")) { prefs.putDouble("Arm:intake_elbow", 82); }
   }
 
   private void fetchPreferences() {
