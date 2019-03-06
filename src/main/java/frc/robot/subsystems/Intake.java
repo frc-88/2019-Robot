@@ -23,6 +23,8 @@ public class Intake extends Subsystem {
     SharpIR intakeSensor;
     private final static int SLOTIDX = 0;
     private final static int TIMEOUTMS = 0;
+    private boolean objectSeen = false;
+
 
     public Intake() {
         rollerTalon = new TalonSRX(RobotMap.INTAKE_ID);
@@ -32,7 +34,6 @@ public class Intake extends Subsystem {
 
     public void updateDashboard(){
         double distance = intakeSensor.getDistance();
-        boolean objectSeen = false;
         
         if (distance < 20) {
             if (!objectSeen) {
