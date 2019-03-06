@@ -25,7 +25,7 @@ public class SAPGTrackStop extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_sapg.disable();
+    Robot.m_limelight_sapg.trackingOn();
   }
 
 }

@@ -28,7 +28,7 @@ public class SAPGGrabPanelAwesome extends Command {
   @Override
   protected void initialize() {
     state = 0;
-    Robot.m_limelight_sapg.ledPipeline();
+    Robot.m_limelight_sapg.trackingOn();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -43,8 +43,6 @@ public class SAPGGrabPanelAwesome extends Command {
       Robot.m_drive.arcadeDrive(speed, turn);
       Robot.m_drive.autoshift();
 
-      Robot.m_sapg.enable();
-
       if (Robot.m_sapg.getPanelDistance() < STOP_DISTANCE) {
         state++;
         startTime = RobotController.getFPGATime();
@@ -55,7 +53,7 @@ public class SAPGGrabPanelAwesome extends Command {
     case 1:
       // push out
       Robot.m_drive.arcadeDrive(0, 0);
-      Robot.m_sapg.disable();
+      Robot.m_limelight_sapg.trackingOff();
       Robot.m_sapg.forwardPush();
       Robot.m_sapg.closeTheJaws();
       if (RobotController.getFPGATime() - startTime > PUSH_TIME) {
@@ -67,7 +65,6 @@ public class SAPGGrabPanelAwesome extends Command {
     case 2:
       // open, push out
       Robot.m_drive.arcadeDrive(0, 0);
-      Robot.m_sapg.disable();
       Robot.m_sapg.openTheJaws();
       if (RobotController.getFPGATime() - startTime > CLOSE_TIME) {
         state++;
@@ -77,7 +74,6 @@ public class SAPGGrabPanelAwesome extends Command {
     case 3:
       // open, pull in
       Robot.m_drive.arcadeDrive(0, 0);
-      Robot.m_sapg.disable();
       Robot.m_sapg.reversePush();
       if (RobotController.getFPGATime() - startTime > PUSH_TIME) {
         state++;
@@ -98,8 +94,7 @@ public class SAPGGrabPanelAwesome extends Command {
   @Override
   protected void end() {
     Robot.m_drive.arcadeDrive(0, 0);
-    Robot.m_sapg.disable();
-    Robot.m_limelight_sapg.ledOff();
+    Robot.m_limelight_sapg.trackingOff();
   }
 
   // Called when another command which requires one or more of the same

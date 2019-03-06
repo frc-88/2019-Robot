@@ -37,6 +37,7 @@ public class Limelight extends Subsystem {
   private NetworkTableEntry _getpipe;
 
   private String name;
+  private boolean tracking;
 
   // Variables used for distance calculation by vertical angle offset.
   public double limelight_height = 0;
@@ -68,6 +69,7 @@ public class Limelight extends Subsystem {
     _ledMode = _table.getEntry("ledMode");
 
     setPipeline(0);
+    tracking = false;
   }
 
   /**
@@ -83,6 +85,7 @@ public class Limelight extends Subsystem {
   public boolean isConnected() {
     return (_ta.exists() && _tv.exists() && _tx.exists() && _ty.exists());
   }
+
 
   /**
    * Get the horizontal offset angle of the target from the center of the camera
@@ -137,6 +140,20 @@ public class Limelight extends Subsystem {
 
   public void ledOn() {
     _ledMode.setNumber(3);
+  }
+
+  public void trackingOn() {
+    ledPipeline();
+    tracking = true;
+  }
+
+  public void trackingOff() {
+    ledOff();
+    tracking = false;
+  }
+
+  public boolean isTracking() {
+    return tracking;
   }
 
 

@@ -27,7 +27,6 @@ public class SAPG extends Subsystem {
 
     private static final double HORIZONTAL_FOV = 54.0;
     private static final double TRACK_ANGLE_THRESHOLD = (HORIZONTAL_FOV / 2) - 2;
-    private static final double TRACK_DISTANCE_THRESHOLD = 12;
     private static final double TRACK_TICKS_THRESHOLD = 1000;
     private static final double DFT_VELOCITY_P = 0.0;
     private static final double DFT_VELOCITY_I = 0.0;
@@ -203,42 +202,6 @@ public class SAPG extends Subsystem {
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(new SAPGDefault());
-    }
-
-    @Override
-    protected double returnPIDInput() {
-        double angle;
-        // convert position to range 1 to -1, between limits
-        double position = getNormalizedPosition();
-
-        if (Robot.m_limelight_sapg.hasTarget()) {
-            // If we have a target, track it
-            ticksSinceTargetLost = 0;
-            angle = Robot.m_limelight_sapg.getHorizontalOffsetAngle();
-            // if angle offset is too large, hold current position
-            if (Math.abs(angle) > TRACK_ANGLE_THRESHOLD) {
-                angle = 0;
-            }
-            // if target is too close, hold current position
-            if (Robot.m_limelight_sapg.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
-                angle = 0;
-            }
-        } else {
-            // if we don't have a target,
-            // and we haven't seen one in a while
-            // TODO and we aren't facing a wall (forward facing IR sees short distance)
-            // target center
-            // TODO target home instead
-            //
-            if (ticksSinceTargetLost++ > TRACK_TICKS_THRESHOLD) {
-                angle = position * TRACK_ANGLE_THRESHOLD;
-            } else {
-                angle = 0;
-            }
-        }
-
-        //return dampNearLimits(position, angle);
-        return angle;
     }
 
 }

@@ -11,11 +11,14 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class SAPGDefault extends Command {
-  double kP = -1.0;
-  double error;
+  private static final int COUNTS_TO_CLOSE = 10;
+  private static final int COUNTS_TO_CENTER= 50;
+  private static final int COUNTS_PER_INCH = 25;
+  private static final double TRACK_DISTANCE_THRESHOLD = 8;
 
+  private int targetPosition;
+  private int panelCounts = 0;
   private int noPanelCounts = 0;
-  private final int COUNTS_TO_CLOSE = 10;
 
   public SAPGDefault() {
     requires(Robot.m_sapg);
@@ -31,17 +34,21 @@ public class SAPGDefault extends Command {
   @Override
   protected void execute() {
 
-    if (!Robot.m_sapg.getPIDController().isEnabled()) {
-      error = Robot.m_sapg.getNormalizedPosition();
-      Robot.m_sapg.set(kP * error);
-    } else {
-      Robot.m_sapg.set(0.0);
-    }
-
     if (!Robot.m_sapg.hasPanel()) {
       noPanelCounts++;
+      panelCounts = 0;
     } else {
+      panelCounts++;
       noPanelCounts = 0;
+    }
+
+    if (Robot.m_limelight_sapg.isTracking() && Robot.m_limelight_sapg.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
+      targetPosition = (int) Math.round(Robot.m_limelight_sapg.getCameraTransform().x) * COUNTS_PER_INCH;
+      Robot.m_sapg.goToPosition(targetPosition);
+    } else { 
+      if ((noPanelCounts > COUNTS_TO_CENTER) || (panelCounts > COUNTS_TO_CENTER)) {
+        Robot.m_sapg.goToCenter();
+      }
     }
 
     if (noPanelCounts >= COUNTS_TO_CLOSE) {

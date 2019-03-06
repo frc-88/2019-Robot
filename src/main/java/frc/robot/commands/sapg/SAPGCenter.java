@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class SAPGCenter extends Command {
-  double kP = -1.0;
-  double error;
 
   public SAPGCenter() {
     // Use requires() here to declare subsystem dependencies
@@ -29,13 +27,9 @@ public class SAPGCenter extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (!Robot.m_sapg.getPIDController().isEnabled()) {
-      error = Robot.m_sapg.getNormalizedPosition();
-      Robot.m_sapg.set(kP * error);
-    } else {
-      Robot.m_sapg.set(0.0);
+    if (!Robot.m_limelight_sapg.isTracking()) {
+      Robot.m_sapg.goToCenter();
     }
-
   }
 
   // Make this return true when this Command no longer needs to run execute()
