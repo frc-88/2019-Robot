@@ -32,7 +32,6 @@ import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.sapg.SAPGBasicControl;
-import frc.robot.commands.sapg.SAPGCenter;
 import frc.robot.commands.sapg.SAPGClose;
 import frc.robot.commands.sapg.SAPGDeploy;
 import frc.robot.commands.sapg.SAPGGrabPanel;
@@ -128,7 +127,6 @@ public class OI {
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
     SmartDashboard.putData("SAPG Basic", new SAPGBasicControl());
-    SmartDashboard.putData("SAPG Center", new SAPGCenter());
     SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
     SmartDashboard.putData("SAPG Retract", new SAPGRetract());
     SmartDashboard.putData("SAPG Open", new SAPGOpen());
