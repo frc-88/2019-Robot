@@ -140,7 +140,7 @@ public class RobotMap {
   public static final int OPERATOR_NONE = 0;
   public static final int OPERATOR_SAPG_TEST = 1;
   public static final int OPERATOR_ARM_TEST = 2;
-  public static final int OPERATOR_CONTROL = OPERATOR_NONE;
+  public static final int OPERATOR_CONTROL = OPERATOR_SAPG_TEST;
 
   public static final int DRIVE_CONTROLLER_PORT = 0;
 

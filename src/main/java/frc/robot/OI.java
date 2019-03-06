@@ -33,6 +33,7 @@ import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.sapg.SAPGBasicControl;
 import frc.robot.commands.sapg.SAPGClose;
+import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.commands.sapg.SAPGDeploy;
 import frc.robot.commands.sapg.SAPGGrabPanel;
 import frc.robot.commands.sapg.SAPGGrabPanelAwesome;
@@ -44,7 +45,6 @@ import frc.robot.commands.sapg.SAPGScorePanelAwesome;
 import frc.robot.commands.sapg.SAPGTrackStart;
 import frc.robot.commands.sapg.SAPGTrackStop;
 import frc.robot.driveutil.DriveUtils;
-import frc.robot.util.ArmPosition;
 import frc.robot.util.TJController;
 
 /**
@@ -86,12 +86,11 @@ public class OI {
     new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
 
     new Trigger(){
-    
       @Override
       public boolean get() {
         return Robot.m_arm.shoulderSkipped() || Robot.m_arm.elbowSkipped();
       }
-    }.whenActive(new ArmEStop());;
+    }.whenActive(new ArmEStop());
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
@@ -127,14 +126,15 @@ public class OI {
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
     SmartDashboard.putData("SAPG Basic", new SAPGBasicControl());
+    SmartDashboard.putData("SAPG Default", new SAPGDefault());
     SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
     SmartDashboard.putData("SAPG Retract", new SAPGRetract());
     SmartDashboard.putData("SAPG Open", new SAPGOpen());
     SmartDashboard.putData("SAPG Close", new SAPGClose());
     SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
     SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
-    SmartDashboard.putData("SAPG PID Go", new SAPGTrackStart());
-    SmartDashboard.putData("SAPG PID Stop", new SAPGTrackStop());
+    SmartDashboard.putData("SAPG Track Start", new SAPGTrackStart());
+    SmartDashboard.putData("SAPG Track Stop", new SAPGTrackStop());
     SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
 
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
