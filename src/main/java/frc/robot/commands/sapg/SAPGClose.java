@@ -7,11 +7,12 @@
 
 package frc.robot.commands.sapg;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-public class SAPGClose extends Command {
+public class SAPGClose extends InstantCommand {
   public SAPGClose() {
+    super();
     requires(Robot.m_sapg);
   }
 
@@ -21,25 +22,4 @@ public class SAPGClose extends Command {
    Robot.m_sapg.close();
   }
 
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  protected void execute() {
-  }
-
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  protected boolean isFinished() {
-    return true;
-  }
-
-  // Called once after isFinished returns true
-  @Override
-  protected void end() {
-  }
-
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
-  }
 }
