@@ -52,10 +52,10 @@ public class SAPGDefault extends Command {
     }
 
     if (noPanelCounts >= COUNTS_TO_CLOSE) {
-      Robot.m_sapg.closeTheJaws();
+      Robot.m_sapg.close();
     }
 
-    Robot.m_sapg.reversePush();
+    Robot.m_sapg.retract();
   }
 
   // Make this return true when this Command no longer needs to run execute()

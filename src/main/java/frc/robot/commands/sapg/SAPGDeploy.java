@@ -18,7 +18,7 @@ public class SAPGDeploy extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_sapg.forwardPush();
+    Robot.m_sapg.deploy();
   }
 
   // Called repeatedly when this Command is scheduled to run

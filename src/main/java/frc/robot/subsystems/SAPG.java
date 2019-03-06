@@ -7,10 +7,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.util.SharpIR;
@@ -25,9 +23,6 @@ import frc.robot.util.SharpIR;
 public class SAPG extends Subsystem {
     private static final Preferences prefs = Preferences.getInstance();
 
-    private static final double HORIZONTAL_FOV = 54.0;
-    private static final double TRACK_ANGLE_THRESHOLD = (HORIZONTAL_FOV / 2) - 2;
-    private static final double TRACK_TICKS_THRESHOLD = 1000;
     private static final double DFT_VELOCITY_P = 0.0;
     private static final double DFT_VELOCITY_I = 0.0;
     private static final double DFT_VELOCITY_D = 0.0;
@@ -49,19 +44,20 @@ public class SAPG extends Subsystem {
     private int forwardLimit = 1000;
     private int reverseLimit = 25;
     private double panelThreshold = 4.5;
+
     private int center = reverseLimit + (forwardLimit - reverseLimit) / 2;
-    private int ticksSinceTargetLost = 0;
 
     public SAPG() {
         sapgTalon = new TalonSRX(RobotMap.SAPG_MOTOR_ID);
-        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
+        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD,
+                RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
         panelDetector = new SharpIR(RobotMap.SAPG_PANEL_IR_ID);
 
         initPreferences();
         fetchPreferences();
 
-        openTheJaws();
+        open();
     }
 
     private void configureTalon() {
@@ -92,14 +88,30 @@ public class SAPG extends Subsystem {
     }
 
     private void initPreferences() {
-        if (!prefs.containsKey("SAPG:Velocity_P")) { prefs.putDouble("SAPG:Velocity_P", velocityP); }
-        if (!prefs.containsKey("SAPG:Velocity_I")) { prefs.putDouble("SAPG:Velocity_I", velocityI); }
-        if (!prefs.containsKey("SAPG:Velocity_D")) { prefs.putDouble("SAPG:Velocity_D", velocityD); }
-        if (!prefs.containsKey("SAPG:Velocity_F")) { prefs.putDouble("SAPG:Velocity_D", velocityF); }
-        if (!prefs.containsKey("SAPG:Max_Speed")) { prefs.putInt("SAPG:Max_Speed", maxSpeed); }
-        if (!prefs.containsKey("SAPG:Forward_Limit")) { prefs.putInt("SAPG:Forward_Limit", forwardLimit); }
-        if (!prefs.containsKey("SAPG:Reverse_Limit")) { prefs.putInt("SAPG:Reverse_Limit", reverseLimit); }
-        if (!prefs.containsKey("SAPG:Panel_Threshold")) { prefs.putDouble("SAPG:Panel_Threshold", panelThreshold); }
+        if (!prefs.containsKey("SAPG:Velocity_P")) {
+            prefs.putDouble("SAPG:Velocity_P", velocityP);
+        }
+        if (!prefs.containsKey("SAPG:Velocity_I")) {
+            prefs.putDouble("SAPG:Velocity_I", velocityI);
+        }
+        if (!prefs.containsKey("SAPG:Velocity_D")) {
+            prefs.putDouble("SAPG:Velocity_D", velocityD);
+        }
+        if (!prefs.containsKey("SAPG:Velocity_F")) {
+            prefs.putDouble("SAPG:Velocity_D", velocityF);
+        }
+        if (!prefs.containsKey("SAPG:Max_Speed")) {
+            prefs.putInt("SAPG:Max_Speed", maxSpeed);
+        }
+        if (!prefs.containsKey("SAPG:Forward_Limit")) {
+            prefs.putInt("SAPG:Forward_Limit", forwardLimit);
+        }
+        if (!prefs.containsKey("SAPG:Reverse_Limit")) {
+            prefs.putInt("SAPG:Reverse_Limit", reverseLimit);
+        }
+        if (!prefs.containsKey("SAPG:Panel_Threshold")) {
+            prefs.putDouble("SAPG:Panel_Threshold", panelThreshold);
+        }
     }
 
     public void fetchPreferences() {
@@ -111,6 +123,7 @@ public class SAPG extends Subsystem {
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
+        
         center = reverseLimit + (forwardLimit - reverseLimit) / 2;
 
         configureTalon();
@@ -148,39 +161,37 @@ public class SAPG extends Subsystem {
     }
 
     public void goToPosition(int position) {
-        sapgTalon.set(ControlMode.MotionMagic, position);
+        if (position > reverseLimit && position < forwardLimit) {
+            sapgTalon.set(ControlMode.MotionMagic, position);
+        }
     }
 
     public void goToCenter() {
         goToPosition(center);
     }
 
-    public void openTheJaws() {
+    public void open() {
         grabPiston.set(Value.kForward);
     }
 
-    public void closeTheJaws() {
+    public void close() {
         grabPiston.set(Value.kReverse);
     }
 
-    public void forwardPush() {
+    public void deploy() {
         deployPiston.set(Value.kForward);
     }
 
-    public void reversePush() {
+    public void retract() {
         deployPiston.set(Value.kReverse);
     }
 
     public boolean hasPanel() {
-        return (grabPiston.get() == Value.kForward) && (panelDetector.getDistance() < panelThreshold);
+        return (grabPiston.get() == Value.kForward) && (getPanelDistance() < panelThreshold);
     }
 
     public double getPanelDistance() {
         return panelDetector.getDistance();
-    }
-
-    public int getCenter() {
-        return center;
     }
 
     public void updateDashboard() {

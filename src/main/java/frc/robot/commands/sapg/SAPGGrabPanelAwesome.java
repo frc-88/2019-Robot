@@ -54,8 +54,8 @@ public class SAPGGrabPanelAwesome extends Command {
       // push out
       Robot.m_drive.arcadeDrive(0, 0);
       Robot.m_limelight_sapg.trackingOff();
-      Robot.m_sapg.forwardPush();
-      Robot.m_sapg.closeTheJaws();
+      Robot.m_sapg.deploy();
+      Robot.m_sapg.close();
       if (RobotController.getFPGATime() - startTime > PUSH_TIME) {
         state++;
         startTime = RobotController.getFPGATime();
@@ -65,7 +65,7 @@ public class SAPGGrabPanelAwesome extends Command {
     case 2:
       // open, push out
       Robot.m_drive.arcadeDrive(0, 0);
-      Robot.m_sapg.openTheJaws();
+      Robot.m_sapg.open();
       if (RobotController.getFPGATime() - startTime > CLOSE_TIME) {
         state++;
         startTime = RobotController.getFPGATime();
@@ -74,7 +74,7 @@ public class SAPGGrabPanelAwesome extends Command {
     case 3:
       // open, pull in
       Robot.m_drive.arcadeDrive(0, 0);
-      Robot.m_sapg.reversePush();
+      Robot.m_sapg.retract();
       if (RobotController.getFPGATime() - startTime > PUSH_TIME) {
         state++;
         startTime = RobotController.getFPGATime();
