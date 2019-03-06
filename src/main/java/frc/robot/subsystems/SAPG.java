@@ -123,7 +123,7 @@ public class SAPG extends Subsystem {
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
-        
+
         center = reverseLimit + (forwardLimit - reverseLimit) / 2;
 
         configureTalon();
@@ -199,7 +199,6 @@ public class SAPG extends Subsystem {
         SmartDashboard.putNumber("SAPG:Velocity", sapgTalon.getSelectedSensorVelocity());
         SmartDashboard.putNumber("SAPG:PanelDistance", getPanelDistance());
         SmartDashboard.putBoolean("SAPG:HasPanel", hasPanel());
-        SmartDashboard.putNumber("SAPG:Center", center);
 
         // write prefs back to the dashboard
         SmartDashboard.putNumber("SAPG:Velocity_P", velocityP);
