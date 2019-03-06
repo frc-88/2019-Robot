@@ -47,7 +47,7 @@ import frc.robot.commands.sapg.SAPGTrackStop;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.TJController;
-
+import frc.robot.commands.intake.IntakeTester;
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -139,6 +139,9 @@ public class OI {
     SmartDashboard.putData("SAPG PID Stop", new SAPGTrackStop());
     SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
 
+    SmartDashboard.putData("Intake Tester", new IntakeTester());
+
+    SmartDashboard.putData("Arm Intake Position", new ArmGoToPosition(160, 82));
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
     SmartDashboard.putData("Arm Calibrate", new ArmCalibrate());
     SmartDashboard.putData("Arm Zero Elbow", new ArmZeroElbow());
