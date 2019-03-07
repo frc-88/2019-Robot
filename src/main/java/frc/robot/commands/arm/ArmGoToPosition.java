@@ -18,10 +18,18 @@ public class ArmGoToPosition extends Command {
   private double shoulder_degrees;
   private double elbow_degrees;
   private boolean usePrefences;
+  private String targetPosition;
 
   public ArmGoToPosition() {
     requires(Robot.m_arm);
 
+    usePrefences = true;
+  }
+
+  public ArmGoToPosition(String position) {
+    requires(Robot.m_arm);
+
+    targetPosition = position;
     usePrefences = true;
   }
 
@@ -39,13 +47,22 @@ public class ArmGoToPosition extends Command {
   protected void initialize() {
     if (usePrefences) {
       Preferences prefs = Preferences.getInstance();
+      String elbowTarget, shoulderTarget;
 
-      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble("ArmShoulderTarget", 0.0));
-      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble("ArmElbowTarget",0.0));
+      if (targetPosition != null) {
+        shoulderTarget = "Arm:" + targetPosition + "_shoulder";
+        elbowTarget = "Arm:" + targetPosition + "_elbow";
+      } else {
+        shoulderTarget = "Arm:ShoulderTarget";
+        elbowTarget = "Arm:ElbowTarget";
+      }
+
+      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble(shoulderTarget, 0.0));
+      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble(elbowTarget,0.0));
     } else {
       shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder_degrees);
       elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow_degrees);
-      }
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run

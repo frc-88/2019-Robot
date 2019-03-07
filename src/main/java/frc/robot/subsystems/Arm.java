@@ -80,7 +80,7 @@ public class Arm extends Subsystem {
     shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kF(MAIN_SLOT_IDX, 3, TIMEOUTMS);
     shoulder.configMotionCruiseVelocity(RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
-    shoulder.configMotionAcceleration(2 * RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
+    shoulder.configMotionAcceleration((int)(1.5 * RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10), TIMEOUTMS);
     shoulder.setInverted(true);
     shoulder.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
   }
@@ -92,7 +92,7 @@ public class Arm extends Subsystem {
     elbow.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
     elbow.configMotionCruiseVelocity(RobotMap.ELBOW_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
-    elbow.configMotionAcceleration(2 * RobotMap.ELBOW_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
+    elbow.configMotionAcceleration((int)(1.5 * RobotMap.ELBOW_MAX_SPEED * 4096 * 4 / 360 / 10), TIMEOUTMS);
     elbow.setInverted(false);
     elbow.configRemoteFeedbackFilter(RobotMap.ELBOW_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
   }
@@ -135,6 +135,9 @@ public class Arm extends Subsystem {
     // used by ArmGoToPosition
     if (!prefs.containsKey("Arm:ShoulderTarget")) { prefs.putDouble("Arm:ShoulderTarget", 0.0); }
     if (!prefs.containsKey("Arm:ElbowTarget")) { prefs.putDouble("Arm:ElbowTarget", 0.0); }
+    // arm positions adjustable by preference
+    if (!prefs.containsKey("Arm:intake_shoulder")) { prefs.putDouble("Arm:intake_shoulder", 160); }
+    if (!prefs.containsKey("Arm:intake_elbow")) { prefs.putDouble("Arm:intake_elbow", 82); }
   }
 
   private void fetchPreferences() {
@@ -278,12 +281,12 @@ public class Arm extends Subsystem {
 
   public void setShoulderSpeed(int speed) {
     shoulder.configMotionCruiseVelocity(speed * 4096 * 4 / 360 / 10);
-    shoulder.configMotionAcceleration(speed * 4096 * 4 / 360 / 10 * 2);
+    shoulder.configMotionAcceleration((int)(speed * 4096 * 4 / 360 / 10 * 1.5));
   }
 
   public void setElbowSpeed(int speed) {
     elbow.configMotionCruiseVelocity(speed * 4096 * 4 / 360 / 10);
-    elbow.configMotionAcceleration(speed * 4096 * 4 / 360 / 10 * 2);
+    elbow.configMotionAcceleration((int)(speed * 4096 * 4 / 360 / 10 * 1.5));
   }
 
   public double getMotorElbowDegrees() {
@@ -304,6 +307,14 @@ public class Arm extends Subsystem {
 
   public int getElbowAbsolutePosition() {
     return elbow.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
+  }
+
+  public double getShoulderSpeed() {
+    return shoulder.getSelectedSensorVelocity() * 10 * 360 / 4096 / 4;
+  }
+
+  public double getElbowSpeed() {
+    return shoulder.getSelectedSensorVelocity() * 10 * 360 / 4096 / 4;
   }
 
   /**
@@ -426,7 +437,7 @@ public boolean shoulderSkipped() {
   double normalizedPos = (auxEncoderPos + 180) > 0 ? 
       (auxEncoderPos + 180) % 360. - 180 : 
       (auxEncoderPos + 180) % 360. + 180;
-	return Math.abs(normalizedPos - getMotorShoulderDegrees()) > 30;
+	return Math.abs(normalizedPos - getMotorShoulderDegrees()) > 45;
 }
 
 public boolean elbowSkipped() {
@@ -434,7 +445,7 @@ public boolean elbowSkipped() {
   double normalizedPos = (auxEncoderPos + 180) > 0 ? 
       (auxEncoderPos + 180) % 360. - 180 : 
       (auxEncoderPos + 180) % 360. + 180;
-	return Math.abs(normalizedPos - getMotorElbowDegrees()) > 30;
+	return Math.abs(normalizedPos - getMotorElbowDegrees()) > 45;
 }
 
 }
