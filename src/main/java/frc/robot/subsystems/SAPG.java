@@ -55,9 +55,14 @@ public class SAPG extends Subsystem {
         panelDetector = new SharpIR(RobotMap.SAPG_PANEL_IR_ID);
 
         initPreferences();
-        fetchPreferences();
+        refreshPreferences();
 
         open();
+    }
+
+    public void refreshPreferences() {
+        fetchPreferences();
+        configureTalon();
     }
 
     private void configureTalon() {
@@ -114,7 +119,7 @@ public class SAPG extends Subsystem {
         }
     }
 
-    public void fetchPreferences() {
+    private void fetchPreferences() {
         velocityP = prefs.getDouble("SAPG:Velocity_P", velocityP);
         velocityI = prefs.getDouble("SAPG:Velocity_I", velocityI);
         velocityD = prefs.getDouble("SAPG:Velocity_D", velocityD);
@@ -125,8 +130,6 @@ public class SAPG extends Subsystem {
         panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
 
         center = reverseLimit + (forwardLimit - reverseLimit) / 2;
-
-        configureTalon();
     }
 
     public double getNormalizedPosition() {
