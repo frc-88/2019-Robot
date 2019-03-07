@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -43,6 +45,8 @@ public class Robot extends TimedRobot {
   public static Intake m_intake;
   public static Compressor compressor;
 
+  public static NetworkTableEntry soundPlaying;
+
   public static TimeScheduler dashboardScheduler;
 
   Command m_autonomousCommand;
@@ -76,6 +80,9 @@ public class Robot extends TimedRobot {
     //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+
+    //NetworkTableInstance.getDefault().
+    soundPlaying = NetworkTableInstance.getDefault().getTable("alerts").getEntry("sound");
   }
 
   /**
@@ -103,6 +110,8 @@ public class Robot extends TimedRobot {
     m_sapg.disable();
     m_arm.configureCoastMode();
     m_limelight_sapg.ledOff();
+
+    soundPlaying.setString("");
   }
 
   @Override
@@ -156,6 +165,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
+    
+
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     //m_sapg.enable();
@@ -176,6 +188,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    soundPlaying.setString("oh_yea_calef");
     Scheduler.getInstance().run();
   }
 

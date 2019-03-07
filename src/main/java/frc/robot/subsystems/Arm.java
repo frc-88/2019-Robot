@@ -309,6 +309,14 @@ public class Arm extends Subsystem {
     return elbow.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
   }
 
+  public double getShoulderSpeed() {
+    return shoulder.getSelectedSensorVelocity() * 10 * 360 / 4096 / 4;
+  }
+
+  public double getElbowSpeed() {
+    return shoulder.getSelectedSensorVelocity() * 10 * 360 / 4096 / 4;
+  }
+
   /**
    * zeroes elbow motor encoder based on known elbow angle 
    * @param elbowAngle
@@ -429,7 +437,7 @@ public boolean shoulderSkipped() {
   double normalizedPos = (auxEncoderPos + 180) > 0 ? 
       (auxEncoderPos + 180) % 360. - 180 : 
       (auxEncoderPos + 180) % 360. + 180;
-	return Math.abs(normalizedPos - getMotorShoulderDegrees()) > 30;
+	return Math.abs(normalizedPos - getMotorShoulderDegrees()) > 45;
 }
 
 public boolean elbowSkipped() {
@@ -437,7 +445,7 @@ public boolean elbowSkipped() {
   double normalizedPos = (auxEncoderPos + 180) > 0 ? 
       (auxEncoderPos + 180) % 360. - 180 : 
       (auxEncoderPos + 180) % 360. + 180;
-	return Math.abs(normalizedPos - getMotorElbowDegrees()) > 30;
+	return Math.abs(normalizedPos - getMotorElbowDegrees()) > 45;
 }
 
 }
