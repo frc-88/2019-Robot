@@ -24,7 +24,6 @@ import frc.robot.util.TimeScheduler;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -100,16 +99,15 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    m_sapg.disable();
     m_arm.configureCoastMode();
-    m_limelight_sapg.ledOff();
+    m_limelight_sapg.trackingOff();
   }
 
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    m_limelight_sapg.ledOff();
+    m_limelight_sapg.trackingOff();
   }
 
   /**
@@ -127,9 +125,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    //m_sapg.enable();
     m_arm.configureBrakeMode();
-    m_limelight_sapg.ledOff();
+    m_limelight_sapg.trackingOff();
 
     m_autonomousCommand = m_chooser.getSelected();
 
@@ -158,9 +155,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    //m_sapg.enable();
     m_arm.configureBrakeMode();
-    m_limelight_sapg.ledOff();
+    m_limelight_sapg.trackingOff();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
