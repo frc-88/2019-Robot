@@ -44,7 +44,7 @@ public class SAPGDefault extends Command {
       noPanelCounts = 0;
     }
 
-    if (Robot.m_limelight_sapg.isTracking() && Robot.m_limelight_sapg.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
+    if (Robot.m_sapg.isTracking() && Robot.m_limelight_sapg.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
       targetPosition = (int) Math.round(Robot.m_limelight_sapg.getCameraTransform().x) * COUNTS_PER_INCH;
       Robot.m_sapg.goToPosition(targetPosition);
     } else { 

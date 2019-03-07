@@ -31,7 +31,7 @@ public class SAPGScorePanelAwesome extends Command {
       state=0;
       startTime=RobotController.getFPGATime();
       Robot.m_drive.arcadeDrive(0, 0);
-      Robot.m_limelight_sapg.trackingOff();
+      Robot.m_sapg.trackingOff();
 
   }
 

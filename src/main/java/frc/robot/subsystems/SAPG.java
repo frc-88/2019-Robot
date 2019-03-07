@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.util.SharpIR;
@@ -46,6 +47,7 @@ public class SAPG extends Subsystem {
     private double panelThreshold = 4.5;
 
     private int center = reverseLimit + (forwardLimit - reverseLimit) / 2;
+    private boolean tracking = false;
 
     public SAPG() {
         sapgTalon = new TalonSRX(RobotMap.SAPG_MOTOR_ID);
@@ -185,6 +187,20 @@ public class SAPG extends Subsystem {
         deployPiston.set(Value.kReverse);
     }
 
+    public void trackingOn() {
+        Robot.m_limelight_sapg.ledOn();
+        tracking = true;
+    }
+    
+    public void trackingOff() {
+        Robot.m_limelight_sapg.ledOff();
+        tracking = false;
+    }
+    
+    public boolean isTracking() {
+        return tracking;
+    }
+    
     public boolean hasPanel() {
         return (grabPiston.get() == Value.kForward) && (getPanelDistance() < panelThreshold);
     }

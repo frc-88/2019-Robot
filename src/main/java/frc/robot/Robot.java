@@ -58,10 +58,10 @@ public class Robot extends TimedRobot {
 
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
+    m_limelight_sapg = new Limelight("limelight-sapg");
     m_drive = new Drive();
     m_climber = new Climber();
     m_intake = new Intake();
-    m_limelight_sapg = new Limelight("limelight-sapg");
     m_arm = new Arm();
     m_sapg = new SAPG();
     
@@ -100,14 +100,14 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureCoastMode();
-    m_limelight_sapg.trackingOff();
+    m_sapg.trackingOff();
   }
 
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    m_limelight_sapg.trackingOff();
+    m_sapg.trackingOff();
   }
 
   /**
@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureBrakeMode();
-    m_limelight_sapg.trackingOff();
+    m_sapg.trackingOff();
 
     m_autonomousCommand = m_chooser.getSelected();
 
@@ -156,7 +156,7 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureBrakeMode();
-    m_limelight_sapg.trackingOff();
+    m_sapg.trackingOff();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
