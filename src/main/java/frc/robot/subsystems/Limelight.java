@@ -68,7 +68,6 @@ public class Limelight extends Subsystem {
     _ledMode = _table.getEntry("ledMode");
 
     setPipeline(0);
-    tracking = false;
   }
 
   /**
@@ -84,7 +83,6 @@ public class Limelight extends Subsystem {
   public boolean isConnected() {
     return (_ta.exists() && _tv.exists() && _tx.exists() && _ty.exists());
   }
-
 
   /**
    * Get the horizontal offset angle of the target from the center of the camera
@@ -141,6 +139,7 @@ public class Limelight extends Subsystem {
     _ledMode.setNumber(3);
   }
 
+  
   // Read all 6 dimensions of your camera’s transform (x,y,z,pitch,yaw,roll)
   // by reading the “camtran�? networktable number array.
 
