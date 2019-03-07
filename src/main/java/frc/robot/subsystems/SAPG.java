@@ -49,8 +49,7 @@ public class SAPG extends Subsystem {
 
     public SAPG() {
         sapgTalon = new TalonSRX(RobotMap.SAPG_MOTOR_ID);
-        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD,
-                RobotMap.SAPG_DEPLOY_REVERSE);
+        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
         panelDetector = new SharpIR(RobotMap.SAPG_PANEL_IR_ID);
 
@@ -71,12 +70,9 @@ public class SAPG extends Subsystem {
         sapgTalon.setInverted(false);
         sapgTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog);
 
-        sapgTalon.configNominalOutputForward(0.0);
-
         sapgTalon.configNominalOutputForward(0.0, RobotMap.CAN_TIMEOUT);
         sapgTalon.configNominalOutputReverse(0.0, RobotMap.CAN_TIMEOUT);
         sapgTalon.configPeakOutputForward(+1.0, RobotMap.CAN_TIMEOUT);
-        sapgTalon.configClosedloopRamp(0, RobotMap.CAN_TIMEOUT);
         sapgTalon.configPeakOutputReverse(-1.0, RobotMap.CAN_TIMEOUT);
 
         sapgTalon.configForwardSoftLimitThreshold(forwardLimit);
@@ -89,7 +85,7 @@ public class SAPG extends Subsystem {
         sapgTalon.config_kD(MAIN_SLOT_IDX, velocityD, RobotMap.CAN_TIMEOUT);
         sapgTalon.config_kF(MAIN_SLOT_IDX, velocityF, RobotMap.CAN_TIMEOUT);
         sapgTalon.configMotionCruiseVelocity(maxSpeed, RobotMap.CAN_TIMEOUT);
-        sapgTalon.configMotionAcceleration(2 * maxSpeed, RobotMap.CAN_TIMEOUT);
+        sapgTalon.configMotionAcceleration(4 * maxSpeed, RobotMap.CAN_TIMEOUT);
     }
 
     private void initPreferences() {
@@ -123,7 +119,7 @@ public class SAPG extends Subsystem {
         velocityP = prefs.getDouble("SAPG:Velocity_P", velocityP);
         velocityI = prefs.getDouble("SAPG:Velocity_I", velocityI);
         velocityD = prefs.getDouble("SAPG:Velocity_D", velocityD);
-        velocityF = prefs.getDouble("SAPG:Velocity_D", velocityF);
+        velocityF = prefs.getDouble("SAPG:Velocity_F", velocityF);
         maxSpeed = prefs.getInt("SAPG:Max_Speed", maxSpeed);
         forwardLimit = prefs.getInt("SAPG:Forward_Limit", forwardLimit);
         reverseLimit = prefs.getInt("SAPG:Reverse_Limit", reverseLimit);
@@ -207,6 +203,8 @@ public class SAPG extends Subsystem {
         SmartDashboard.putNumber("SAPG:Velocity_P", velocityP);
         SmartDashboard.putNumber("SAPG:Velocity_I", velocityI);
         SmartDashboard.putNumber("SAPG:Velocity_D", velocityD);
+        SmartDashboard.putNumber("SAPG:Velocity_F", velocityF);
+        SmartDashboard.putNumber("SAPG:Max_Speed", maxSpeed);
         SmartDashboard.putNumber("SAPG:Forward_Limit", forwardLimit);
         SmartDashboard.putNumber("SAPG:Reverse_Limit", reverseLimit);
         SmartDashboard.putNumber("SAPG:Panel_Threshold", panelThreshold);

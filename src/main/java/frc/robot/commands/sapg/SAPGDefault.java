@@ -27,7 +27,9 @@ public class SAPGDefault extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    noPanelCounts = 0;
+    // This command will be interrupted often by other SAPG commands (most InstantCommands)
+    // remember that initialize will be called each time this command starts again after
+    // being interrupted. So...let's not re-initialize our counts and just keep them over time.
   }
 
   // Called repeatedly when this Command is scheduled to run
