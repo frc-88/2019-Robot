@@ -17,6 +17,7 @@ public class SAPGScorePanelAwesome extends Command {
     private long startTime;
     private final long PUSH_TIME=500000; // microseconds
     private final long CLOSE_TIME=500000; // microseconds
+    private final long END_TIME = 2000000; //microseconds
 
   public SAPGScorePanelAwesome() {
     // Use requires() here to declare subsystem dependencies
@@ -38,6 +39,9 @@ public class SAPGScorePanelAwesome extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    double speed;
+    double turn;
+
       switch(state){
           case 0: 
           //push out
@@ -75,6 +79,20 @@ public class SAPGScorePanelAwesome extends Command {
           }
           break;
 
+          case 3:
+          //wait before centering takes over
+          speed = Robot.m_oi.getDriverLeftYAxis();
+          turn = Robot.m_oi.getDriverRightXAxis();
+          Robot.m_drive.arcadeDrive(speed, turn);
+          Robot.m_drive.autoshift();
+
+          Robot.m_sapg.disable();
+
+          if (RobotController.getFPGATime() - startTime > END_TIME) {
+            state++;
+            startTime = RobotController.getFPGATime();
+          }
+
       }
 
   }
@@ -82,7 +100,7 @@ public class SAPGScorePanelAwesome extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return state==3;
+    return state==4;
   }
 
   // Called once after isFinished returns true

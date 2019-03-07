@@ -14,7 +14,7 @@ public final class ArmPosition {
     public static final double [] HOME = {160, 10};
     public static final double [] START = {165, 0};
     public static final double [] INTAKE = {160, 85};
-    public static final double [] CARGO_SHIP_FRONT = {105, 35};
+    public static final double [] CARGO_SHIP_FRONT = {108, 23};
     public static final double [] CARGO_SHIP_BACK = {-98, -26};
     public static final double [] LOW_ROCKET = {150, 0};
     public static final double [] MEDIUM_ROCKET_FRONT = {85, 0};

@@ -17,6 +17,7 @@ public class SAPGGrabPanelAwesome extends Command {
   private long startTime;
   private final long PUSH_TIME = 500000; // microseconds
   private final long CLOSE_TIME = 500000; // microseconds
+  private final long END_TIME = 2000000; //microseconds
   private final double STOP_DISTANCE = 7; // inches
 
   public SAPGGrabPanelAwesome() {
@@ -34,12 +35,14 @@ public class SAPGGrabPanelAwesome extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    System.out.println(state);
+    double speed;
+    double turn;
+
     switch (state) {
     case 0:
       // Driving and tracking
-      double speed = Robot.m_oi.getDriverLeftYAxis();
-      double turn = Robot.m_oi.getDriverRightXAxis();
+      speed = Robot.m_oi.getDriverLeftYAxis();
+      turn = Robot.m_oi.getDriverRightXAxis();
       Robot.m_drive.arcadeDrive(speed, turn);
       Robot.m_drive.autoshift();
 
@@ -85,13 +88,27 @@ public class SAPGGrabPanelAwesome extends Command {
       }
       break;
 
+    case 4:
+      //wait before centering takes over
+      speed = Robot.m_oi.getDriverLeftYAxis();
+      turn = Robot.m_oi.getDriverRightXAxis();
+      Robot.m_drive.arcadeDrive(speed, turn);
+      Robot.m_drive.autoshift();
+
+      Robot.m_sapg.disable();
+
+      if (RobotController.getFPGATime() - startTime > END_TIME) {
+        state++;
+        startTime = RobotController.getFPGATime();
+      }
+
     }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return state == 4;
+    return state == 5;
   }
 
   // Called once after isFinished returns true
