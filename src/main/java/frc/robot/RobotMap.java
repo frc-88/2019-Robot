@@ -135,6 +135,9 @@ public class RobotMap {
   //Intake
   public static final double INTAKE_HAS_CARGO = 18;
 
+  // SAPG
+  public static final double SAPG_TOLERANCE = 2; //inches
+
   // OI  
   public static final int OPERATOR_CONTROLLER_PORT = 1;
   public static final int OPERATOR_NONE = 0;

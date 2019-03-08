@@ -46,6 +46,8 @@ public class SAPGGrabPanelAwesome extends Command {
       Robot.m_drive.arcadeDrive(speed, turn);
       Robot.m_drive.autoshift();
 
+      Robot.m_sapg.close();
+      Robot.m_sapg.retract();
 
       if (Robot.m_sapg.isTracking() && Robot.m_sapg.targetInRange()) {
        Robot.m_sapg.track();
@@ -59,8 +61,22 @@ public class SAPGGrabPanelAwesome extends Command {
       break;
 
     case 1:
+      // wait for tracking to finish
+      Robot.m_drive.arcadeDrive(0, 0);
+      Robot.m_drive.autoshift();
+
+      if (Robot.m_sapg.onTarget()) {
+        state++;
+        startTime = RobotController.getFPGATime();
+
+      }
+      break;
+
+    case 2:
       // push out
       Robot.m_drive.arcadeDrive(0, 0);
+      Robot.m_drive.autoshift();
+      
       Robot.m_sapg.trackingOff();
       Robot.m_sapg.deploy();
       Robot.m_sapg.close();
@@ -70,18 +86,20 @@ public class SAPGGrabPanelAwesome extends Command {
 
       }
       break;
-    case 2:
+    case 3:
       // open, push out
       Robot.m_drive.arcadeDrive(0, 0);
+      Robot.m_drive.autoshift();
       Robot.m_sapg.open();
       if (RobotController.getFPGATime() - startTime > CLOSE_TIME) {
         state++;
         startTime = RobotController.getFPGATime();
       }
       break;
-    case 3:
+    case 4:
       // open, pull in
       Robot.m_drive.arcadeDrive(0, 0);
+      Robot.m_drive.autoshift();
       Robot.m_sapg.retract();
       if (RobotController.getFPGATime() - startTime > PUSH_TIME) {
         state++;
@@ -89,7 +107,7 @@ public class SAPGGrabPanelAwesome extends Command {
       }
       break;
 
-    case 4:
+    case 5:
       //wait before centering takes over
       speed = Robot.m_oi.getDriverLeftYAxis();
       turn = Robot.m_oi.getDriverRightXAxis();
@@ -107,7 +125,7 @@ public class SAPGGrabPanelAwesome extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return state == 5;
+    return state == 6;
   }
 
   // Called once after isFinished returns true

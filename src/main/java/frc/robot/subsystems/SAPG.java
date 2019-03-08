@@ -252,4 +252,8 @@ public class SAPG extends Subsystem {
         setDefaultCommand(new SAPGDefault());
     }
 
+	public boolean onTarget() {
+		return (double)(Math.abs(sapgTalon.getClosedLoopError())) / COUNTS_PER_INCH < RobotMap.SAPG_TOLERANCE;
+	}
+
 }
