@@ -47,16 +47,8 @@ public class SAPGGrabPanelAwesome extends Command {
       Robot.m_drive.autoshift();
 
 
-      if (Robot.m_sapg.isTracking() && Robot.m_limelight_sapg.getTargetDistance() < 96) {
-      
-        //double x = Robot.m_limelight_sapg.getTargetDistance() * Math.sin(Math.toRadians(Robot.m_limelight_sapg.getHorizontalOffsetAngle())) * -1;
-        double x = 14 * Math.sin(Math.toRadians(Robot.m_limelight_sapg.getHorizontalOffsetAngle())) * -1;
-  
-  
-        int targetPosition = 535 + (int) Math.round(x * 23);
-  
- 
-        Robot.m_sapg.goToPosition(targetPosition);
+      if (Robot.m_sapg.isTracking() && Robot.m_sapg.targetInRange()) {
+       Robot.m_sapg.track();
       }
 
       if (Robot.m_sapg.getPanelDistance() < STOP_DISTANCE) {

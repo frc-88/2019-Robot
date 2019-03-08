@@ -8,16 +8,12 @@
 package frc.robot.commands.sapg;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class SAPGDefault extends Command {
   private static final int COUNTS_TO_CLOSE = 10;
   private static final int COUNTS_TO_CENTER= 50;
-  private static final int COUNTS_PER_INCH = 23;
-  private static final double TRACK_DISTANCE_THRESHOLD = 96;
 
-  private int targetPosition;
   private int panelCounts = 0;
   private int noPanelCounts = 0;
 
@@ -45,21 +41,10 @@ public class SAPGDefault extends Command {
       noPanelCounts = 0;
     }
 
-    if (Robot.m_sapg.isTracking() && Robot.m_limelight_sapg.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
-      
-      //double x = Robot.m_limelight_sapg.getTargetDistance() * Math.sin(Math.toRadians(Robot.m_limelight_sapg.getHorizontalOffsetAngle())) * -1;
-      double x = 14 * Math.sin(Math.toRadians(Robot.m_limelight_sapg.getHorizontalOffsetAngle())) * -1;
-
-
-      targetPosition = 535 + (int) Math.round(x * COUNTS_PER_INCH);
-
+    if (Robot.m_sapg.isTracking() && Robot.m_sapg.targetInRange()) {
       noPanelCounts = 0;
       panelCounts = 0;
-
-      SmartDashboard.putNumber("CamX", x);
-      SmartDashboard.putNumber("targetPos", targetPosition);
-
-      Robot.m_sapg.goToPosition(targetPosition);
+      Robot.m_sapg.track();
     } else { 
       if ((noPanelCounts > COUNTS_TO_CENTER) || (panelCounts > COUNTS_TO_CENTER)) {
         Robot.m_sapg.goToCenter();
