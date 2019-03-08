@@ -11,6 +11,8 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -96,6 +98,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     writeDashboard();
+
+    makeSounds();
   }
 
   /**
@@ -197,6 +201,115 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  
+  boolean surprise = false;
+  long lastLoopTime = Long.MAX_VALUE;
+  int hasTargetCounts = 0;
+  int noTargetCounts = 0;
+  int hasPanelCounts = 0;
+  int noPanelCounts = 0;
+  int hasCargoCounts = 0;
+  int noCargoCounts = 0;
+  int lastNumPlayed = -1;
+  public void makeSounds() {
+
+    if (m_limelight_sapg.hasTarget()) {
+      hasTargetCounts++;
+    } else {
+      noTargetCounts++;
+    }
+    if (m_intake.hasCargo()) {
+      hasCargoCounts++;
+    } else {
+      noCargoCounts++;
+    }
+    if (m_sapg.hasPanel()) {
+      hasPanelCounts++;
+    } else {
+      noPanelCounts++;
+    }
+
+    
+    
+    // if (sapgEnabled
+    //         && hasTargetCounts == 5) {
+              
+
+    //     // Target Acquired
+    //     soundPlaying.setString("i_see_you");
+    //     noTargetCounts = 0;
+
+    // } 
+    
+    // if (sapgEnabled
+    //         && noTargetCounts == 5) {
+
+    //     // Target Lost
+    //     soundPlaying.setString("cant_see_me");
+    //     hasTargetCounts = 0;
+
+    // }
+
+    if (hasCargoCounts == 5)  {
+
+      // Got cargo
+      soundPlaying.setString("cargo");
+      noCargoCounts = 0;
+
+    }
+
+    if (noCargoCounts == 5)  {
+
+      // Lost cargo
+      soundPlaying.setString("oopsie_daisy");
+      hasCargoCounts = 0;
+
+    }
+
+    if (hasPanelCounts == 5)  {
+
+      // Got cargo
+      soundPlaying.setString("got_it");
+      noCargoCounts = 0;
+
+    }
+
+    if (noPanelCounts == 5)  {
+
+      // Lost cargo
+      soundPlaying.setString("oopsie_daisy");
+      hasCargoCounts = 0;
+
+    }
+
+    if (RobotController.isBrownedOut()) {
+
+      // Brownout
+      soundPlaying.setString("power");
+
+    }
+
+    if (RobotController.getFPGATime() - lastLoopTime > 1 * 1_000_000) {
+
+      // Comms blip
+      soundPlaying.setString("warning");
+
+    } 
+
+    // Shhhh! This is a surprise for Brad. Keep it a secret.
+    if (!surprise
+            && DriverStation.getInstance().isFMSAttached()
+            && Math.abs(m_drive.getStraightSpeed()) > 2) {
+
+        // Shhhh! This is a surprise for Brad. Keep it a secret.
+        surprise = true;
+        soundPlaying.setString("surprise");
+
+    } 
+
+    lastLoopTime = RobotController.getFPGATime();
   }
 
   private void initializeDashboard() {
