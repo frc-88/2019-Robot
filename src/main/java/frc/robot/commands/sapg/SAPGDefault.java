@@ -8,14 +8,18 @@
 package frc.robot.commands.sapg;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class SAPGDefault extends Command {
-  double kP = -1.0;
-  double error;
+  private static final int COUNTS_TO_CLOSE = 10;
+  private static final int COUNTS_TO_CENTER= 50;
+  private static final int COUNTS_PER_INCH = 23;
+  private static final double TRACK_DISTANCE_THRESHOLD = 96;
 
+  private int targetPosition;
+  private int panelCounts = 0;
   private int noPanelCounts = 0;
-  private final int COUNTS_TO_CLOSE = 10;
 
   public SAPGDefault() {
     requires(Robot.m_sapg);
@@ -24,31 +28,49 @@ public class SAPGDefault extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    noPanelCounts = 0;
+    // This command will be interrupted often by other SAPG commands (most InstantCommands)
+    // remember that initialize will be called each time this command starts again after
+    // being interrupted. So...let's not re-initialize our counts and just keep them over time.
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
 
-    if (!Robot.m_sapg.getPIDController().isEnabled()) {
-      error = Robot.m_sapg.getNormalizedPosition();
-      Robot.m_sapg.set(kP * error);
-    } else {
-      Robot.m_sapg.set(0.0);
-    }
-
     if (!Robot.m_sapg.hasPanel()) {
       noPanelCounts++;
+      panelCounts = 0;
     } else {
+      panelCounts++;
       noPanelCounts = 0;
     }
 
-    if (noPanelCounts >= COUNTS_TO_CLOSE) {
-      Robot.m_sapg.closeTheJaws();
+    if (Robot.m_sapg.isTracking() && Robot.m_limelight_sapg.getTargetDistance() < TRACK_DISTANCE_THRESHOLD) {
+      
+      //double x = Robot.m_limelight_sapg.getTargetDistance() * Math.sin(Math.toRadians(Robot.m_limelight_sapg.getHorizontalOffsetAngle())) * -1;
+      double x = 14 * Math.sin(Math.toRadians(Robot.m_limelight_sapg.getHorizontalOffsetAngle())) * -1;
+
+
+      targetPosition = 535 + (int) Math.round(x * COUNTS_PER_INCH);
+
+      noPanelCounts = 0;
+      panelCounts = 0;
+
+      SmartDashboard.putNumber("CamX", x);
+      SmartDashboard.putNumber("targetPos", targetPosition);
+
+      Robot.m_sapg.goToPosition(targetPosition);
+    } else { 
+      if ((noPanelCounts > COUNTS_TO_CENTER) || (panelCounts > COUNTS_TO_CENTER)) {
+        Robot.m_sapg.goToCenter();
+      }
     }
 
-    Robot.m_sapg.reversePush();
+    if (noPanelCounts >= COUNTS_TO_CLOSE) {
+      Robot.m_sapg.close();
+    }
+
+    Robot.m_sapg.retract();
   }
 
   // Make this return true when this Command no longer needs to run execute()

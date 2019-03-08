@@ -25,7 +25,7 @@ public class SAPGLoadPreferences extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_sapg.fetchPreferences();
+    Robot.m_sapg.refreshPreferences();
   }
 
 }
