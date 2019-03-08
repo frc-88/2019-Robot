@@ -13,6 +13,8 @@ import frc.robot.Robot;
 public class IntakeLoadCargo extends Command {
   private double speed = -1.0;
 
+  private int hasCounts;
+
   public IntakeLoadCargo(double speed) {
     requires(Robot.m_intake);
     this.speed = speed;
@@ -22,17 +24,22 @@ public class IntakeLoadCargo extends Command {
   @Override
   protected void initialize() {
     Robot.m_intake.set(speed);
+
+    hasCounts = 0;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    if (Robot.m_intake.hasCargo()) {
+      hasCounts++;
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.m_intake.hasCargo();
+    return hasCounts > 5;
   }
 
   // Called once after isFinished returns true
