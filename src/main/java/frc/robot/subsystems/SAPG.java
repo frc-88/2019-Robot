@@ -28,7 +28,7 @@ public class SAPG extends Subsystem {
     private static final double DFT_VELOCITY_I = 0.0;
     private static final double DFT_VELOCITY_D = 0.0;
     private static final double DFT_VELOCITY_F = 0.5;
-    private static final int DFT_MAX_SPEED = 15;
+    private static final int DFT_MAX_SPEED = 40;
     private static final int MAIN_SLOT_IDX = 0;
 
     private TalonSRX sapgTalon;
@@ -68,6 +68,7 @@ public class SAPG extends Subsystem {
 
     private void configureTalon() {
         sapgTalon.configFactoryDefault();
+
         sapgTalon.setNeutralMode(NeutralMode.Brake);
         sapgTalon.setInverted(false);
         sapgTalon.configSelectedFeedbackSensor(FeedbackDevice.Analog);
@@ -87,7 +88,7 @@ public class SAPG extends Subsystem {
         sapgTalon.config_kD(MAIN_SLOT_IDX, velocityD, RobotMap.CAN_TIMEOUT);
         sapgTalon.config_kF(MAIN_SLOT_IDX, velocityF, RobotMap.CAN_TIMEOUT);
         sapgTalon.configMotionCruiseVelocity(maxSpeed, RobotMap.CAN_TIMEOUT);
-        sapgTalon.configMotionAcceleration(4 * maxSpeed, RobotMap.CAN_TIMEOUT);
+        sapgTalon.configMotionAcceleration(2 * maxSpeed, RobotMap.CAN_TIMEOUT);
     }
 
     private void initPreferences() {
@@ -101,7 +102,7 @@ public class SAPG extends Subsystem {
             prefs.putDouble("SAPG:Velocity_D", velocityD);
         }
         if (!prefs.containsKey("SAPG:Velocity_F")) {
-            prefs.putDouble("SAPG:Velocity_D", velocityF);
+            prefs.putDouble("SAPG:Velocity_F", velocityF);
         }
         if (!prefs.containsKey("SAPG:Max_Speed")) {
             prefs.putInt("SAPG:Max_Speed", maxSpeed);
@@ -169,6 +170,10 @@ public class SAPG extends Subsystem {
 
     public void goToCenter() {
         goToPosition(center);
+    }
+
+    public int getCenter() {
+        return center;
     }
 
     public void open() {

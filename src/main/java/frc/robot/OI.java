@@ -35,6 +35,7 @@ import frc.robot.commands.sapg.SAPGBasicControl;
 import frc.robot.commands.sapg.SAPGClose;
 import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.commands.sapg.SAPGDeploy;
+import frc.robot.commands.sapg.SAPGGoToPosition;
 import frc.robot.commands.sapg.SAPGGrabPanel;
 import frc.robot.commands.sapg.SAPGGrabPanelAwesome;
 import frc.robot.commands.sapg.SAPGLoadPreferences;
@@ -136,6 +137,9 @@ public class OI {
     SmartDashboard.putData("SAPG Track Start", new SAPGTrackStart());
     SmartDashboard.putData("SAPG Track Stop", new SAPGTrackStop());
     SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
+    SmartDashboard.putData("SAPG GoTo 400", new SAPGGoToPosition(400));
+    SmartDashboard.putData("SAPG GoTo 500", new SAPGGoToPosition(500));
+    SmartDashboard.putData("SAPG GoTo 600", new SAPGGoToPosition(600));
 
     SmartDashboard.putData("Intake Tester", new IntakeTester());
 

@@ -91,8 +91,6 @@ public class SAPGGrabPanelAwesome extends Command {
       Robot.m_drive.arcadeDrive(speed, turn);
       Robot.m_drive.autoshift();
 
-      Robot.m_sapg.disable();
-
       if (RobotController.getFPGATime() - startTime > END_TIME) {
         state++;
         startTime = RobotController.getFPGATime();
