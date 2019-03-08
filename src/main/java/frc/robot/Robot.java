@@ -289,7 +289,7 @@ public class Robot extends TimedRobot {
 
     }
 
-    if (!surprise && DriverStation.getInstance().isFMSAttached() && Math.abs(m_drive.getStraightSpeed()) > 2) {
+    if (!surprise && DriverStation.getInstance().isFMSAttached() && DriverStation.getInstance().isAutonomous() && Math.abs(m_drive.getStraightSpeed()) > 2) {
 
       // Shhhh! This is a surprise for Brad. Keep it a secret.
       surprise = true;
