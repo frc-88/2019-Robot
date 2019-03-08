@@ -233,7 +233,7 @@ public class SAPG extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        //setDefaultCommand(new SAPGDefault());
+        setDefaultCommand(new SAPGDefault());
     }
 
 }

@@ -107,7 +107,7 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureCoastMode();
-    //m_sapg.trackingOff();
+    m_sapg.trackingOff();
 
     soundPlaying.setString("");
   }
@@ -116,7 +116,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    //m_sapg.trackingOff();
+    m_sapg.trackingOff();
   }
 
   /**
