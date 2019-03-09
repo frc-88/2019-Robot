@@ -39,7 +39,7 @@ public class IntakeLoadCargo extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return hasCounts > 5;
+    return hasCounts > 1;
   }
 
   // Called once after isFinished returns true

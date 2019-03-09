@@ -122,6 +122,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
 
     m_sapg.trackingOff();
+    m_limelight_sapg.setPip();
   }
 
   /**
