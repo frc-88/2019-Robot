@@ -52,7 +52,7 @@ public class SAPGDefault extends Command {
     }
 
     if (noPanelCounts >= COUNTS_TO_CLOSE) {
-      Robot.m_sapg.close();
+//      Robot.m_sapg.close();
     }
 
     Robot.m_sapg.retract();

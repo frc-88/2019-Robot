@@ -14,11 +14,12 @@ import frc.robot.Robot;
 public class SAPGGrabPanelAwesome extends Command {
 
   private int state;
+  private int counter;
   private long startTime;
-  private final long PUSH_TIME = 500000; // microseconds
+  private final long PUSH_TIME = 600000; // microseconds
   private final long CLOSE_TIME = 600000; // microseconds
   private final long END_TIME = 2000000; //microseconds
-  private final double STOP_DISTANCE = 7; // inches
+  private final double STOP_DISTANCE = 6; // inches
 
   public SAPGGrabPanelAwesome() {
     requires(Robot.m_drive);
@@ -29,6 +30,7 @@ public class SAPGGrabPanelAwesome extends Command {
   @Override
   protected void initialize() {
     state = 0;
+    counter = 0;
     Robot.m_sapg.trackingOn();
   }
 
@@ -54,8 +56,12 @@ public class SAPGGrabPanelAwesome extends Command {
       }
 
       if (Robot.m_sapg.getPanelDistance() < STOP_DISTANCE) {
-        state++;
-        startTime = RobotController.getFPGATime();
+        if (counter++ > 2) {
+          state++;
+          startTime = RobotController.getFPGATime();
+        }
+      } else {
+        counter = 0 ;
       }
 
       break;
@@ -78,8 +84,8 @@ public class SAPGGrabPanelAwesome extends Command {
       Robot.m_drive.autoshift();
       
       Robot.m_sapg.trackingOff();
-      Robot.m_sapg.deploy();
       Robot.m_sapg.close();
+      Robot.m_sapg.deploy();
       if (RobotController.getFPGATime() - startTime > PUSH_TIME) {
         state++;
         startTime = RobotController.getFPGATime();
