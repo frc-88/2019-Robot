@@ -16,7 +16,7 @@ public class SAPGGrabPanelAwesome extends Command {
   private int state;
   private long startTime;
   private final long PUSH_TIME = 500000; // microseconds
-  private final long CLOSE_TIME = 500000; // microseconds
+  private final long CLOSE_TIME = 600000; // microseconds
   private final long END_TIME = 2000000; //microseconds
   private final double STOP_DISTANCE = 7; // inches
 

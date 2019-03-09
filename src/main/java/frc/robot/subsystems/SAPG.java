@@ -185,7 +185,7 @@ public class SAPG extends Subsystem {
     public void track() {
         double x = 14 * Math.sin(Math.toRadians(Robot.m_limelight_sapg.getHorizontalOffsetAngle()));
 
-        int targetPosition = 535 - (int) Math.round(x * COUNTS_PER_INCH);
+        int targetPosition = 510 - (int) Math.round(x * COUNTS_PER_INCH);
 
         goToPosition(targetPosition);
     }
