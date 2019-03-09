@@ -132,7 +132,7 @@ public class OI {
     SmartDashboard.putData("SAPG Retract", new SAPGRetract());
     SmartDashboard.putData("SAPG Open", new SAPGOpen());
     SmartDashboard.putData("SAPG Close", new SAPGClose());
-    SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
+    SmartDashboard.putData("SAPG Grab", new SAPGGrabPanelAwesome());
     SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
     SmartDashboard.putData("SAPG Track Start", new SAPGTrackStart());
     SmartDashboard.putData("SAPG Track Stop", new SAPGTrackStop());
