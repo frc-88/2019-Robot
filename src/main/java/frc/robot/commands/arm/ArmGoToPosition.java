@@ -33,6 +33,15 @@ public class ArmGoToPosition extends Command {
     usePrefences = true;
   }
 
+  public ArmGoToPosition(double [] position) {
+    requires(Robot.m_arm);
+
+    shoulder_degrees = position[0];
+    elbow_degrees = position[1];
+
+    usePrefences = false;
+  }
+
   public ArmGoToPosition(double shoulder, double elbow) {
     requires(Robot.m_arm);
 
