@@ -133,7 +133,10 @@ public class RobotMap {
   public static final double CLIMBER_TOLERANCE = 0.25;
 
   //Intake
-  public static final double INTAKE_HAS_CARGO = 18;
+  public static final double INTAKE_HAS_CARGO = 20;
+
+  // SAPG
+  public static final double SAPG_TOLERANCE = 2; //inches
 
   // OI  
   public static final int OPERATOR_CONTROLLER_PORT = 1;

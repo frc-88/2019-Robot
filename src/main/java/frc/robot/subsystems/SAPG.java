@@ -30,7 +30,9 @@ public class SAPG extends Subsystem {
     private static final double DFT_VELOCITY_F = 0.5;
     private static final int DFT_MAX_SPEED = 40;
     private static final int MAIN_SLOT_IDX = 0;
-
+    private static final double TRACK_DISTANCE_THRESHOLD = 96;
+    private static final int COUNTS_PER_INCH = 23;
+  
     private TalonSRX sapgTalon;
     private DoubleSolenoid deployPiston;
     private DoubleSolenoid grabPiston;
@@ -176,6 +178,19 @@ public class SAPG extends Subsystem {
         return center;
     }
 
+    public boolean targetInRange() {
+        return Robot.m_limelight_sapg.getTargetDistance() < TRACK_DISTANCE_THRESHOLD;
+    }
+
+    public void track() {
+        double x = 14 * Math.sin(Math.toRadians(Robot.m_limelight_sapg.getHorizontalOffsetAngle()));
+
+        int targetPosition = 510 - (int) Math.round(x * COUNTS_PER_INCH);
+
+        goToPosition(targetPosition);
+    }
+    
+
     public void open() {
         grabPiston.set(Value.kForward);
     }
@@ -199,6 +214,7 @@ public class SAPG extends Subsystem {
     
     public void trackingOff() {
         Robot.m_limelight_sapg.ledOff();
+        set(0);
         tracking = false;
     }
     
@@ -235,5 +251,9 @@ public class SAPG extends Subsystem {
     protected void initDefaultCommand() {
         setDefaultCommand(new SAPGDefault());
     }
+
+	public boolean onTarget() {
+		return (double)(Math.abs(sapgTalon.getClosedLoopError())) / COUNTS_PER_INCH < RobotMap.SAPG_TOLERANCE;
+	}
 
 }

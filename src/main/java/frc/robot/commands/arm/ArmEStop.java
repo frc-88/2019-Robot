@@ -20,6 +20,7 @@ public class ArmEStop extends Command {
   protected void initialize() {
     Robot.m_arm.setShoulder(0);
     Robot.m_arm.setElbow(0);
+    Robot.soundPlaying.setString("warning");
   }
 
   // Called repeatedly when this Command is scheduled to run
