@@ -23,6 +23,8 @@ public class Intake extends Subsystem {
     SharpIR intakeSensor;
     private final static int SLOTIDX = 0;
     private final static int TIMEOUTMS = 0;
+    private boolean objectSeen = false;
+
 
     public Intake() {
         rollerTalon = new TalonSRX(RobotMap.INTAKE_ID);
@@ -32,20 +34,19 @@ public class Intake extends Subsystem {
 
     public void updateDashboard(){
         double distance = intakeSensor.getDistance();
-        boolean objectSeen = false;
         
-        if (distance < 20) {
-            if (!objectSeen) {
-                System.out.print("<TJ2>object seen!</TJ2>%n");
-                objectSeen = true;
-            }
-            System.out.format("<TJ2>%f.5</TJ2>%n", distance);
-        } else {
-            if (objectSeen) {
-                System.out.print("<TJ2>object gone!</TJ2>%n");
-                objectSeen = false;
-            }
-        }
+    //     if (distance < 20) {
+    //         if (!objectSeen) {
+    //             System.out.println("<TJ2>object seen!</TJ2>");
+    //             objectSeen = true;
+    //         }
+    //         System.out.format("<TJ2>%f</TJ2>%n", distance);
+    //     } else {
+    //         if (objectSeen) {
+    //             System.out.println("<TJ2>object gone!</TJ2>");
+    //             objectSeen = false;
+    //         }
+    //     }
 
         SmartDashboard.putNumber("Cargo Distance", distance);
         SmartDashboard.putBoolean("Has Cargo", hasCargo());

@@ -38,8 +38,8 @@ public class SAPGGrabPanel extends Command {
       switch(state){
           case 0: 
           //close, push out
-          Robot.m_sapg.closeTheJaws();
-          Robot.m_sapg.forwardPush();
+          Robot.m_sapg.close();
+          Robot.m_sapg.deploy();
           if (RobotController.getFPGATime()-startTime>PUSH_TIME){
               state++;
               startTime=RobotController.getFPGATime();
@@ -48,8 +48,8 @@ public class SAPGGrabPanel extends Command {
           break;
           case 1:
           //open, push out
-          Robot.m_sapg.openTheJaws();
-          Robot.m_sapg.forwardPush();
+          Robot.m_sapg.open();
+          Robot.m_sapg.deploy();
           if (RobotController.getFPGATime()-startTime>OPEN_TIME){
             state++;
             startTime=RobotController.getFPGATime();
@@ -57,8 +57,8 @@ public class SAPGGrabPanel extends Command {
           break;
           case 2:
           //open, pull in
-          Robot.m_sapg.openTheJaws();
-          Robot.m_sapg.reversePush();
+          Robot.m_sapg.open();
+          Robot.m_sapg.retract();
           if (RobotController.getFPGATime()-startTime>PUSH_TIME){
             state++;
             startTime=RobotController.getFPGATime();

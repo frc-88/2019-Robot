@@ -121,7 +121,7 @@ public class RobotMap {
   // Arm
   public static final double ARM_TOLERANCE = 1;
   public static final int SHOULDER_MAX_SPEED = 120;
-  public static final int ELBOW_MAX_SPEED = 120;
+  public static final int ELBOW_MAX_SPEED = 160;
 
   // Climber
 
@@ -133,14 +133,17 @@ public class RobotMap {
   public static final double CLIMBER_TOLERANCE = 0.25;
 
   //Intake
-  public static final double INTAKE_HAS_CARGO = 18;
+  public static final double INTAKE_HAS_CARGO = 20;
+
+  // SAPG
+  public static final double SAPG_TOLERANCE = 2; //inches
 
   // OI  
   public static final int OPERATOR_CONTROLLER_PORT = 1;
   public static final int OPERATOR_NONE = 0;
   public static final int OPERATOR_SAPG_TEST = 1;
   public static final int OPERATOR_ARM_TEST = 2;
-  public static final int OPERATOR_CONTROL = OPERATOR_NONE;
+  public static final int OPERATOR_CONTROL = OPERATOR_SAPG_TEST;
 
   public static final int DRIVE_CONTROLLER_PORT = 0;
 
