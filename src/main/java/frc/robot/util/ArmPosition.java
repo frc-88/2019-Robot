@@ -20,7 +20,10 @@ public final class ArmPosition {
     public static final double [] MEDIUM_ROCKET_FRONT = {85, 0};
     public static final double [] MEDIUM_ROCKET_FRONT2 = {55, 180};
     public static final double [] MEDIUM_ROCKET_BACK = {-85, 0};
+    public static final double [] MEDIUM_ROCKET_BACK2 = {-47, -180};
     public static final double [] HIGH_ROCKET_FRONT = {28, 0};
     public static final double [] HIGH_ROCKET_BACK = {-30, 0};
     public static final double [] PRE_CLIMB = {80, 180};
+    public static final double [] LOW_ROCKET_BACK = {-90, -180};
+
 }

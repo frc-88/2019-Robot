@@ -19,7 +19,7 @@ public class ArmGoToPosition extends Command {
   private double elbow_degrees;
   private boolean usePrefences;
   private String targetPosition;
-
+  private boolean goingToIntake=false;
   public ArmGoToPosition() {
     requires(Robot.m_arm);
 
@@ -28,7 +28,9 @@ public class ArmGoToPosition extends Command {
 
   public ArmGoToPosition(String position) {
     requires(Robot.m_arm);
-
+  if(position.equals("intake")){
+  goingToIntake=true;
+}
     targetPosition = position;
     usePrefences = true;
   }
@@ -78,7 +80,17 @@ public class ArmGoToPosition extends Command {
   @Override
   protected void execute() {
     Robot.m_arm.moveShoulder(shoulder_target);
+    if(goingToIntake && Robot.m_arm.getShoulderDegrees()>135){
     Robot.m_arm.moveElbow(elbow_target);
+
+    }
+    else if(!goingToIntake){
+          Robot.m_arm.moveElbow(elbow_target);
+
+    }
+    else if(goingToIntake && Robot.m_arm.getShoulderDegrees()<135){
+      Robot.m_arm.moveElbow(Robot.m_arm.convertElbowDegreesToMotor(0));
+    }
 
     SmartDashboard.putNumber("Arm:commandShoulder", shoulder_target);
     SmartDashboard.putNumber("Arm:commandElbow", elbow_target);
