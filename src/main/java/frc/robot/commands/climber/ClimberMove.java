@@ -10,6 +10,7 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.Climber;
 
 public class ClimberMove extends Command {
@@ -22,7 +23,7 @@ public class ClimberMove extends Command {
   @Override
   protected void initialize() {
     Robot.m_climber.zeroEncoder();
-    Robot.m_climber.move(SmartDashboard.getNumber("SetClimberPosition", 0));
+    Robot.m_climber.move(SmartDashboard.getNumber("SetClimberPosition", 0), RobotMap.CLIMBER_MAX_SPEED);
   }
 
   // Called repeatedly when this Command is scheduled to run

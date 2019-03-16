@@ -118,6 +118,13 @@ public class OI {
       operatorController.buttonRightBumper.whenPressed(new SAPGGrabPanel());
       operatorController.buttonLeftBumper.whenPressed(new SAPGScorePanel());
       break;
+    case RobotMap.OPERATOR_CLIMB_TEST:
+      operatorController.buttonA.whenPressed(new ArmGoToPosition(ArmPosition.CLIMB_PREP));
+      operatorController.buttonB.whenPressed(new ClimberClimb());
+      operatorController.buttonB.whenReleased(new ClimberBasicControl());
+      operatorController.buttonX.whenPressed(new ArmGoToPosition(ArmPosition.CLIMB_PULLED));
+      operatorController.buttonY.whenPressed(new ArmGoToPosition(ArmPosition.CLIMB_END));
+      operatorController.buttonStart.whenPressed(new ClimberBasicControl());
     }
 
     // starting config

@@ -42,6 +42,7 @@ public class RobotMap {
   public static final int SHOULDER_ID = 05;
   public static final int SHOULDER_AUXILARY_ID = 3;
   public static final int ELBOW_AUXILARY_ID = 13;
+  public static final int ARM_WINCH_ID = 8;
 
   // Intake
   
@@ -143,7 +144,8 @@ public class RobotMap {
   public static final int OPERATOR_NONE = 0;
   public static final int OPERATOR_SAPG_TEST = 1;
   public static final int OPERATOR_ARM_TEST = 2;
-  public static final int OPERATOR_CONTROL = OPERATOR_SAPG_TEST;
+  public static final int OPERATOR_CLIMB_TEST = 3;
+  public static final int OPERATOR_CONTROL = OPERATOR_CLIMB_TEST;
 
   public static final int DRIVE_CONTROLLER_PORT = 0;
 

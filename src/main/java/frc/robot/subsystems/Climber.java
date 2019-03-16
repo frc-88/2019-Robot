@@ -79,7 +79,9 @@ public class Climber extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  public void move(double distance){
+  public void move(double distance, double speed){
+    winch.configMotionCruiseVelocity((int)(speed*RobotMap.CLIMBER_TICKS_PER_INCH/10));
+    winch.configMotionAcceleration((int)(1.5*speed*RobotMap.CLIMBER_TICKS_PER_INCH/10));
     winch.set(ControlMode.MotionMagic, distance*RobotMap.CLIMBER_TICKS_PER_INCH);
   }
 
@@ -94,4 +96,5 @@ public class Climber extends Subsystem {
   public boolean targetReached() {
     return Math.abs((winch.getClosedLoopError() * 1.)/RobotMap.CLIMBER_TICKS_PER_INCH) < RobotMap.CLIMBER_TOLERANCE;
   }
+
 }

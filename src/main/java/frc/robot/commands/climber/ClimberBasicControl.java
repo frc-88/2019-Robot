@@ -13,6 +13,7 @@ import frc.robot.Robot;
 public class ClimberBasicControl extends Command {
   public ClimberBasicControl() {
     requires(Robot.m_climber);
+    requires(Robot.m_arm);
   }
 
   // Called just before this Command runs the first time
@@ -24,6 +25,7 @@ public class ClimberBasicControl extends Command {
   @Override
   protected void execute() {
     Robot.m_climber.set(Robot.m_oi.getOperatorRightYAxis());
+    Robot.m_arm.moveWinch(Robot.m_oi.getOperatorLeftYAxis());
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -36,12 +38,13 @@ public class ClimberBasicControl extends Command {
   @Override
   protected void end() {
     Robot.m_climber.set(0.0);
+    Robot.m_arm.stopArm();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.m_climber.set(0.0);
+    end();
   }
 }

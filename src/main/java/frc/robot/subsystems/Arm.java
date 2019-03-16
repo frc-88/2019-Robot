@@ -53,7 +53,7 @@ public class Arm extends Subsystem {
   private final static int TIMEOUTMS = 0;
 
 
-  private TalonSRX shoulder, elbow;
+  private TalonSRX shoulder, elbow, winch;
   private TJPIDController pitchPID;
   private int shoulderOffset = -940;
   private int elbowOffset = 415;
@@ -62,9 +62,11 @@ public class Arm extends Subsystem {
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
     elbow = new TalonSRX(RobotMap.ELBOW_ID);
+    winch = new TalonSRX(RobotMap.ARM_WINCH_ID);
 
     configShoulderTalon();
     configElbowTalon();
+    configWinchTalon();
 
     pitchPID = new TJPIDController(0.01, 0, 0);
     pitchPID.setTolerance(2);
@@ -110,6 +112,20 @@ public class Arm extends Subsystem {
     talon.configPeakOutputReverse(-1.0, TIMEOUTMS);
     talon.configNeutralDeadband(0.01, TIMEOUTMS);
     talon.setNeutralMode(NeutralMode.Brake);
+  }
+
+  private void configWinchTalon() {
+    winch.configFactoryDefault();
+    winch.setInverted(false);
+    winch.configNeutralDeadband(0.01, TIMEOUTMS);
+    winch.setNeutralMode(NeutralMode.Brake);
+
+    winch.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
+    winch.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, MAIN_SLOT_IDX, TIMEOUTMS);
+    winch.config_kP(MAIN_SLOT_IDX, 0, TIMEOUTMS);
+    winch.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
+    winch.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
+    winch.config_kF(MAIN_SLOT_IDX, 0, TIMEOUTMS);
   }
 
   public void configureBrakeMode() {
@@ -210,6 +226,7 @@ public class Arm extends Subsystem {
     // stops the movement of the arm
     shoulder.set(ControlMode.PercentOutput, 0.0);
     elbow.set(ControlMode.PercentOutput, 0.0);
+    winch.set(ControlMode.PercentOutput, 0.0);
   }
 
   /**
@@ -279,13 +296,13 @@ public class Arm extends Subsystem {
         && Math.abs(convertMotorElbowToDegrees(elbow.getClosedLoopError())) < RobotMap.ARM_TOLERANCE;
   }
 
-  public void setShoulderSpeed(int speed) {
-    shoulder.configMotionCruiseVelocity(speed * 4096 * 4 / 360 / 10);
+  public void setShoulderSpeed(double speed) {
+    shoulder.configMotionCruiseVelocity((int)(speed * 4096 * 4 / 360 / 10);
     shoulder.configMotionAcceleration((int)(speed * 4096 * 4 / 360 / 10 * 1.5));
   }
 
-  public void setElbowSpeed(int speed) {
-    elbow.configMotionCruiseVelocity(speed * 4096 * 4 / 360 / 10);
+  public void setElbowSpeed(double speed) {
+    elbow.configMotionCruiseVelocity((int)(speed * 4096 * 4 / 360 / 10));
     elbow.configMotionAcceleration((int)(speed * 4096 * 4 / 360 / 10 * 1.5));
   }
 
@@ -446,6 +463,20 @@ public boolean elbowSkipped() {
       (auxEncoderPos + 180) % 360. - 180 : 
       (auxEncoderPos + 180) % 360. + 180;
 	return Math.abs(normalizedPos - getMotorElbowDegrees()) > 45;
+}
+
+public void moveWinch(double percentOutput) {
+  winch.set(ControlMode.PercentOutput, percentOutput);
+}
+
+public void winchDown(double angle, double speed) {
+  shoulder.set(ControlMode.PercentOutput, -0.1);
+  winch.configMotionCruiseVelocity((int)(speed * 4096 / 360 / 10), TIMEOUTMS);
+  winch.configMotionAcceleration((int)(1.5 * speed * 4096 / 360 / 10), TIMEOUTMS);
+}
+
+public double getWinchCurrent() {
+  return winch.getOutputCurrent();
 }
 
 }
