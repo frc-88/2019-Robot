@@ -8,7 +8,11 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -23,7 +27,6 @@ import frc.robot.subsystems.SAPG;
 import frc.robot.util.TimeScheduler;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -43,14 +46,16 @@ public class Robot extends TimedRobot {
   public static Intake m_intake;
   public static Compressor compressor;
 
+  public static NetworkTableEntry soundPlaying;
+
   public static TimeScheduler dashboardScheduler;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
@@ -59,13 +64,13 @@ public class Robot extends TimedRobot {
 
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
+    m_limelight_sapg = new Limelight("limelight-sapg");
     m_drive = new Drive();
     m_climber = new Climber();
     m_intake = new Intake();
-    m_limelight_sapg = new Limelight("limelight-sapg");
     m_arm = new Arm();
     m_sapg = new SAPG();
-    
+
     // instantiate m_oi last...it may reference subsystems
     m_oi = new OI();
 
@@ -73,71 +78,79 @@ public class Robot extends TimedRobot {
 
     m_limelight_sapg.ledOff();
 
-    //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+
+    // NetworkTableInstance.getDefault().
+    soundPlaying = NetworkTableInstance.getDefault().getTable("alerts").getEntry("sound");
   }
 
   /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
+   * This function is called every robot packet, no matter the mode. Use this for
+   * items like diagnostics that you want ran during disabled, autonomous,
+   * teleoperated and test.
    *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
+   * <p>
+   * This runs after the mode specific periodic functions, but before LiveWindow
+   * and SmartDashboard integrated updating.
    */
   @Override
   public void robotPeriodic() {
     writeDashboard();
+
+    makeSounds();
   }
 
   /**
-   * This function is called once each time the robot enters Disabled mode.
-   * You can use it to reset any subsystem information you want to clear when
-   * the robot is disabled.
+   * This function is called once each time the robot enters Disabled mode. You
+   * can use it to reset any subsystem information you want to clear when the
+   * robot is disabled.
    */
   @Override
   public void disabledInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    m_sapg.disable();
     m_arm.configureCoastMode();
-    m_limelight_sapg.ledOff();
+    m_sapg.trackingOff();
+
+    soundPlaying.setString("");
   }
 
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    m_limelight_sapg.ledOff();
+    m_sapg.trackingOff();
+    m_limelight_sapg.setPip();
   }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString code to get the auto name from the text box below the Gyro
+   * between different autonomous modes using the dashboard. The sendable chooser
+   * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+   * remove all of the chooser code and uncomment the getString code to get the
+   * auto name from the text box below the Gyro
    *
-   * <p>You can add additional auto modes by adding additional commands to the
-   * chooser code above (like the commented example) or additional comparisons
-   * to the switch structure below with additional strings & commands.
+   * <p>
+   * You can add additional auto modes by adding additional commands to the
+   * chooser code above (like the commented example) or additional comparisons to
+   * the switch structure below with additional strings & commands.
    */
   @Override
   public void autonomousInit() {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    //m_sapg.enable();
     m_arm.configureBrakeMode();
-    m_limelight_sapg.ledOff();
+    m_sapg.trackingOff();
 
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
+     * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
+     * switch(autoSelected) { case "My Auto": autonomousCommand = new
+     * MyAutoCommand(); break; case "Default Auto": default: autonomousCommand = new
+     * ExampleCommand(); break; }
      */
 
     // schedule the autonomous command (example)
@@ -156,11 +169,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    //m_sapg.enable();
     m_arm.configureBrakeMode();
-    m_limelight_sapg.ledOff();
+    m_sapg.trackingOff();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -176,6 +189,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    soundPlaying.setString("oh_yea_calef");
     Scheduler.getInstance().run();
   }
 
@@ -184,6 +198,107 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  boolean surprise = false;
+  long lastLoopTime = Long.MAX_VALUE;
+  int hasTargetCounts = 0;
+  int noTargetCounts = 0;
+  int hasPanelCounts = 0;
+  int noPanelCounts = 0;
+  int hasCargoCounts = 0;
+  int noCargoCounts = 0;
+  int lastNumPlayed = -1;
+
+  public void makeSounds() {
+
+    if (m_limelight_sapg.hasTarget()) {
+      hasTargetCounts++;
+    } else {
+      noTargetCounts++;
+    }
+    if (m_intake.hasCargo()) {
+      hasCargoCounts++;
+    } else {
+      noCargoCounts++;
+    }
+    if (m_sapg.hasPanel()) {
+      hasPanelCounts++;
+    } else {
+      noPanelCounts++;
+    }
+
+    if (m_sapg.isTracking() && hasTargetCounts == 5) {
+
+      // Target Acquired
+      soundPlaying.setString("i_see_you");
+      noTargetCounts = 0;
+
+    }
+
+    if (m_sapg.isTracking() && noTargetCounts == 5) {
+
+      // Target Lost
+      soundPlaying.setString("cant_see_me");
+      hasTargetCounts = 0;
+
+    }
+
+    if (hasCargoCounts == 5) {
+
+      // Got cargo
+      soundPlaying.setString("cargo");
+      noCargoCounts = 0;
+
+    }
+
+    if (noCargoCounts == 5) {
+
+      // Lost cargo
+      soundPlaying.setString("oopsie_daisy");
+      hasCargoCounts = 0;
+
+    }
+
+    if (hasPanelCounts == 5) {
+
+      // Got cargo
+      soundPlaying.setString("got_it");
+      noCargoCounts = 0;
+
+    }
+
+    if (noPanelCounts == 5) {
+
+      // Lost cargo
+      soundPlaying.setString("oopsie_daisy");
+      hasCargoCounts = 0;
+
+    }
+
+    if (RobotController.isBrownedOut()) {
+
+      // Brownout
+      soundPlaying.setString("power");
+
+    }
+
+    if (RobotController.getFPGATime() - lastLoopTime > 1 * 1_000_000) {
+
+      // Comms blip
+      soundPlaying.setString("comms");
+
+    }
+
+    if (!surprise && DriverStation.getInstance().isFMSAttached() && DriverStation.getInstance().isAutonomous() && Math.abs(m_drive.getStraightSpeed()) > 2) {
+
+      // Shhhh! This is a surprise for Brad. Keep it a secret.
+      surprise = true;
+      soundPlaying.setString("surprise");
+
+    }
+
+    lastLoopTime = RobotController.getFPGATime();
   }
 
   private void initializeDashboard() {
@@ -202,5 +317,7 @@ public class Robot extends TimedRobot {
     m_climber.updateDashboard();
     m_navx.updateDashboard();
     m_limelight_sapg.updateDashboard();
+
+    SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
   }
 }

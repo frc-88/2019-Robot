@@ -13,10 +13,10 @@ import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Robot;
-import jaci.pathfinder.Pathfinder;
-import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Waypoint;
-import jaci.pathfinder.modifiers.TankModifier;
+// import jaci.pathfinder.Pathfinder;
+// import jaci.pathfinder.Trajectory;
+// import jaci.pathfinder.Waypoint;
+// import jaci.pathfinder.modifiers.TankModifier;
 
 /**
  * Add your docs here.

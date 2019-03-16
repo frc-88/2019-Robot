@@ -10,32 +10,24 @@ package frc.robot.commands.sapg;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class SAPGCenter extends Command {
-  double kP = -1.0;
-  double error;
-
-  public SAPGCenter() {
+public class SAPGGoToPosition extends Command {
+  private int target;
+  public SAPGGoToPosition(int position) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.m_sapg);
+    target = position;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (!Robot.m_sapg.getPIDController().isEnabled()) {
-      error = Robot.m_sapg.getNormalizedPosition();
-      Robot.m_sapg.set(kP * error);
-    } else {
-      Robot.m_sapg.set(0.0);
-    }
-
+    Robot.m_sapg.goToPosition(target);
   }
 
   // Make this return true when this Command no longer needs to run execute()

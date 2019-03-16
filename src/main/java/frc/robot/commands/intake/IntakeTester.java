@@ -5,14 +5,17 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.arm;
+package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import edu.wpi.first.wpilibj.command.Command;
 
-public class ArmBasicCommand extends Command {
-  public ArmBasicCommand() {
-    requires(Robot.m_arm);
+public class IntakeTester extends Command {
+  private double speed=-1.0;
+  
+  public IntakeTester() {
+    requires(Robot.m_intake);
+    
   }
 
   // Called just before this Command runs the first time
@@ -23,11 +26,7 @@ public class ArmBasicCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_arm.setShoulder(Robot.m_oi.getOperatorLeftYAxis());
-    Robot.m_arm.setElbow(Robot.m_oi.getOperatorRightYAxis());
-
-    System.out.println("S Speed: " + Robot.m_arm.getShoulderSpeed() + " E Speed: " + Robot.m_arm.getElbowSpeed());
-
+    Robot.m_intake.set(speed);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -39,6 +38,8 @@ public class ArmBasicCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.m_intake.set(0);
+
   }
 
   // Called when another command which requires one or more of the same

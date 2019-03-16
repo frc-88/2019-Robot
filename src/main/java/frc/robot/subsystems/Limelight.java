@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.util.LLCameraTransform;
-import jaci.pathfinder.Waypoint;
+//import jaci.pathfinder.Waypoint;
 
 /**
  * 
@@ -33,6 +33,7 @@ public class Limelight extends Subsystem {
   private NetworkTableEntry _ts;
   private NetworkTableEntry _camtran;
   private NetworkTableEntry _ledMode;
+  private NetworkTableEntry _stream;
   private NetworkTableEntry _pipeline;
   private NetworkTableEntry _getpipe;
 
@@ -66,8 +67,14 @@ public class Limelight extends Subsystem {
     _ts = _table.getEntry("ts");
     _camtran = _table.getEntry("camtran");
     _ledMode = _table.getEntry("ledMode");
+    _stream = _table.getEntry("stream");
 
+    _stream.setNumber(2);
     setPipeline(0);
+  }
+
+  public void setPip() {
+    _stream.setNumber(2);
   }
 
   /**
@@ -139,7 +146,7 @@ public class Limelight extends Subsystem {
     _ledMode.setNumber(3);
   }
 
-
+  
   // Read all 6 dimensions of your camera’s transform (x,y,z,pitch,yaw,roll)
   // by reading the “camtran�? networktable number array.
 
@@ -165,55 +172,55 @@ public class Limelight extends Subsystem {
     return Math.toDegrees(Math.atan2(cam.z, cam.x));
   }
 
-  public Waypoint[] generateWaypointsFromVision() {
-    double yaw = Robot.m_navx.getYaw();
-    double x = getTargetDistance() * Math.sin(Math.toRadians(getHorizontalOffsetAngle()));
-    double y = getTargetDistance() * Math.cos(Math.toRadians(getHorizontalOffsetAngle()));
-    double theta = getTargetAngle();
-    if (theta < -180) {
-      theta += 360;
-    } else if (theta > 180) {
-      theta -= 360;
-    }
+  // public Waypoint[] generateWaypointsFromVision() {
+  //   double yaw = Robot.m_navx.getYaw();
+  //   double x = getTargetDistance() * Math.sin(Math.toRadians(getHorizontalOffsetAngle()));
+  //   double y = getTargetDistance() * Math.cos(Math.toRadians(getHorizontalOffsetAngle()));
+  //   double theta = getTargetAngle();
+  //   if (theta < -180) {
+  //     theta += 360;
+  //   } else if (theta > 180) {
+  //     theta -= 360;
+  //   }
 
-    double xprime = x - 12 * Math.cos(Math.toRadians(90 - theta));
-    double yprime = y - 12 * Math.sin(Math.toRadians(90 - theta));
+  //   double xprime = x - 12 * Math.cos(Math.toRadians(90 - theta));
+  //   double yprime = y - 12 * Math.sin(Math.toRadians(90 - theta));
 
-    SmartDashboard.putNumber("theta", theta);
+  //   SmartDashboard.putNumber("theta", theta);
 
-    // rotate coordinate system based on yaw
-    theta = yaw - theta;
-    double rotation = Math.toRadians(yaw);
-    double newX = x * Math.cos(rotation) - y * Math.sin(rotation);
-    double newY = x * Math.sin(rotation) + y * Math.cos(rotation);
-    double newXprime = xprime * Math.cos(rotation) - yprime * Math.sin(rotation);
-    double newYprime = xprime * Math.sin(rotation) + yprime * Math.cos(rotation);
+  //   // rotate coordinate system based on yaw
+  //   theta = yaw - theta;
+  //   double rotation = Math.toRadians(yaw);
+  //   double newX = x * Math.cos(rotation) - y * Math.sin(rotation);
+  //   double newY = x * Math.sin(rotation) + y * Math.cos(rotation);
+  //   double newXprime = xprime * Math.cos(rotation) - yprime * Math.sin(rotation);
+  //   double newYprime = xprime * Math.sin(rotation) + yprime * Math.cos(rotation);
 
-    // if (Math.abs(theta) < 10) {
-    //   theta = 0;
-    // } else if (Math.abs(theta)-30 < 10) {
-    //   theta = 30 * Math.signum(theta);
-    // } else if (Math.abs(theta)-90 < 10) {
-    //   theta = 90 * Math.signum(theta);
-    // } else if (Math.abs(theta)-150 < 10) {
-    //   theta = 150 * Math.signum(theta);
-    // } else if (Math.abs(theta)-180 < 10) {
-    //   theta = 180 * Math.signum(theta);
-    // }
+  //   // if (Math.abs(theta) < 10) {
+  //   //   theta = 0;
+  //   // } else if (Math.abs(theta)-30 < 10) {
+  //   //   theta = 30 * Math.signum(theta);
+  //   // } else if (Math.abs(theta)-90 < 10) {
+  //   //   theta = 90 * Math.signum(theta);
+  //   // } else if (Math.abs(theta)-150 < 10) {
+  //   //   theta = 150 * Math.signum(theta);
+  //   // } else if (Math.abs(theta)-180 < 10) {
+  //   //   theta = 180 * Math.signum(theta);
+  //   // }
 
-    SmartDashboard.putNumber("x", x);
-    SmartDashboard.putNumber("xprime", xprime);
-    SmartDashboard.putNumber("y", y);
-    SmartDashboard.putNumber("yprime", yprime);
-    SmartDashboard.putNumber("newx", newX);
-    SmartDashboard.putNumber("newxprime", newXprime);
-    SmartDashboard.putNumber("newy", newY);
-    SmartDashboard.putNumber("newyprime", newYprime);
-    SmartDashboard.putNumber("theta_final", theta);
+  //   SmartDashboard.putNumber("x", x);
+  //   SmartDashboard.putNumber("xprime", xprime);
+  //   SmartDashboard.putNumber("y", y);
+  //   SmartDashboard.putNumber("yprime", yprime);
+  //   SmartDashboard.putNumber("newx", newX);
+  //   SmartDashboard.putNumber("newxprime", newXprime);
+  //   SmartDashboard.putNumber("newy", newY);
+  //   SmartDashboard.putNumber("newyprime", newYprime);
+  //   SmartDashboard.putNumber("theta_final", theta);
 
-    // 3 Waypoints
-    return new Waypoint[] { new Waypoint(0, 0, yaw), new Waypoint(xprime, yprime, theta), new Waypoint(x, y, theta) };
-  }
+  //   // 3 Waypoints
+  //   return new Waypoint[] { new Waypoint(0, 0, yaw), new Waypoint(xprime, yprime, theta), new Waypoint(x, y, theta) };
+  // }
 
   public void setPipeline(double pipeline) {
     _pipeline.setDouble(pipeline);

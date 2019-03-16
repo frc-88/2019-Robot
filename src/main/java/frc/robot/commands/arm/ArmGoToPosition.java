@@ -18,11 +18,30 @@ public class ArmGoToPosition extends Command {
   private double shoulder_degrees;
   private double elbow_degrees;
   private boolean usePrefences;
-
+  private String targetPosition;
+  private boolean goingToIntake=false;
   public ArmGoToPosition() {
     requires(Robot.m_arm);
 
     usePrefences = true;
+  }
+
+  public ArmGoToPosition(String position) {
+    requires(Robot.m_arm);
+  if(position.equals("intake")){
+  goingToIntake=true;
+}
+    targetPosition = position;
+    usePrefences = true;
+  }
+
+  public ArmGoToPosition(double [] position) {
+    requires(Robot.m_arm);
+
+    shoulder_degrees = position[0];
+    elbow_degrees = position[1];
+
+    usePrefences = false;
   }
 
   public ArmGoToPosition(double shoulder, double elbow) {
@@ -39,20 +58,39 @@ public class ArmGoToPosition extends Command {
   protected void initialize() {
     if (usePrefences) {
       Preferences prefs = Preferences.getInstance();
+      String elbowTarget, shoulderTarget;
 
-      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble("ArmShoulderTarget", 0.0));
-      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble("ArmElbowTarget",0.0));
+      if (targetPosition != null) {
+        shoulderTarget = "Arm:" + targetPosition + "_shoulder";
+        elbowTarget = "Arm:" + targetPosition + "_elbow";
+      } else {
+        shoulderTarget = "Arm:ShoulderTarget";
+        elbowTarget = "Arm:ElbowTarget";
+      }
+
+      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble(shoulderTarget, 0.0));
+      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble(elbowTarget,0.0));
     } else {
       shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder_degrees);
       elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow_degrees);
-      }
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     Robot.m_arm.moveShoulder(shoulder_target);
+    if(goingToIntake && Robot.m_arm.getShoulderDegrees()>135){
     Robot.m_arm.moveElbow(elbow_target);
+
+    }
+    else if(!goingToIntake){
+          Robot.m_arm.moveElbow(elbow_target);
+
+    }
+    else if(goingToIntake && Robot.m_arm.getShoulderDegrees()<135){
+      Robot.m_arm.moveElbow(Robot.m_arm.convertElbowDegreesToMotor(0));
+    }
 
     SmartDashboard.putNumber("Arm:commandShoulder", shoulder_target);
     SmartDashboard.putNumber("Arm:commandElbow", elbow_target);
