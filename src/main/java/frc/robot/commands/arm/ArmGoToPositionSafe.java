@@ -17,6 +17,7 @@ public class ArmGoToPositionSafe extends Command {
   private double shoulder_degrees;
   private double elbow_degrees;
   private boolean usePreferences;
+  private String targetPosition;
   private boolean targetSafe;
 
   public ArmGoToPositionSafe() {
@@ -24,8 +25,26 @@ public class ArmGoToPositionSafe extends Command {
     usePreferences = true;
   }
 
+  public ArmGoToPositionSafe(String position) {
+    requires(Robot.m_arm);
+
+    targetPosition = position;
+    usePreferences = true;
+  }
+
+  public ArmGoToPositionSafe(double [] position) {
+    requires(Robot.m_arm);
+
+    shoulder_degrees = position[0];
+    elbow_degrees = position[1];
+
+    usePreferences = false;
+  }
+
   public ArmGoToPositionSafe(double shoulder, double elbow) {
     requires(Robot.m_arm);
+
+
     shoulder_degrees = shoulder;
     elbow_degrees = elbow;
 
@@ -37,9 +56,18 @@ public class ArmGoToPositionSafe extends Command {
   protected void initialize() {
     if (usePreferences) {
       Preferences prefs = Preferences.getInstance();
+      String elbowTarget, shoulderTarget;
 
-      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble("ArmShoulderTarget", 0.0));
-      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble("ArmElbowTarget", 0.0));
+      if (targetPosition != null) {
+        shoulderTarget = "Arm:" + targetPosition + "_shoulder";
+        elbowTarget = "Arm:" + targetPosition + "_elbow";
+      } else {
+        shoulderTarget = "Arm:ShoulderTarget";
+        elbowTarget = "Arm:ElbowTarget";
+      }
+
+      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble(shoulderTarget, 0.0));
+      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble(elbowTarget,0.0));
     } else {
       shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder_degrees);
       elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow_degrees);
