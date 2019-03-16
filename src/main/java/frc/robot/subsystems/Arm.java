@@ -125,7 +125,7 @@ public class Arm extends Subsystem {
     winch.config_kP(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     winch.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     winch.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    winch.config_kF(MAIN_SLOT_IDX, 0, TIMEOUTMS);
+    winch.config_kF(MAIN_SLOT_IDX, .01, TIMEOUTMS);
   }
 
   public void configureBrakeMode() {
@@ -297,7 +297,7 @@ public class Arm extends Subsystem {
   }
 
   public void setShoulderSpeed(double speed) {
-    shoulder.configMotionCruiseVelocity((int)(speed * 4096 * 4 / 360 / 10);
+    shoulder.configMotionCruiseVelocity((int)(speed * 4096 * 4 / 360 / 10));
     shoulder.configMotionAcceleration((int)(speed * 4096 * 4 / 360 / 10 * 1.5));
   }
 

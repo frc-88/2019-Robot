@@ -21,6 +21,7 @@ import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.arm.ArmGoToPositionSafe;
 import frc.robot.commands.arm.ArmZeroElbow;
 import frc.robot.commands.arm.ArmZeroShoulder;
+import frc.robot.commands.arm.MoveWinch;
 import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberMove;
@@ -125,6 +126,8 @@ public class OI {
       operatorController.buttonX.whenPressed(new ArmGoToPosition(ArmPosition.CLIMB_PULLED));
       operatorController.buttonY.whenPressed(new ArmGoToPosition(ArmPosition.CLIMB_END));
       operatorController.buttonStart.whenPressed(new ClimberBasicControl());
+
+      operatorController.buttonBack.whileHeld(new MoveWinch());
     }
 
     // starting config

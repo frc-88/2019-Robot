@@ -42,7 +42,7 @@ public class RobotMap {
   public static final int SHOULDER_ID = 05;
   public static final int SHOULDER_AUXILARY_ID = 3;
   public static final int ELBOW_AUXILARY_ID = 13;
-  public static final int ARM_WINCH_ID = 8;
+  public static final int ARM_WINCH_ID = 12;
 
   // Intake
   
@@ -50,7 +50,7 @@ public class RobotMap {
   public static final int INTAKE_IR_ID = 0;
 
   // Climber
-  public static final int CLIMBER_ID = 12;
+  public static final int CLIMBER_ID = 6;
 
   // SAPG
   public static final int SAPG_DEPLOY_FORWARD = 2;
@@ -59,7 +59,7 @@ public class RobotMap {
   public static final int SAPG_GRAB_REVERSE = 3;
   public static final int SAPG_DEPLOY_PCM = 21;
   public static final int SAPG_GRAB_PCM = 21;
-  public static final int SAPG_MOTOR_ID = 06;
+  public static final int SAPG_MOTOR_ID = 9;
   public static final int SAPG_PANEL_IR_ID = 2;
 
   // Compressor
