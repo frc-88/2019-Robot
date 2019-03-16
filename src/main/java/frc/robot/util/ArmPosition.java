@@ -25,9 +25,9 @@ public final class ArmPosition {
     public static final double [] HIGH_ROCKET_BACK = {-30, 0};
     public static final double [] PRE_CLIMB = {80, 180};
     public static final double [] LOW_ROCKET_BACK = {-90, -180};
-    public static final double [] CLIMB_PREP = {90, 188};
-    public static final double [] CLIMB_LIFTED = {129, 172};
-    public static final double [] CLIMB_PULLED = {129, 188};
-    public static final double [] CLIMB_END = {115, 188};
+    public static final double [] CLIMB_PREP = {90, 180};
+    public static final double [] CLIMB_LIFTED = {129, 166};
+    public static final double [] CLIMB_PULLED = {129, 180};
+    public static final double [] CLIMB_END = {115, 180};
 
 }

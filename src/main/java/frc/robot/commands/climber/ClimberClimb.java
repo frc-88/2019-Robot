@@ -17,7 +17,7 @@ import frc.robot.util.ArmPosition;
 
 public class ClimberClimb extends Command {
 
-  private final double CLIMBER_TARGET = -20;
+  private final double CLIMBER_TARGET = -18;
 
   Climber climber;
   Arm arm;
@@ -79,7 +79,7 @@ public class ClimberClimb extends Command {
 
       double shoulderStart = ArmPosition.CLIMB_PREP[0];
       double shoulderEnd = ArmPosition.CLIMB_LIFTED[0];
-      double shoulderMaxSpeed = 20;
+      double shoulderMaxSpeed = 40;
       double elbowStart = ArmPosition.CLIMB_PREP[1];
       double elbowEnd = ArmPosition.CLIMB_LIFTED[1];
       double elbowMaxSpeed = RobotMap.ELBOW_MAX_SPEED;

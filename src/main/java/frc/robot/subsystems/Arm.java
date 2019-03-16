@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
@@ -121,11 +122,12 @@ public class Arm extends Subsystem {
     winch.setNeutralMode(NeutralMode.Brake);
 
     winch.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
-    winch.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, MAIN_SLOT_IDX, TIMEOUTMS);
-    winch.config_kP(MAIN_SLOT_IDX, 0, TIMEOUTMS);
+    winch.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, MAIN_SLOT_IDX, TIMEOUTMS);
+    winch.configSelectedFeedbackCoefficient(-1);
+    winch.config_kP(MAIN_SLOT_IDX, 1, TIMEOUTMS);
     winch.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    winch.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    winch.config_kF(MAIN_SLOT_IDX, .01, TIMEOUTMS);
+    winch.config_kD(MAIN_SLOT_IDX, 1, TIMEOUTMS);
+    winch.config_kF(MAIN_SLOT_IDX, 10, TIMEOUTMS);
   }
 
   public void configureBrakeMode() {
@@ -212,6 +214,11 @@ public class Arm extends Subsystem {
 
     pitchPID.setKP(SmartDashboard.getNumber("arm:pitchKP", pitchPID.getKP()));
     pitchPID.setKD(SmartDashboard.getNumber("arm:pitchKD", pitchPID.getKD()));
+
+    SmartDashboard.putNumber("Arm:winchPos", winch.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Arm:winchSetpoint", winch.getClosedLoopTarget());
+    SmartDashboard.putNumber("Arm:winchTrajectoryPos", winch.getActiveTrajectoryPosition());
+    
   }
 
   public void moveShoulder(double position) {
@@ -343,6 +350,7 @@ public class Arm extends Subsystem {
     double normalizedPos = (auxEncoderPos + 180) > 0 ? 
         (auxEncoderPos + 180) % 360. - 180 : 
         (auxEncoderPos + 180) % 360. + 180;
+    elbow.setSelectedSensorPosition((int)(normalizedPos * 4096 / 360 + elbowOffset), AUX_SENSOR_SLOT_IDX, TIMEOUTMS);
     int encoderPos = convertElbowDegreesToMotor(normalizedPos);
     elbow.setSelectedSensorPosition(encoderPos, MAIN_SLOT_IDX, TIMEOUTMS);
   }
@@ -356,6 +364,7 @@ public class Arm extends Subsystem {
     double normalizedPos = (auxEncoderPos + 180) > 0 ? 
         (auxEncoderPos + 180) % 360. - 180 : 
         (auxEncoderPos + 180) % 360. + 180;
+    shoulder.setSelectedSensorPosition((int)(normalizedPos * 4096 / 360 + shoulderOffset), AUX_SENSOR_SLOT_IDX, TIMEOUTMS);
     int encoderPos = convertShoulderDegreesToMotor(normalizedPos);
     shoulder.setSelectedSensorPosition(encoderPos, MAIN_SLOT_IDX, TIMEOUTMS);
   }
@@ -470,13 +479,19 @@ public void moveWinch(double percentOutput) {
 }
 
 public void winchDown(double angle, double speed) {
-  shoulder.set(ControlMode.PercentOutput, -0.1);
-  winch.configMotionCruiseVelocity((int)(speed * 4096 / 360 / 10), TIMEOUTMS);
-  winch.configMotionAcceleration((int)(1.5 * speed * 4096 / 360 / 10), TIMEOUTMS);
+  shoulder.set(ControlMode.PercentOutput, 0);
+  winch.configMotionCruiseVelocity((int)(speed * 4096. / 360. / 10.), TIMEOUTMS);
+  winch.configMotionAcceleration((int)(1.5 * speed * 4096. / 360. / 10.), TIMEOUTMS);
+
+  winch.set(ControlMode.MotionMagic, angle * 4096 / 360 + shoulderOffset, DemandType.ArbitraryFeedForward, .75);
 }
 
 public double getWinchCurrent() {
   return winch.getOutputCurrent();
+}
+
+public boolean winchTargetReached() {
+  return winch.getSelectedSensorPosition() > winch.getClosedLoopTarget() - 10;
 }
 
 }

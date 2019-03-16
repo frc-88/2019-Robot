@@ -172,7 +172,7 @@ public class Robot extends TimedRobot {
 
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
-    m_arm.configureBrakeMode();
+    m_arm.configureCoastMode();
     m_sapg.trackingOff();
 
     // This makes sure that the autonomous stops running when

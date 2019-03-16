@@ -20,12 +20,15 @@ public class MoveWinch extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_arm.winchDown(SmartDashboard.getNumber("winchTarget", 90), 10);
+    Robot.m_arm.winchDown(SmartDashboard.getNumber("winchTarget", 90), 40);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    if (Robot.m_arm.winchTargetReached()) {
+      Robot.m_arm.stopArm();
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()

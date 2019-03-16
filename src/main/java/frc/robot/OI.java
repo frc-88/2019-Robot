@@ -88,12 +88,12 @@ public class OI {
     new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
     new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
 
-    new Trigger(){
-      @Override
-      public boolean get() {
-        return Robot.m_arm.shoulderSkipped() || Robot.m_arm.elbowSkipped();
-      }
-    }.whenActive(new ArmEStop());
+    // new Trigger(){
+    //   @Override
+    //   public boolean get() {
+    //     return Robot.m_arm.shoulderSkipped() || Robot.m_arm.elbowSkipped();
+    //   }
+    // }.whenActive(new ArmEStop());
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:

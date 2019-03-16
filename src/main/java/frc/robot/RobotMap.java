@@ -130,7 +130,7 @@ public class RobotMap {
   public static final double CLIMBER_SEEKING_SPEED = -1;
   public static final double CLIMBER_SEEKING_RAMP = -0.05;
   public static final int CLIMBER_TICKS_PER_INCH = 15908;
-  public static final int CLIMBER_MAX_SPEED = 10;
+  public static final int CLIMBER_MAX_SPEED = 5;
   public static final double CLIMBER_TOLERANCE = 0.25;
 
   //Intake
