@@ -75,6 +75,9 @@ public class Arm extends Subsystem {
     fetchPreferences();
   }
 
+  /**
+   * Set the configuration parameters for the shoulder talon
+   */
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
     
@@ -90,6 +93,9 @@ public class Arm extends Subsystem {
     setShoulderSpeed(RobotMap.SHOULDER_MAX_SPEED);
   }
 
+  /**
+   * Set the configuration parameters for the elbow talon
+   */
   private void configElbowTalon() {
     configTalonCommon(elbow);
 
@@ -105,6 +111,10 @@ public class Arm extends Subsystem {
     setElbowSpeed(RobotMap.ELBOW_MAX_SPEED);
   }
 
+  /**
+   * Set the configuration parameters to the given talon that are common to
+   * both the shoulder and elbow talons.
+   */
   private void configTalonCommon(TalonSRX talon) {
     talon.configFactoryDefault();
     
@@ -119,16 +129,26 @@ public class Arm extends Subsystem {
     talon.configNeutralDeadband(0.01, TIMEOUTMS);
   }
 
+  /**
+   * Set both the shoulder and elbow to brake mode
+   */
   public void configureBrakeMode() {
     shoulder.setNeutralMode(NeutralMode.Brake);
     elbow.setNeutralMode(NeutralMode.Brake);
   }
 
+  /**
+   * Set both the shoulder and elbow to coast mode
+   */
   public void configureCoastMode() {
     shoulder.setNeutralMode(NeutralMode.Coast);
     elbow.setNeutralMode(NeutralMode.Coast);
   }
 
+  /**
+   * Make sure that the preferences have all of the constants related to the
+   * arm by setting defaults if they don't
+   */
   private void initPreferences() {
     Preferences prefs = Preferences.getInstance();
 
@@ -143,6 +163,9 @@ public class Arm extends Subsystem {
     if (!prefs.containsKey("Arm:intake_elbow")) { prefs.putDouble("Arm:intake_elbow", 82); }
   }
 
+  /**
+   * Pull all arm related constants from preferences into the code
+   */
   private void fetchPreferences() {
     Preferences prefs = Preferences.getInstance();
 
@@ -150,7 +173,13 @@ public class Arm extends Subsystem {
     elbowOffset = prefs.getInt("Arm:ElbowOffset", elbowOffset);
   }
 
-  public void calibrate() {
+  /**
+   * Sets the shoulder and elbow offset so that both absolute encoders read 0 
+   * degrees.
+   * 
+   * To be clear: ONLY RUN THIS WHEN THE ARM IS POINTING STRAIGHT UPWARDS.
+   */
+  public void calibrateAbsoluteEncoders() {
     Preferences prefs = Preferences.getInstance();
 
     // set the current position to 0 degress and updates preferences
@@ -164,6 +193,9 @@ public class Arm extends Subsystem {
     zeroShoulderMotorEncoder();
   }
 
+  /**
+   * Updates all arm related values on the dashboard
+   */
   public void updateDashboard() {
     SmartDashboard.putNumber("Arm:shoulderPos", getShoulderPosition());
     SmartDashboard.putNumber("Arm:shoulderAbs", getShoulderAbsolutePosition());
@@ -187,6 +219,66 @@ public class Arm extends Subsystem {
   public void initDefaultCommand() {
     // No default command
   }
+
+  /****************************************************************************
+   * ENCODER CONVERSIONS
+   ***************************************************************************/
+
+   /**
+    * Converts from shoulder absolute encoder counts to degrees.
+    */
+  public double convertShoulderAbsCountsToDegrees(int counts) {
+    return ((counts - shoulderOffset) * 360) / 4096;
+  }
+
+     /**
+    * Converts from shoulder degrees to absolute encoder counts.
+    */
+  public int convertShoulderDegreesToAbsCounts(double degrees) {
+    return (int) (degrees * 4096 / 360 + shoulderOffset);
+  }
+
+     /**
+    * Converts from shoulder motor encoder counts to degrees.
+    */
+  public double convertShoulderMotorCountsToDegrees(double counts) {
+    return (((counts - shoulderOffset * 4) * 360) / 4096) / 4;
+  }
+
+     /**
+    * Converts from shoulder degrees to motor encoder counts.
+    */
+  public int convertShoulderDegreesToMotorCounts(double degrees) {
+    return (int) (degrees * 4 * 4096 / 360 + shoulderOffset * 4);
+  }
+
+     /**
+    * Converts from elbow absolute encoder counts to degrees.
+    */
+    public double convertElbowAbsCountsToDegrees(int counts) {
+      return ((counts - elbowOffset) * 360) / 4096;
+    }
+  
+       /**
+      * Converts from elbow degrees to absolute encoder counts.
+      */
+    public int convertElbowDegreesToAbsCounts(double degrees) {
+      return (int) (degrees * 4096 / 360 + elbowOffset);
+    }
+  
+       /**
+      * Converts from elbow motor encoder counts to degrees.
+      */
+    public double convertElbowMotorCountsToDegrees(double counts) {
+      return (((counts - elbowOffset * 4) * 360) / 4096) / 4;
+    }
+  
+       /**
+      * Converts from elbow degrees to motor encoder counts.
+      */
+    public int convertElbowDegreesToMotorCounts(double degrees) {
+      return (int) (degrees * 4 * 4096 / 360 + elbowOffset * 4);
+    }
 
   public void moveShoulder(double position) {
     shoulder.set(ControlMode.MotionMagic, position);
@@ -215,37 +307,13 @@ public class Arm extends Subsystem {
     return shoulder.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
   }
 
-  public double convertShoulderToDegrees(double counts) {
-    return ((counts - shoulderOffset) * 360) / 4096;
-  }
-
   public double getShoulderDegrees() {
 
     return convertShoulderToDegrees(getShoulderAbsolutePosition());
   }
 
-  public double convertMotorShoulderToDegrees(double counts) {
-    return (((counts - shoulderOffset * 4) * 360) / 4096) / 4;
-  }
-
-  public int convertShoulderDegreesToMotor(double degrees) {
-    return (int) (degrees * 4 * 4096 / 360 + shoulderOffset * 4);
-  }
-
   public double getMotorShoulderDegrees() {
     return convertMotorShoulderToDegrees(getShoulderPosition());
-  }
-
-  public double convertElbowToDegrees(double counts) {
-    return ((counts - elbowOffset) * 360) / 4096;
-  }
-
-  public double convertMotorElbowToDegrees(double counts) {
-    return ((counts - elbowOffset * 4) * 360 / 4096) / 4;
-  }
-
-  public int convertElbowDegreesToMotor(double degrees) {
-    return (int) degrees * 4 * 4096 / 360 + elbowOffset * 4;
   }
 
   public boolean targetReached() {
