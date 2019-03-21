@@ -215,6 +215,22 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("Arm:elbow offset", elbowOffset);
   }
 
+  /**
+  * Zeroes shoulder motor encoder based on the shoulder absolute encoder
+  */
+  public void zeroShoulderMotorEncoder() {
+    shoulder.setSelectedSensorPosition(
+        convertShoulderDegreesToMotorCounts(getShoulderAbsoluteDegrees()), MAIN_SLOT_IDX, TIMEOUTMS);
+  }
+
+  /**
+   * Zeroes elbow motor encoder based on the elbow absolute encoder
+   */
+  public void zeroElbowMotorEncoder() {
+    elbow.setSelectedSensorPosition(
+        convertElbowDegreesToMotorCounts(getElbowAbsoluteDegrees()), MAIN_SLOT_IDX, TIMEOUTMS);
+  }
+
   @Override
   public void initDefaultCommand() {
     // No default command
@@ -316,10 +332,10 @@ public class Arm extends Subsystem {
    * Get the shoulder degrees as read by the absolute encoder (after springs)
    */
   public double getShoulderAbsoluteDegrees() {
-    double auxEncoderPos = convertShoulderAbsCountsToDegrees(getShoulderAbsoluteCounts());
-    double normalizedPos = (auxEncoderPos + 180) > 0 ? 
-        (auxEncoderPos + 180) % 360. - 180 : 
-        (auxEncoderPos + 180) % 360. + 180;
+    double encoderPos = convertShoulderAbsCountsToDegrees(getShoulderAbsoluteCounts());
+    double normalizedPos = (encoderPos + 180) > 0 ? 
+        (encoderPos + 180) % 360. - 180 : 
+        (encoderPos + 180) % 360. + 180;
     return normalizedPos;
   }
 
@@ -334,11 +350,15 @@ public class Arm extends Subsystem {
    * Get the elbow degrees as read by the absolute encoder (after springs)
    */
   public double getElbowAbsoluteDegrees() {
-    double auxEncoderPos = convertElbowAbsCountsToDegrees(getElbowAbsoluteCounts());
-    double normalizedPos = (auxEncoderPos + 180) > 0 ? 
-        (auxEncoderPos + 180) % 360. - 180 : 
-        (auxEncoderPos + 180) % 360. + 180;
-    return normalizedPos;
+    double encoderPos = convertElbowAbsCountsToDegrees(getElbowAbsoluteCounts());
+    double shoulderPos = getShoulderAbsoluteDegrees();
+    double diffFromShoulder = encoderPos - shoulderPos;
+    double normalizedPos = (diffFromShoulder + 180) > 0 ? 
+        (diffFromShoulder + 180) % 360. - 180 : 
+        (diffFromShoulder + 180) % 360. + 180;
+
+    
+    return normalizedPos + shoulderPos;
   }
 
   /**
@@ -410,33 +430,6 @@ public class Arm extends Subsystem {
    */
   public void setElbowVoltage(double percentOutput) {
     elbow.set(ControlMode.PercentOutput, percentOutput);
-  }
-  
-
-  /**
-   * zeroes elbow motor encoder based on known elbow angle 
-   * @param elbowAngle
-   */
-  public void zeroElbowMotorEncoder() {
-    double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
-    double normalizedPos = (auxEncoderPos + 180) > 0 ? 
-        (auxEncoderPos + 180) % 360. - 180 : 
-        (auxEncoderPos + 180) % 360. + 180;
-    int encoderPos = convertElbowDegreesToMotor(normalizedPos);
-    elbow.setSelectedSensorPosition(encoderPos, MAIN_SLOT_IDX, TIMEOUTMS);
-  }
-
-  /**
-  * zeroes shoulder motor encoder based on known shoulder angle 
-  * @param shoulderAngle the angle of the shoulder
-  */
-  public void zeroShoulderMotorEncoder() {
-    double auxEncoderPos = convertShoulderToDegrees(getShoulderAbsolutePosition());
-    double normalizedPos = (auxEncoderPos + 180) > 0 ? 
-        (auxEncoderPos + 180) % 360. - 180 : 
-        (auxEncoderPos + 180) % 360. + 180;
-    int encoderPos = convertShoulderDegreesToMotor(normalizedPos);
-    shoulder.setSelectedSensorPosition(encoderPos, MAIN_SLOT_IDX, TIMEOUTMS);
   }
 
   /**
