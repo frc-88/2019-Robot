@@ -120,8 +120,9 @@ public class RobotMap {
 
   // Arm
   public static final double ARM_TOLERANCE = 1;
-  public static final int SHOULDER_MAX_SPEED = 120;
-  public static final int ELBOW_MAX_SPEED = 160;
+  public static final double SHOULDER_MAX_SPEED = 120;
+  public static final double ELBOW_MAX_SPEED = 160;
+  public static final double ACCELERATION_RATIO = 1.5;
 
   // Climber
 
