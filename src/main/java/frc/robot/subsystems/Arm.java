@@ -331,7 +331,7 @@ public class Arm extends Subsystem {
   /**
    * Get the shoulder degrees as read by the absolute encoder (after springs)
    */
-  public double getShoulderAbsoluteDegrees() {
+  public double getShoulderAbsDegrees() {
     double encoderPos = convertShoulderAbsCountsToDegrees(getShoulderAbsoluteCounts());
     double normalizedPos = (encoderPos + 180) > 0 ? 
         (encoderPos + 180) % 360. - 180 : 
@@ -349,9 +349,9 @@ public class Arm extends Subsystem {
   /**
    * Get the elbow degrees as read by the absolute encoder (after springs)
    */
-  public double getElbowAbsoluteDegrees() {
+  public double getElbowAbsDegrees() {
     double encoderPos = convertElbowAbsCountsToDegrees(getElbowAbsoluteCounts());
-    double shoulderPos = getShoulderAbsoluteDegrees();
+    double shoulderPos = getShoulderAbsDegrees();
     double diffFromShoulder = encoderPos - shoulderPos;
     double normalizedPos = (diffFromShoulder + 180) > 0 ? 
         (diffFromShoulder + 180) % 360. - 180 : 
@@ -432,6 +432,10 @@ public class Arm extends Subsystem {
     elbow.set(ControlMode.PercentOutput, percentOutput);
   }
 
+/*****************************************************************************
+ * ARM SAFETY 
+ ****************************************************************************/
+
   /**
    * isSafePosition
    * 
@@ -446,12 +450,12 @@ public class Arm extends Subsystem {
    */
   public boolean isSafePosition() {
     // use current position, no HAB zone restrictions
-    return isSafePosition(getShoulderDegrees(), getElbowDegrees(), false);
+    return isSafePosition(getShoulderAbsDegrees(), getElbowAbsDegrees(), false);
   }
 
   public boolean isSafePosition(boolean inHabZone) {
     // use current position
-    return isSafePosition(getShoulderDegrees(), getElbowDegrees(), inHabZone);
+    return isSafePosition(getShoulderAbsDegrees(), getElbowAbsDegrees(), inHabZone);
   }
 
   public boolean isSafePosition(double targetShoulderAngle, double targetElbowAngle) {
@@ -503,13 +507,17 @@ public class Arm extends Subsystem {
     return isSafe;
   }
 
+/*****************************************************************************
+ * MISCELANEOUS
+ ****************************************************************************/
+
   public double getDistanceFromBase() {
     double supportX = 0;
     double supportY = ARM_HEIGHT;
-    double shoulderX = SHOULDER_LENGTH * Math.sin(Math.toRadians(getMotorShoulderDegrees()));
-    double shoulderY = SHOULDER_LENGTH * Math.cos(Math.toRadians(getMotorShoulderDegrees()));
-    double elbowX = ELBOW_LENGTH * Math.sin(Math.toRadians(getMotorElbowDegrees()));
-    double elbowY = ELBOW_LENGTH * Math.cos(Math.toRadians(getMotorElbowDegrees()));
+    double shoulderX = SHOULDER_LENGTH * Math.sin(Math.toRadians(getShoulderAbsDegrees()));
+    double shoulderY = SHOULDER_LENGTH * Math.cos(Math.toRadians(getShoulderAbsDegrees()));
+    double elbowX = ELBOW_LENGTH * Math.sin(Math.toRadians(getElbowAbsDegrees()));
+    double elbowY = ELBOW_LENGTH * Math.cos(Math.toRadians(getElbowAbsDegrees()));
 
     double x1 = supportX + shoulderX + elbowX;
     double y1 = supportY + shoulderY + elbowY;
@@ -522,19 +530,11 @@ public class Arm extends Subsystem {
   }
 
 public boolean shoulderSkipped() {
-  double auxEncoderPos = convertShoulderToDegrees(getShoulderAbsolutePosition());
-  double normalizedPos = (auxEncoderPos + 180) > 0 ? 
-      (auxEncoderPos + 180) % 360. - 180 : 
-      (auxEncoderPos + 180) % 360. + 180;
-	return Math.abs(normalizedPos - getMotorShoulderDegrees()) > 45;
+	return Math.abs(getShoulderAbsDegrees() - getShoulderMotorDegrees()) > 45;
 }
 
 public boolean elbowSkipped() {
-	double auxEncoderPos = convertElbowToDegrees(getElbowAbsolutePosition());
-  double normalizedPos = (auxEncoderPos + 180) > 0 ? 
-      (auxEncoderPos + 180) % 360. - 180 : 
-      (auxEncoderPos + 180) % 360. + 180;
-	return Math.abs(normalizedPos - getMotorElbowDegrees()) > 45;
+	return Math.abs(getShoulderAbsDegrees() - getElbowMotorDegrees()) > 45;
 }
 
 }
