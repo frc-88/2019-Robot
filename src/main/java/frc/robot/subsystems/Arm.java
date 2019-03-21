@@ -228,7 +228,7 @@ public class Arm extends Subsystem {
     * Converts from shoulder absolute encoder counts to degrees.
     */
   public double convertShoulderAbsCountsToDegrees(int counts) {
-    return ((counts - shoulderOffset) * 360) / 4096;
+    return ((counts - shoulderOffset) * 360.) / 4096.;
   }
 
      /**
@@ -242,7 +242,7 @@ public class Arm extends Subsystem {
     * Converts from shoulder motor encoder counts to degrees.
     */
   public double convertShoulderMotorCountsToDegrees(double counts) {
-    return (((counts - shoulderOffset * 4) * 360) / 4096) / 4;
+    return (((counts - shoulderOffset * 4.) * 360.) / 4096.) / 4.;
   }
 
      /**
@@ -256,7 +256,7 @@ public class Arm extends Subsystem {
     * Converts from elbow absolute encoder counts to degrees.
     */
     public double convertElbowAbsCountsToDegrees(int counts) {
-      return ((counts - elbowOffset) * 360) / 4096;
+      return ((counts - elbowOffset) * 360.) / 4096.;
     }
   
        /**
@@ -270,7 +270,7 @@ public class Arm extends Subsystem {
       * Converts from elbow motor encoder counts to degrees.
       */
     public double convertElbowMotorCountsToDegrees(double counts) {
-      return (((counts - elbowOffset * 4) * 360) / 4096) / 4;
+      return (((counts - elbowOffset * 4.) * 360.) / 4096.) / 4.;
     }
   
        /**
@@ -279,6 +279,76 @@ public class Arm extends Subsystem {
     public int convertElbowDegreesToMotorCounts(double degrees) {
       return (int) (degrees * 4 * 4096 / 360 + elbowOffset * 4);
     }
+
+/******************************************************************************
+ * SENSOR GETTERS
+ *****************************************************************************/
+
+ /**
+  * Get the encoder counts read by the shoulder absolute encoder
+  */
+  public int getShoulderAbsoluteCounts() {
+    return shoulder.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
+  }
+
+   /**
+  * Get the encoder counts read by the shoulder motor encoder
+  */
+  public int getShoulderMotorCounts() {
+    return shoulder.getSelectedSensorPosition(MAIN_SLOT_IDX);
+  }
+
+   /**
+  * Get the encoder counts read by the elbow absolute encoder
+  */
+  public int getElbowAbsoluteCounts() {
+    return elbow.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
+  }
+
+   /**
+  * Get the encoder counts read by the shoulder motor encoder
+  */
+  public int getElbowMotorCounts() {
+    return elbow.getSelectedSensorPosition(MAIN_SLOT_IDX);
+  }
+
+  /**
+   * Get the shoulder degrees as read by the absolute encoder (after springs)
+   */
+  public double getShoulderAbsoluteDegrees() {
+    double auxEncoderPos = convertShoulderAbsCountsToDegrees(getShoulderAbsoluteCounts());
+    double normalizedPos = (auxEncoderPos + 180) > 0 ? 
+        (auxEncoderPos + 180) % 360. - 180 : 
+        (auxEncoderPos + 180) % 360. + 180;
+    return normalizedPos;
+  }
+
+  /**
+   * Get the shoulder degrees as read by the motor encoder (before springs)
+   */
+  public double getShoulderMotorDegrees() {
+    return convertShoulderMotorCountsToDegrees(getShoulderMotorCounts());
+  }
+
+  /**
+   * Get the elbow degrees as read by the absolute encoder (after springs)
+   */
+  public double getElbowAbsoluteDegrees() {
+    double auxEncoderPos = convertElbowAbsCountsToDegrees(getElbowAbsoluteCounts());
+    double normalizedPos = (auxEncoderPos + 180) > 0 ? 
+        (auxEncoderPos + 180) % 360. - 180 : 
+        (auxEncoderPos + 180) % 360. + 180;
+    return normalizedPos;
+  }
+
+  /**
+   * Get the elbow degrees as read by the motor encoder (before springs)
+   */
+  public double getElbowMotorDegrees() {
+    return convertElbowMotorCountsToDegrees(getElbowMotorCounts());
+  }
+
+
 
   public void moveShoulder(double position) {
     shoulder.set(ControlMode.MotionMagic, position);
@@ -292,28 +362,6 @@ public class Arm extends Subsystem {
     // stops the movement of the arm
     shoulder.set(ControlMode.PercentOutput, 0.0);
     elbow.set(ControlMode.PercentOutput, 0.0);
-  }
-
-  public double getShoulderPosition() {
-    return shoulder.getSelectedSensorPosition(MAIN_SLOT_IDX);
-  }
-
-  public double getElbowPosition() {
-    return elbow.getSelectedSensorPosition(MAIN_SLOT_IDX);
-  }
-
-  public int getShoulderAbsolutePosition() {
-
-    return shoulder.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
-  }
-
-  public double getShoulderDegrees() {
-
-    return convertShoulderToDegrees(getShoulderAbsolutePosition());
-  }
-
-  public double getMotorShoulderDegrees() {
-    return convertMotorShoulderToDegrees(getShoulderPosition());
   }
 
   public boolean targetReached() {
@@ -331,32 +379,12 @@ public class Arm extends Subsystem {
     elbow.configMotionAcceleration((int)(speed * 4096 * 4 / 360 / 10 * 1.5));
   }
 
-  public double getMotorElbowDegrees() {
-    return convertMotorElbowToDegrees(getElbowPosition());
-  }
-
-  public double getElbowDegrees() {
-    return convertElbowToDegrees(getElbowAbsolutePosition());
-  }
-
   public void setShoulder(double percentOutput) {
     shoulder.set(ControlMode.PercentOutput, percentOutput);
   }
 
   public void setElbow(double percentOutput) {
     elbow.set(ControlMode.PercentOutput, percentOutput);
-  }
-
-  public int getElbowAbsolutePosition() {
-    return elbow.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
-  }
-
-  public double getShoulderSpeed() {
-    return shoulder.getSelectedSensorVelocity() * 10 * 360 / 4096 / 4;
-  }
-
-  public double getElbowSpeed() {
-    return shoulder.getSelectedSensorVelocity() * 10 * 360 / 4096 / 4;
   }
 
   /**

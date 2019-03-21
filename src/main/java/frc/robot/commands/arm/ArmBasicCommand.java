@@ -26,8 +26,6 @@ public class ArmBasicCommand extends Command {
     Robot.m_arm.setShoulder(Robot.m_oi.getOperatorLeftYAxis());
     Robot.m_arm.setElbow(Robot.m_oi.getOperatorRightYAxis());
 
-    System.out.println("S Speed: " + Robot.m_arm.getShoulderSpeed() + " E Speed: " + Robot.m_arm.getElbowSpeed());
-
   }
 
   // Make this return true when this Command no longer needs to run execute()
