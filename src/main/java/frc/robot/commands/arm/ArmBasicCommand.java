@@ -23,8 +23,8 @@ public class ArmBasicCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_arm.setShoulder(Robot.m_oi.getOperatorLeftYAxis());
-    Robot.m_arm.setElbow(Robot.m_oi.getOperatorRightYAxis());
+    Robot.m_arm.setShoulderVoltage(Robot.m_oi.getOperatorLeftYAxis());
+    Robot.m_arm.setElbowVoltage(Robot.m_oi.getOperatorRightYAxis());
 
   }
 

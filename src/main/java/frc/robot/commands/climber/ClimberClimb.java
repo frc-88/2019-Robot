@@ -85,7 +85,6 @@ public class ClimberClimb extends Command {
       // arm.setElbowSpeed((ELBOW_START_POS-ELBOW_END_POS)/(CLIMB_LIMIT/RobotMap.CLIMBER_MAX_SPEED)
       // );
 
-      arm.liftMode(true);
       arm.moveShoulder(SHOULDER_END_POS);
       arm.moveElbow(ELBOW_END_POS);
 
@@ -108,7 +107,6 @@ public class ClimberClimb extends Command {
   @Override
   protected void end() {
     climber.stop();
-    arm.liftMode(false);
   }
 
   // Called when another command which requires one or more of the same

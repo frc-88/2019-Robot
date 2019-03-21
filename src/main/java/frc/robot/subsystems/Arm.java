@@ -183,8 +183,8 @@ public class Arm extends Subsystem {
     Preferences prefs = Preferences.getInstance();
 
     // set the current position to 0 degress and updates preferences
-    shoulderOffset = getShoulderAbsolutePosition();
-    elbowOffset = getElbowAbsolutePosition();
+    shoulderOffset = getShoulderAbsCounts();
+    elbowOffset = getElbowAbsCounts();
 
     prefs.putDouble("Arm:ShoulderOffset", shoulderOffset);
     prefs.putDouble("Arm:ElbowOffset", elbowOffset);
@@ -197,16 +197,16 @@ public class Arm extends Subsystem {
    * Updates all arm related values on the dashboard
    */
   public void updateDashboard() {
-    SmartDashboard.putNumber("Arm:shoulderPos", getShoulderPosition());
-    SmartDashboard.putNumber("Arm:shoulderAbs", getShoulderAbsolutePosition());
-    SmartDashboard.putNumber("Arm:elbowPos", getElbowPosition());
-    SmartDashboard.putNumber("Arm:elbowAbs", getElbowAbsolutePosition());
-    SmartDashboard.putNumber("Arm:shoulderDegrees", getShoulderDegrees());
-    SmartDashboard.putNumber("Arm:elbowDegrees", getElbowDegrees());
-    SmartDashboard.putNumber("Arm:shoulderMotorDegrees", getMotorShoulderDegrees());
-    SmartDashboard.putNumber("Arm:elbowMotorDegrees", getMotorElbowDegrees());
-    SmartDashboard.putNumber("Arm:shoulderSetPoint", shoulder.getActiveTrajectoryPosition());
-    SmartDashboard.putNumber("Arm:elbowSetPoint", elbow.getActiveTrajectoryPosition());
+    SmartDashboard.putNumber("Arm:shoulderPos", getShoulderMotorCounts());
+    SmartDashboard.putNumber("Arm:shoulderAbs", getShoulderAbsCounts());
+    SmartDashboard.putNumber("Arm:elbowPos", getElbowMotorCounts());
+    SmartDashboard.putNumber("Arm:elbowAbs", getElbowAbsCounts());
+    SmartDashboard.putNumber("Arm:shoulderDegrees", getShoulderAbsDegrees());
+    SmartDashboard.putNumber("Arm:elbowDegrees", getElbowAbsDegrees());
+    SmartDashboard.putNumber("Arm:shoulderMotorDegrees", getShoulderMotorDegrees());
+    SmartDashboard.putNumber("Arm:elbowMotorDegrees", getElbowMotorDegrees());
+    SmartDashboard.putNumber("Arm:shoulderSetPoint", convertShoulderMotorCountsToDegrees(shoulder.getActiveTrajectoryPosition()));
+    SmartDashboard.putNumber("Arm:elbowSetPoint", convertElbowMotorCountsToDegrees(elbow.getActiveTrajectoryPosition()));
     SmartDashboard.putBoolean("Arm:isSafe?", isSafePosition());
     SmartDashboard.putBoolean("Arm:isSafe(HAB)?", isSafePosition(true));
     SmartDashboard.putNumber("Arm:distFromBase", getDistanceFromBase());
@@ -220,7 +220,7 @@ public class Arm extends Subsystem {
   */
   public void zeroShoulderMotorEncoder() {
     shoulder.setSelectedSensorPosition(
-        convertShoulderDegreesToMotorCounts(getShoulderAbsoluteDegrees()), MAIN_SLOT_IDX, TIMEOUTMS);
+        convertShoulderDegreesToMotorCounts(getShoulderAbsDegrees()), MAIN_SLOT_IDX, TIMEOUTMS);
   }
 
   /**
@@ -228,7 +228,7 @@ public class Arm extends Subsystem {
    */
   public void zeroElbowMotorEncoder() {
     elbow.setSelectedSensorPosition(
-        convertElbowDegreesToMotorCounts(getElbowAbsoluteDegrees()), MAIN_SLOT_IDX, TIMEOUTMS);
+        convertElbowDegreesToMotorCounts(getElbowAbsDegrees()), MAIN_SLOT_IDX, TIMEOUTMS);
   }
 
   @Override
@@ -303,7 +303,7 @@ public class Arm extends Subsystem {
  /**
   * Get the encoder counts read by the shoulder absolute encoder
   */
-  public int getShoulderAbsoluteCounts() {
+  public int getShoulderAbsCounts() {
     return shoulder.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
   }
 
@@ -317,7 +317,7 @@ public class Arm extends Subsystem {
    /**
   * Get the encoder counts read by the elbow absolute encoder
   */
-  public int getElbowAbsoluteCounts() {
+  public int getElbowAbsCounts() {
     return elbow.getSelectedSensorPosition(AUX_SENSOR_SLOT_IDX);
   }
 
@@ -332,7 +332,7 @@ public class Arm extends Subsystem {
    * Get the shoulder degrees as read by the absolute encoder (after springs)
    */
   public double getShoulderAbsDegrees() {
-    double encoderPos = convertShoulderAbsCountsToDegrees(getShoulderAbsoluteCounts());
+    double encoderPos = convertShoulderAbsCountsToDegrees(getShoulderAbsCounts());
     double normalizedPos = (encoderPos + 180) > 0 ? 
         (encoderPos + 180) % 360. - 180 : 
         (encoderPos + 180) % 360. + 180;
@@ -350,7 +350,7 @@ public class Arm extends Subsystem {
    * Get the elbow degrees as read by the absolute encoder (after springs)
    */
   public double getElbowAbsDegrees() {
-    double encoderPos = convertElbowAbsCountsToDegrees(getElbowAbsoluteCounts());
+    double encoderPos = convertElbowAbsCountsToDegrees(getElbowAbsCounts());
     double shoulderPos = getShoulderAbsDegrees();
     double diffFromShoulder = encoderPos - shoulderPos;
     double normalizedPos = (diffFromShoulder + 180) > 0 ? 
