@@ -348,44 +348,70 @@ public class Arm extends Subsystem {
     return convertElbowMotorCountsToDegrees(getElbowMotorCounts());
   }
 
-
-
-  public void moveShoulder(double position) {
-    shoulder.set(ControlMode.MotionMagic, position);
+  /**
+   * Are both the shoulder and elbow PIDS within tolerance?
+   */
+  public boolean targetReached() {
+    return Math.abs(convertShoulderMotorCountsToDegrees(shoulder.getClosedLoopError())) < RobotMap.ARM_TOLERANCE
+        && Math.abs(convertElbowMotorCountsToDegrees(elbow.getClosedLoopError())) < RobotMap.ARM_TOLERANCE;
   }
 
-  public void moveElbow(double position) {
-    elbow.set(ControlMode.MotionMagic, position);
+/******************************************************************************
+ * MOVEMENT COMMANDS
+ *****************************************************************************/
+
+ /**
+  * Uses motion magic to send the shoulder to the given degrees setpoint
+  */
+  public void moveShoulder(double degrees) {
+    shoulder.set(ControlMode.MotionMagic, convertShoulderDegreesToMotorCounts(degrees));
   }
 
+   /**
+  * Uses motion magic to send the elbow to the given degrees setpoint
+  */
+  public void moveElbow(double degrees) {
+    elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(degrees));
+  }
+
+  /**
+   * Sets the motion magic speed of the shoulder in degrees per second
+   */
+  public void setShoulderSpeed(double speed) {
+    shoulder.configMotionCruiseVelocity((int)(speed * 4096. * 4. / 360. / 10.));
+    shoulder.configMotionAcceleration((int)(speed * 4096. * 4. / 360. / 10. * RobotMap.ACCELERATION_RATIO));
+  }
+
+  /**
+   * Sets the motion magic speed of the elbow is degrees per second
+   */
+  public void setElbowSpeed(double speed) {
+    elbow.configMotionCruiseVelocity((int)(speed * 4096. * 4. / 360. / 10.));
+    elbow.configMotionAcceleration((int)(speed * 4096. * 4. / 360. / 10. * RobotMap.ACCELERATION_RATIO));
+  }
+
+  /**
+   * Commands the arm to zero motor output
+   */
   public void stopArm() {
-    // stops the movement of the arm
     shoulder.set(ControlMode.PercentOutput, 0.0);
     elbow.set(ControlMode.PercentOutput, 0.0);
   }
 
-  public boolean targetReached() {
-    return Math.abs(convertMotorShoulderToDegrees(shoulder.getClosedLoopError())) < RobotMap.ARM_TOLERANCE
-        && Math.abs(convertMotorElbowToDegrees(elbow.getClosedLoopError())) < RobotMap.ARM_TOLERANCE;
-  }
-
-  public void setShoulderSpeed(int speed) {
-    shoulder.configMotionCruiseVelocity(speed * 4096 * 4 / 360 / 10);
-    shoulder.configMotionAcceleration((int)(speed * 4096 * 4 / 360 / 10 * 1.5));
-  }
-
-  public void setElbowSpeed(int speed) {
-    elbow.configMotionCruiseVelocity(speed * 4096 * 4 / 360 / 10);
-    elbow.configMotionAcceleration((int)(speed * 4096 * 4 / 360 / 10 * 1.5));
-  }
-
-  public void setShoulder(double percentOutput) {
+  /**
+   * Sets the shoulder to the given percent output in open loop mode
+   */
+  public void setShoulderVoltage(double percentOutput) {
     shoulder.set(ControlMode.PercentOutput, percentOutput);
   }
 
-  public void setElbow(double percentOutput) {
+  /**
+   * Sets the elbow to the given percent output in open loop mode
+   */
+  public void setElbowVoltage(double percentOutput) {
     elbow.set(ControlMode.PercentOutput, percentOutput);
   }
+  
 
   /**
    * zeroes elbow motor encoder based on known elbow angle 
