@@ -29,7 +29,8 @@ import frc.robot.util.TJPIDController;
  */
 
 public class Arm extends Subsystem {
-  // units in inches
+
+  // Constants for arm safety checking, units are in inches
   private final static double SHOULDER_LENGTH = 31;
   private final static double ELBOW_LENGTH = 24;
   private final static double ARM_HEIGHT = 41;
@@ -48,16 +49,20 @@ public class Arm extends Subsystem {
   private final static double FORWARD_ELBOW_LIMIT = 170;
   private final static double REVERSE_ELBOW_LIMIT = -170;
 
+  // Talon Info
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
   private final static int TIMEOUTMS = 0;
 
-
   private TalonSRX shoulder, elbow;
-  private TJPIDController pitchPID;
+
+  // Offsets for absolute encoders
   private int shoulderOffset = -940;
   private int elbowOffset = 415;
 
+  /****************************************************************************
+   * INITIALIZATION AND CONFIGURATION
+   ***************************************************************************/
 
   public Arm() {
     shoulder = new TalonSRX(RobotMap.SHOULDER_ID);
@@ -66,40 +71,43 @@ public class Arm extends Subsystem {
     configShoulderTalon();
     configElbowTalon();
 
-    pitchPID = new TJPIDController(0.01, 0, 0);
-    pitchPID.setTolerance(2);
-
     initPreferences();
     fetchPreferences();
   }
 
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
+    
     shoulder.config_kP(MAIN_SLOT_IDX, 8, TIMEOUTMS);
     shoulder.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     shoulder.config_kF(MAIN_SLOT_IDX, 3, TIMEOUTMS);
-    shoulder.configMotionCruiseVelocity(RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
-    shoulder.configMotionAcceleration((int)(1.5 * RobotMap.SHOULDER_MAX_SPEED * 4096 * 4 / 360 / 10), TIMEOUTMS);
+    
     shoulder.setInverted(true);
+
     shoulder.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
+
+    setShoulderSpeed(RobotMap.SHOULDER_MAX_SPEED);
   }
 
   private void configElbowTalon() {
     configTalonCommon(elbow);
+
     elbow.config_kP(MAIN_SLOT_IDX, 8, TIMEOUTMS);
     elbow.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
     elbow.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
-    elbow.configMotionCruiseVelocity(RobotMap.ELBOW_MAX_SPEED * 4096 * 4 / 360 / 10, TIMEOUTMS);
-    elbow.configMotionAcceleration((int)(1.5 * RobotMap.ELBOW_MAX_SPEED * 4096 * 4 / 360 / 10), TIMEOUTMS);
+
     elbow.setInverted(false);
+
     elbow.configRemoteFeedbackFilter(RobotMap.ELBOW_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0, TIMEOUTMS);
+
+    setElbowSpeed(RobotMap.ELBOW_MAX_SPEED);
   }
 
   private void configTalonCommon(TalonSRX talon) {
     talon.configFactoryDefault();
-    /* analog signal with no wrap-around (0-3.3V) */
+    
     talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, MAIN_SLOT_IDX, TIMEOUTMS);
     talon.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, AUX_SENSOR_SLOT_IDX, TIMEOUTMS);
 
@@ -109,7 +117,6 @@ public class Arm extends Subsystem {
     talon.configClosedloopRamp(0, TIMEOUTMS);
     talon.configPeakOutputReverse(-1.0, TIMEOUTMS);
     talon.configNeutralDeadband(0.01, TIMEOUTMS);
-    talon.setNeutralMode(NeutralMode.Brake);
   }
 
   public void configureBrakeMode() {
@@ -128,10 +135,6 @@ public class Arm extends Subsystem {
     // calibration prefs: position arm straight up and use ArmCalibrate command
     if (!prefs.containsKey("Arm:ShoulderOffset")) { prefs.putDouble("Arm:ShoulderOffset", shoulderOffset); }
     if (!prefs.containsKey("Arm:ElbowOffset")) { prefs.putDouble("Arm:ElbowOffset", elbowOffset); }
-    // tuning prefeerences
-    if (!prefs.containsKey("Arm:Pitch_P")) { prefs.putDouble("Arm:Pitch_P", pitchPID.getKP()); }
-    if (!prefs.containsKey("Arm:Pitch_I")) { prefs.putDouble("Arm:Pitch_I", pitchPID.getKP()); }
-    if (!prefs.containsKey("Arm:Pitch_D")) { prefs.putDouble("Arm:Pitch_D", pitchPID.getKP()); }
     // used by ArmGoToPosition
     if (!prefs.containsKey("Arm:ShoulderTarget")) { prefs.putDouble("Arm:ShoulderTarget", 0.0); }
     if (!prefs.containsKey("Arm:ElbowTarget")) { prefs.putDouble("Arm:ElbowTarget", 0.0); }
@@ -147,16 +150,6 @@ public class Arm extends Subsystem {
     elbowOffset = prefs.getInt("Arm:ElbowOffset", elbowOffset);
   }
 
-  public void reloadPIDConstants() {
-    Preferences prefs = Preferences.getInstance();
-
-    pitchPID.setKP(prefs.getDouble("Arm:Pitch_P", pitchPID.getKP()));
-    pitchPID.setKI(prefs.getDouble("Arm:Pitch_I", pitchPID.getKI()));
-    pitchPID.setKD(prefs.getDouble("Arm:Pitch_D", pitchPID.getKD()));
-
-    pitchPID.reset();
-  }
-
   public void calibrate() {
     Preferences prefs = Preferences.getInstance();
 
@@ -169,11 +162,6 @@ public class Arm extends Subsystem {
 
     zeroElbowMotorEncoder();
     zeroShoulderMotorEncoder();
-  }
-
-  @Override
-  public void initDefaultCommand() {
-    // No default command
   }
 
   public void updateDashboard() {
@@ -193,9 +181,11 @@ public class Arm extends Subsystem {
 
     SmartDashboard.putNumber("Arm:shoulder offset", shoulderOffset);
     SmartDashboard.putNumber("Arm:elbow offset", elbowOffset);
+  }
 
-    pitchPID.setKP(SmartDashboard.getNumber("arm:pitchKP", pitchPID.getKP()));
-    pitchPID.setKD(SmartDashboard.getNumber("arm:pitchKD", pitchPID.getKD()));
+  @Override
+  public void initDefaultCommand() {
+    // No default command
   }
 
   public void moveShoulder(double position) {
@@ -210,22 +200,6 @@ public class Arm extends Subsystem {
     // stops the movement of the arm
     shoulder.set(ControlMode.PercentOutput, 0.0);
     elbow.set(ControlMode.PercentOutput, 0.0);
-  }
-
-  /**
-   * When set, feedforward is reduced on the shoulder because it will be
-   * lifting a lot of weight (how else do you think it got so beefy?)
-   */
-  public void liftMode(boolean on) {
-    if (on) {
-      shoulder.config_kF(0, 16);
-    } else {
-      shoulder.config_kF(0, 8);
-    }
-  }
-
-  public void pidPitch(double pitch) {
-    setShoulder(-pitchPID.calculateOutput(Robot.m_navx.getPitch(), pitch));
   }
 
   public double getShoulderPosition() {
