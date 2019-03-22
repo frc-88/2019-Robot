@@ -189,7 +189,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    soundPlaying.setString("oh_yea_calef");
     Scheduler.getInstance().run();
   }
 

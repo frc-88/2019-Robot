@@ -10,6 +10,7 @@ package frc.robot.commands.arm;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.util.ArmSetpoint;
 
 public class ArmGoToPositionSafe extends Command {
   private double shoulder_target;
@@ -32,11 +33,11 @@ public class ArmGoToPositionSafe extends Command {
     usePreferences = true;
   }
 
-  public ArmGoToPositionSafe(double [] position) {
+  public ArmGoToPositionSafe(ArmSetpoint position) {
     requires(Robot.m_arm);
 
-    shoulder_degrees = position[0];
-    elbow_degrees = position[1];
+    shoulder_degrees = position.shoulder;
+    elbow_degrees = position.elbow;
 
     usePreferences = false;
   }
@@ -66,11 +67,11 @@ public class ArmGoToPositionSafe extends Command {
         elbowTarget = "Arm:ElbowTarget";
       }
 
-      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble(shoulderTarget, 0.0));
-      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble(elbowTarget,0.0));
+      shoulder_target = prefs.getDouble(shoulderTarget, 0.0);
+      elbow_target = prefs.getDouble(elbowTarget,0.0);
     } else {
-      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder_degrees);
-      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow_degrees);
+      shoulder_target = shoulder_degrees;
+      elbow_target = elbow_degrees;
     }
 
     targetSafe = Robot.m_arm.isSafePosition(shoulder_degrees, elbow_degrees);
