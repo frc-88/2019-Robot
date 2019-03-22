@@ -9,25 +9,49 @@ package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
+import frc.robot.subsystems.Arm;
+import frc.robot.util.ArmPosition;
+import frc.robot.util.ArmSetpoint;
 
-public class ArmEStop extends Command {
-  public ArmEStop() {
+public class ArmGoToSetpoint extends Command {
+
+  private Arm arm = Robot.m_arm;
+
+  private ArmSetpoint start;
+  private ArmSetpoint target;
+  private ArmSetpoint[] path;
+  private int currentPathSetpoint = 0;
+
+  public ArmGoToSetpoint(ArmSetpoint setpoint) {
     requires(Robot.m_arm);
+    target = setpoint;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_arm.stopArm();
-    Robot.soundPlaying.setString("warning");
-
-  System.out.println("Arm E Stop!!!");    
+    start = arm.getCurrentSetpoint();
+    path = ArmPosition.getPath(start, target);
+    currentPathSetpoint = 0;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_arm.stopArm();
+    if (currentPathSetpoint < path.length) {
+      if (currentPathSetpoint == 0) {
+        arm.setSetpoint(start, path[currentPathSetpoint]);
+      } else {
+        arm.setSetpoint(path[currentPathSetpoint-1], path[currentPathSetpoint]);
+      }
+
+      if (Math.abs(arm.getShoulderMotorDegrees() - path[currentPathSetpoint].shoulder) < RobotMap.ARM_TOLERANCE
+          && Math.abs(arm.getElbowMotorDegrees() - path[currentPathSetpoint].elbow) < RobotMap.ARM_TOLERANCE) {
+        currentPathSetpoint++;
+      }
+
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -45,6 +69,5 @@ public class ArmEStop extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }
