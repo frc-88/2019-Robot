@@ -40,11 +40,41 @@ public class ArmGoToSetpoint extends Command {
   @Override
   protected void execute() {
     if (currentPathSetpoint < path.length) {
+
+      ArmSetpoint to = path[currentPathSetpoint];
+      ArmSetpoint from;
       if (currentPathSetpoint == 0) {
-        arm.setSetpoint(start, path[currentPathSetpoint]);
+        from = start;
       } else {
-        arm.setSetpoint(path[currentPathSetpoint-1], path[currentPathSetpoint]);
+        from = path[currentPathSetpoint-1];
       }
+
+      double shoulderSpeed;
+      double elbowSpeed;
+
+      double shoulderDist = Math.abs(from.shoulder - to.shoulder);
+      double elbowDist = Math.abs(from.elbow - to.elbow);
+      if (shoulderDist / RobotMap.SHOULDER_MAX_SPEED > elbowDist / RobotMap.ELBOW_MAX_SPEED) {
+        shoulderSpeed = RobotMap.SHOULDER_MAX_SPEED;
+        elbowSpeed = RobotMap.SHOULDER_MAX_SPEED * elbowDist / shoulderDist;
+      } else {
+        elbowSpeed = RobotMap.ELBOW_MAX_SPEED;
+        shoulderSpeed = RobotMap.ELBOW_MAX_SPEED * shoulderDist / elbowDist;
+      }
+
+      int passIdx = currentPathSetpoint;
+      while (path[passIdx].passShoulder) {
+        passIdx++;
+      }
+      double shoulderTarget = path[passIdx].shoulder;
+
+      passIdx = currentPathSetpoint;
+      while (path[passIdx].passElbow) {
+        passIdx++;
+      }
+      double elbowTarget = path[passIdx].elbow;
+
+      arm.setSetpoint(to, shoulderTarget, elbowTarget, shoulderSpeed, elbowSpeed);
 
       if (Math.abs(arm.getShoulderMotorDegrees() - path[currentPathSetpoint].shoulder) < RobotMap.ARM_TOLERANCE
           && Math.abs(arm.getElbowMotorDegrees() - path[currentPathSetpoint].elbow) < RobotMap.ARM_TOLERANCE) {

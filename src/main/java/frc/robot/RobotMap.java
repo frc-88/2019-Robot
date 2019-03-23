@@ -119,7 +119,7 @@ public class RobotMap {
   public static final int DRIVE_MIN_TRAJ_POINTS = 10;
 
   // Arm
-  public static final double ARM_TOLERANCE = 1;
+  public static final double ARM_TOLERANCE = 3;
   public static final double SHOULDER_MAX_SPEED = 200;
   public static final double ELBOW_MAX_SPEED = 200;
   public static final double ACCELERATION_RATIO = 1.5;

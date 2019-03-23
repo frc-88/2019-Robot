@@ -406,26 +406,20 @@ public class Arm extends Subsystem {
   }
 
   /**
-   * Sets the arm to move between the given setpoints.
+   * Sets the arm to move to the given setpoint with the given shoulder/elbow
+   * targets in degrees and the given shoulder/elbow speeds in degrees/second
    */
-  public void setSetpoint(ArmSetpoint from, ArmSetpoint to) {
-
-    System.out.println(to.shoulder + "  " + to.elbow);
+  public void setSetpoint(ArmSetpoint to, 
+      double shoulderTarget, double elbowTarget,
+      double shoulderSpeed, double elbowSpeed) {
 
     this.currentSetpoint = to;
 
-    double shoulderDist = Math.abs(from.shoulder - to.shoulder);
-    double elbowDist = Math.abs(from.elbow - to.elbow);
-    if (shoulderDist / RobotMap.SHOULDER_MAX_SPEED > elbowDist / RobotMap.ELBOW_MAX_SPEED) {
-      setShoulderSpeed(RobotMap.SHOULDER_MAX_SPEED);
-      setElbowSpeed(RobotMap.SHOULDER_MAX_SPEED * elbowDist / shoulderDist);
-    } else {
-      setElbowSpeed(RobotMap.ELBOW_MAX_SPEED);
-      setShoulderSpeed(RobotMap.ELBOW_MAX_SPEED * shoulderDist / elbowDist);
-    }
+    setShoulderSpeed(shoulderSpeed);
+    setElbowSpeed(elbowSpeed);
 
-    shoulder.set(ControlMode.MotionMagic, convertShoulderDegreesToMotorCounts(to.shoulder));
-    elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(to.elbow));
+    shoulder.set(ControlMode.MotionMagic, convertShoulderDegreesToMotorCounts(shoulderTarget));
+    elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(elbowTarget));
   }
 
   /**
