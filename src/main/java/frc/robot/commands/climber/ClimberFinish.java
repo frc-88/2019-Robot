@@ -12,7 +12,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 
-public class CimberFinish extends Command {
+public class ClimberFinish extends Command {
 
   private Climber climber = Robot.m_climber;
   private Arm arm = Robot.m_arm;
@@ -21,7 +21,7 @@ public class CimberFinish extends Command {
   private final double SHOULDER_TARGET = 121;
   private final double ELBOW_TARGET = 180;
 
-  public CimberFinish() {
+  public ClimberFinish() {
     requires(climber);
     requires(arm);
   }
