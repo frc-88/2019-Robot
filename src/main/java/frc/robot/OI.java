@@ -28,7 +28,6 @@ import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberDrop;
 import frc.robot.commands.climber.ClimberFinish;
 import frc.robot.commands.climber.ClimberLift;
-import frc.robot.commands.climber.ClimberMove;
 import frc.robot.commands.climber.ClimberPrep;
 import frc.robot.commands.climber.ClimberPull;
 import frc.robot.commands.intake.IntakeBasicControl;
@@ -86,7 +85,7 @@ public class OI {
     new JoystickButton(buttonBox, 17).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new ClimberClimb(), new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1))));
-    new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new InstantCommand(), new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
+    new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new InstantCommand(), new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE))));
     new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
@@ -171,7 +170,6 @@ public class OI {
     // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
 
     SmartDashboard.putData("Climb", new ClimberClimb());
-    SmartDashboard.putData("Move Climber", new ClimberMove());
 
     SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo(-1));

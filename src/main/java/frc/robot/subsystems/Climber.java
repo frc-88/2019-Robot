@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.util.SharpIR;
 
 /**
  * Add your docs here.
@@ -30,9 +31,13 @@ public class Climber extends Subsystem {
 
   private TalonSRX winch;
 
+  private SharpIR platformIR;
+
   public Climber() {
       winch = new TalonSRX(RobotMap.CLIMBER_ID);
       configTalon(winch);
+
+      platformIR = new SharpIR(RobotMap.CLIMBER_PLATFORM_IR_ID);
   }
 
   private void configTalon(TalonSRX talon) {
@@ -101,4 +106,9 @@ public class Climber extends Subsystem {
   public boolean targetReached() {
     return Math.abs((winch.getClosedLoopError())) < RobotMap.CLIMBER_TOLERANCE;
   }
+
+  public boolean onPlatform() {
+    return platformIR.getDistance() < RobotMap.PLATFORM_IR_THRESHOLD;
+  }
+
 }
