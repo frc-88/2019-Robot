@@ -76,8 +76,22 @@ public class ArmGoToSetpoint extends Command {
 
       arm.setSetpoint(to, shoulderTarget, elbowTarget, shoulderSpeed, elbowSpeed);
 
-      if (Math.abs(arm.getShoulderMotorDegrees() - path[currentPathSetpoint].shoulder) < RobotMap.ARM_TOLERANCE
-          && Math.abs(arm.getElbowMotorDegrees() - path[currentPathSetpoint].elbow) < RobotMap.ARM_TOLERANCE) {
+
+      boolean shoulderOnTarget = true;
+      if (from.shoulder > shoulderTarget) {
+        shoulderOnTarget = arm.getShoulderMotorDegrees() > shoulderTarget - RobotMap.ARM_TOLERANCE;
+      } else if (from.shoulder < shoulderTarget) {
+        shoulderOnTarget = arm.getShoulderMotorDegrees() < shoulderTarget + RobotMap.ARM_TOLERANCE;
+      }
+
+      boolean elbowOnTarget = true;
+      if (from.elbow > elbowTarget) {
+        elbowOnTarget = arm.getElbowMotorDegrees() > elbowTarget - RobotMap.ARM_TOLERANCE;
+      } else if (from.elbow < elbowTarget) {
+        elbowOnTarget = arm.getElbowMotorDegrees() < elbowTarget + RobotMap.ARM_TOLERANCE;
+      }
+
+      if (shoulderOnTarget && elbowOnTarget) {
         currentPathSetpoint++;
       }
 
