@@ -45,7 +45,7 @@ public final class ArmPosition {
                 && currentSetpoint.equals(MEDIUM_ROCKET_BACK2)) {
 
             return new ArmSetpoint[] {
-                new ArmSetpoint(158, 13),
+                new ArmSetpoint(158, 13).passShoulder(),
                 targetSetpoint
             };
             
@@ -90,21 +90,26 @@ public final class ArmPosition {
             };
     
         }
-        else if (targetSetpoint.equals(PRE_CLIMB) 
-                && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
+        else if (targetSetpoint.equals(PRE_CLIMB) && !currentSetpoint.equals(PRE_CLIMB)) {
 
-            return new ArmSetpoint[] {
-                new ArmSetpoint(140, 87).passShoulder().passElbow(),
-                new ArmSetpoint(126,126).passShoulder().passElbow(),
-                targetSetpoint
-            };
+            // return new ArmSetpoint[] {
+            //     new ArmSetpoint(140, 90).passShoulder().passElbow(),
+            //     new ArmSetpoint(126,126).passShoulder().passElbow(),
+            //     new ArmSetpoint(91, 152).passShoulder(),
+            //     targetSetpoint
+            // };
+
+            ArmSetpoint[] toIntake = getPath(currentSetpoint, INTAKE);
+            ArmSetpoint[] ret = Arrays.copyOf(toIntake, toIntake.length + 1);
+            ret[ret.length - 1] = targetSetpoint;
+            return ret;
     
         }
         else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME))
                 && currentSetpoint.equals(PRE_CLIMB)) {
 
             return new ArmSetpoint[] {
-                new ArmSetpoint(126,126).passShoulder().passElbow(),
+                new ArmSetpoint(130,126).passShoulder().passElbow(),
                 new ArmSetpoint(140, 87).passShoulder().passElbow(),
                 targetSetpoint
             };
