@@ -8,27 +8,35 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 
-public class ClimberMove extends Command {
-  public ClimberMove() {
-    requires(Robot.m_climber);
-    SmartDashboard.putNumber("SetClimberPosition", 0);
+public class CimberFinish extends Command {
+
+  private Climber climber = Robot.m_climber;
+  private Arm arm = Robot.m_arm;
+
+  private final int CLIMBER_TARGET = 80000;
+  private final double SHOULDER_TARGET = 121;
+  private final double ELBOW_TARGET = 180;
+
+  public CimberFinish() {
+    requires(climber);
+    requires(arm);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_climber.zeroEncoder();
-    Robot.m_climber.move(SmartDashboard.getNumber("SetClimberPosition", 0));
+    climber.moveEncoder(CLIMBER_TARGET);
+    arm.moveShoulder(SHOULDER_TARGET);
+    arm.moveElbow(ELBOW_TARGET);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-
   }
 
   // Make this return true when this Command no longer needs to run execute()

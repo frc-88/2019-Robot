@@ -8,22 +8,41 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class ClimberBasicControl extends Command {
-  public ClimberBasicControl() {
+public class ClimberMoveShoulder extends Command {
+
+  double shoulderTarget;
+
+  public ClimberMoveShoulder() {
     requires(Robot.m_climber);
+    requires(Robot.m_arm);
+    SmartDashboard.putNumber("SetClimberPosition", 0);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.m_arm.configureCoastMode();
+
+    shoulderTarget = SmartDashboard.getNumber("SetClimberPosition", 0);
+    Robot.m_climber.moveShoulder(shoulderTarget);
+    if (shoulderTarget < Robot.m_arm.getShoulderAbsDegrees()) {
+      Robot.m_arm.setShoulderVoltage(-0.05);
+    } else {
+      Robot.m_arm.setShoulderVoltage(0);
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_climber.setVoltage(Robot.m_oi.getOperatorRightYAxis());
+    if (shoulderTarget < Robot.m_arm.getShoulderAbsDegrees()) {
+      Robot.m_arm.setShoulderVoltage(-0.05);
+    } else {
+      Robot.m_arm.setShoulderVoltage(0);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -35,13 +54,11 @@ public class ClimberBasicControl extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.m_climber.stop();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

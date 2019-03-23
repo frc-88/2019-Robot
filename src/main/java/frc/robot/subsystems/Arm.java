@@ -112,6 +112,10 @@ public class Arm extends Subsystem {
     elbow.configRemoteFeedbackFilter(RobotMap.ELBOW_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0,
         TIMEOUTMS);
 
+    elbow.config_kP(AUX_SENSOR_SLOT_IDX, 8, TIMEOUTMS);
+    elbow.config_kI(AUX_SENSOR_SLOT_IDX, 0, TIMEOUTMS);
+    elbow.config_kD(AUX_SENSOR_SLOT_IDX, 0, TIMEOUTMS);
+
     setElbowSpeed(RobotMap.ELBOW_MAX_SPEED);
   }
 
@@ -436,6 +440,15 @@ public class Arm extends Subsystem {
   public void moveElbow(double degrees) {
     currentSetpoint = null;
     elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(degrees));
+  }
+
+  /**
+   * PIDs the elbow to the given position based off the absolute encoder which is
+   * after the springs
+   */
+  public void moveElbowAbs(double degrees) {
+    currentSetpoint = null;
+    elbow.set(ControlMode.Position, convertElbowDegreesToAbsCounts(degrees));
   }
 
   /**
