@@ -64,6 +64,7 @@ public class ArmGoToSetpoint extends Command {
 
       int passIdx = currentPathSetpoint;
       while (path[passIdx].passShoulder) {
+        System.out.println("Shoulder pass");
         passIdx++;
       }
       double shoulderTarget = path[passIdx].shoulder;
@@ -78,17 +79,17 @@ public class ArmGoToSetpoint extends Command {
 
 
       boolean shoulderOnTarget = true;
-      if (from.shoulder > shoulderTarget) {
-        shoulderOnTarget = arm.getShoulderMotorDegrees() > shoulderTarget - RobotMap.ARM_TOLERANCE;
-      } else if (from.shoulder < shoulderTarget) {
-        shoulderOnTarget = arm.getShoulderMotorDegrees() < shoulderTarget + RobotMap.ARM_TOLERANCE;
+      if (from.shoulder < to.shoulder) {
+        shoulderOnTarget = arm.getShoulderMotorDegrees() > to.shoulder - RobotMap.ARM_TOLERANCE;
+      } else if (from.shoulder > to.shoulder) {
+        shoulderOnTarget = arm.getShoulderMotorDegrees() < to.shoulder + RobotMap.ARM_TOLERANCE;
       }
 
       boolean elbowOnTarget = true;
-      if (from.elbow > elbowTarget) {
-        elbowOnTarget = arm.getElbowMotorDegrees() > elbowTarget - RobotMap.ARM_TOLERANCE;
-      } else if (from.elbow < elbowTarget) {
-        elbowOnTarget = arm.getElbowMotorDegrees() < elbowTarget + RobotMap.ARM_TOLERANCE;
+      if (from.elbow < to.elbow) {
+        elbowOnTarget = arm.getElbowMotorDegrees() > to.elbow - RobotMap.ARM_TOLERANCE;
+      } else if (from.elbow > to.elbow) {
+        elbowOnTarget = arm.getElbowMotorDegrees() < to.elbow + RobotMap.ARM_TOLERANCE;
       }
 
       if (shoulderOnTarget && elbowOnTarget) {
