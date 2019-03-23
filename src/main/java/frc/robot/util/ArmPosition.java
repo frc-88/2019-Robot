@@ -70,12 +70,12 @@ public final class ArmPosition {
             };
             
         }
-        else if (targetSetpoint.equals(CARGO_SHIP_BACK2) 
+        else if (targetSetpoint.equals(CARGO_SHIP_BACK2)
                 && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
 
             return new ArmSetpoint[] {
                 new ArmSetpoint(158, 13),
-                new ArmSetpoint(-55,-200).passShoulder(),
+                new ArmSetpoint(-55,-200).lockElbow().passShoulder(),
                 targetSetpoint
             };
     

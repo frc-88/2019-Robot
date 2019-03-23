@@ -7,12 +7,14 @@ public class ArmSetpoint {
     public double elbow;
     public boolean passShoulder;
     public boolean passElbow;
+    public boolean lockElbow;
 
     public ArmSetpoint(double shoulder, double elbow) {
         this.shoulder = shoulder;
         this.elbow = elbow;
         this.passShoulder = false;
         this.passElbow = false;
+        this.lockElbow = false;
     }
 
     @Override
@@ -34,6 +36,11 @@ public class ArmSetpoint {
 
     public ArmSetpoint passElbow() {
         this.passElbow = true;
+        return this;
+    }
+
+    public ArmSetpoint lockElbow() {
+        this.lockElbow = true;
         return this;
     }
 }
