@@ -46,7 +46,8 @@ public class RobotMap {
   // Intake
   
   public static final int INTAKE_ID = 10;
-  public static final int INTAKE_IR_ID = 0;
+  public static final int INTAKE_IR1_ID = 0;
+  public static final int INTAKE_IR2_ID = 3;
 
   // Climber
   public static final int CLIMBER_ID = 12;
@@ -134,7 +135,7 @@ public class RobotMap {
   public static final double CLIMBER_TOLERANCE = 0.25;
 
   //Intake
-  public static final double INTAKE_HAS_CARGO = 20;
+  public static final double INTAKE_HAS_CARGO = 7;
 
   // SAPG
   public static final double SAPG_TOLERANCE = 2; //inches
