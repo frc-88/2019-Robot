@@ -49,7 +49,7 @@ public class RobotMap {
   public static final int INTAKE_IR_ID = 0;
 
   // Climber
-  public static final int CLIMBER_ID = 12;
+  public static final int CLIMBER_ID = 6;
 
   // SAPG
   public static final int SAPG_DEPLOY_FORWARD = 2;
