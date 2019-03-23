@@ -13,11 +13,13 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Drive;
 
 public class ClimberClimb extends Command {
 
   private Climber climber = Robot.m_climber;
   private Arm arm = Robot.m_arm;
+  private Drive drive = Robot.m_drive;
 
   private final double LIFT_SHOULDER_START = 86;
   private final double LIFT_SHOULDER_END = 127;
@@ -42,6 +44,8 @@ public class ClimberClimb extends Command {
   @Override
   protected void initialize() {
     state = 0;
+
+    drive.arcadeDrive(0, 0);
 
     arm.configureCoastMode();
   }
@@ -93,6 +97,18 @@ public class ClimberClimb extends Command {
 
     case 3:
 
+      drive.arcadeDrive(.1, 0); 
+      drive.autoshift(); 
+
+      if (climber.onPlatform()) {
+        state++;
+      }
+    
+    case 4:
+
+      drive.arcadeDrive(0, 0);
+      drive.autoshift();
+      
       climber.moveEncoder(CLEAR_CLIMBER_TARGET);
       arm.moveShoulder(CLEAR_SHOULDER_TARGET);
       arm.moveElbow(PULL_ELBOW_TARGET);
