@@ -19,6 +19,7 @@ public final class ArmPosition {
     public static final ArmSetpoint INTAKE = new ArmSetpoint(160, 82);
     public static final ArmSetpoint CARGO_SHIP_FRONT = new ArmSetpoint(105, 33);
     public static final ArmSetpoint CARGO_SHIP_BACK = new ArmSetpoint(-105, -33);
+    public static final ArmSetpoint CARGO_SHIP_BACK2 = new ArmSetpoint(-90, -200);
     public static final ArmSetpoint LOW_ROCKET = new ArmSetpoint(150, 0);
     public static final ArmSetpoint MEDIUM_ROCKET_FRONT = new ArmSetpoint(85, 0);
     public static final ArmSetpoint MEDIUM_ROCKET_FRONT2 = new ArmSetpoint(55, 180);
@@ -30,107 +31,92 @@ public final class ArmPosition {
     public static final ArmSetpoint LOW_ROCKET_BACK = new ArmSetpoint(-90, -180);
 
     public static ArmSetpoint[] getPath(ArmSetpoint currentSetpoint, ArmSetpoint targetSetpoint) {
+
         if (targetSetpoint.equals(MEDIUM_ROCKET_BACK2) 
                 && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
 
-                    return new ArmSetpoint[] {
-                        new ArmSetpoint(158, 13),
-                        targetSetpoint
-                    };
+            return new ArmSetpoint[] {
+                new ArmSetpoint(158, 13),
+                targetSetpoint
+            };
             
         }
-        else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME))&& 
-        currentSetpoint.equals(MEDIUM_ROCKET_BACK2)) {
+        else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME)) 
+                && currentSetpoint.equals(MEDIUM_ROCKET_BACK2)) {
 
-                    return new ArmSetpoint[] {
-                        new ArmSetpoint(158, 13),
-                        targetSetpoint
-                    };
+            return new ArmSetpoint[] {
+                new ArmSetpoint(158, 13),
+                targetSetpoint
+            };
             
         }
         else if (targetSetpoint.equals(LOW_ROCKET_BACK) 
                 && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
 
-                    return new ArmSetpoint[] {
-                        new ArmSetpoint(158, 13),
-                        new ArmSetpoint(-35,-180),
-                        targetSetpoint
-                    };
+            return new ArmSetpoint[] {
+                new ArmSetpoint(158, 13),
+                new ArmSetpoint(-35,-180).passShoulder(),
+                targetSetpoint
+            };
             
         }
-         else if (targetSetpoint.equals(LOW_ROCKET_BACK) 
+        else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME)) 
+                && currentSetpoint.equals(LOW_ROCKET_BACK)) {
+
+            return new ArmSetpoint[] {
+                new ArmSetpoint(-35,-180).passShoulder(),
+                new ArmSetpoint(158, 13),
+                targetSetpoint
+            };
+            
+        }
+        else if (targetSetpoint.equals(CARGO_SHIP_BACK2) 
                 && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
 
-                    return new ArmSetpoint[] {
-                        new ArmSetpoint(158, 13),
-                        new ArmSetpoint(-35,-180),
-                        targetSetpoint
-                    };
-            
+            return new ArmSetpoint[] {
+                new ArmSetpoint(158, 13),
+                new ArmSetpoint(-55,-200).passShoulder(),
+                targetSetpoint
+            };
+    
         }
-        else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME))&& 
-        currentSetpoint.equals(LOW_ROCKET_BACK)) {
+        else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME))
+                && currentSetpoint.equals(CARGO_SHIP_BACK2)) {
 
-                    return new ArmSetpoint[] {
-                        new ArmSetpoint(-35,-180),
-                        new ArmSetpoint(158, 13),
-                        targetSetpoint
-                    };
-            
+            return new ArmSetpoint[] {
+                new ArmSetpoint(-55,-200).passShoulder(),
+                new ArmSetpoint(158, 13),
+                targetSetpoint
+            };
+    
         }
-        else if (targetSetpoint.equals(CARGO_SHIP_BACK) 
-        && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
+        else if (targetSetpoint.equals(PRE_CLIMB) 
+                && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
 
             return new ArmSetpoint[] {
-                new ArmSetpoint(140, 87),
-                new ArmSetpoint(126,126),
-                new ArmSetpoint(90,180),
-                new ArmSetpoint(32,180),
-                new ArmSetpoint(-105,43),
+                new ArmSetpoint(140, 87).passShoulder().passElbow(),
+                new ArmSetpoint(126,126).passShoulder().passElbow(),
                 targetSetpoint
             };
     
-}
-else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME))&& 
-currentSetpoint.equals(CARGO_SHIP_BACK)) {
+        }
+        else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME))
+                && currentSetpoint.equals(PRE_CLIMB)) {
 
             return new ArmSetpoint[] {
-                new ArmSetpoint(-105,43),
-                new ArmSetpoint(32,180),
-                new ArmSetpoint(90,180),
-                new ArmSetpoint(126,126),
-                new ArmSetpoint(140, 87),
+                new ArmSetpoint(126,126).passShoulder().passElbow(),
+                new ArmSetpoint(140, 87).passShoulder().passElbow(),
                 targetSetpoint
             };
     
-}
-else if (targetSetpoint.equals(PRE_CLIMB) 
-        && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
-
+        } else if (targetSetpoint.equals(INTAKE) && currentSetpoint.shoulder < 135) {
+                
             return new ArmSetpoint[] {
-                new ArmSetpoint(140, 87),
-                new ArmSetpoint(126,126),
+                new ArmSetpoint(135, Math.max(currentSetpoint.elbow,0)).passShoulder().passElbow(),
                 targetSetpoint
             };
-    
-}
-else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME))&& 
-currentSetpoint.equals(PRE_CLIMB)) {
 
-            return new ArmSetpoint[] {
-                new ArmSetpoint(126,126),
-                new ArmSetpoint(140, 87),
-                targetSetpoint
-            };
-    
-} else if (targetSetpoint.equals(INTAKE) && currentSetpoint.shoulder < 135) {
-            
-    return new ArmSetpoint[] {
-        new ArmSetpoint(135, Math.max(currentSetpoint.elbow,0)),
-        targetSetpoint
-    };
-
-}
+        }
         else {
 
             return new ArmSetpoint[] {
