@@ -129,9 +129,8 @@ public class RobotMap {
   public static final double CLIMBER_LIFTING_CURRENT = 10.0;
   public static final double CLIMBER_SEEKING_SPEED = -1;
   public static final double CLIMBER_SEEKING_RAMP = -0.05;
-  public static final int CLIMBER_TICKS_PER_INCH = 15908;
-  public static final int CLIMBER_MAX_SPEED = 10;
-  public static final double CLIMBER_TOLERANCE = 0.25;
+  public static final int CLIMB_ARM_SPEED = 50;
+  public static final double CLIMBER_TOLERANCE = 5000;
 
   //Intake
   public static final double INTAKE_HAS_CARGO = 20;
