@@ -38,6 +38,7 @@ public class ClimberClimb extends Command {
   public ClimberClimb() {
     requires(climber);
     requires(arm);
+    requires(drive);
   }
 
   // Called just before this Command runs the first time
@@ -67,7 +68,8 @@ public class ClimberClimb extends Command {
       arm.moveElbowAbs(LIFT_ELBOW_START + elbowTotalDist * shoulderPercentDone);
 
       if (Math.abs(shoulderPos - LIFT_SHOULDER_END) < RobotMap.ARM_TOLERANCE) {
-        state++;
+        //state++;
+        state = 10;
 
         arm.configureBrakeMode();
       }
@@ -122,7 +124,7 @@ public class ClimberClimb extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return state == 10;
   }
 
   // Called once after isFinished returns true

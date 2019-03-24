@@ -66,10 +66,11 @@ public class Robot extends TimedRobot {
     m_navx = new NavX();
     m_limelight_sapg = new Limelight("limelight-sapg");
     m_drive = new Drive();
-    m_climber = new Climber();
     m_intake = new Intake();
     m_arm = new Arm();
     m_sapg = new SAPG();
+    m_climber = new Climber();
+    
 
     // instantiate m_oi last...it may reference subsystems
     m_oi = new OI();
