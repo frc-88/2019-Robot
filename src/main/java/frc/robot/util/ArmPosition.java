@@ -75,7 +75,7 @@ public final class ArmPosition {
 
             return new ArmSetpoint[] {
                 new ArmSetpoint(158, 13),
-                new ArmSetpoint(-55,-200).lockElbow().passShoulder(),
+                new ArmSetpoint(-55,-200).passShoulder(),
                 targetSetpoint
             };
     

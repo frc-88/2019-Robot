@@ -67,7 +67,7 @@ public class OI {
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
     new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
-    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK2));
+    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK));
     new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_FRONT));
     new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_BACK2));
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_FRONT));
