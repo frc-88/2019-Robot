@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
     initializeDashboard();
 
     m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -112,7 +113,6 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureCoastMode();
-    m_sapg.trackingOff();
 
     soundPlaying.setString("");
   }
@@ -121,8 +121,8 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    m_sapg.trackingOff();
-    m_limelight_sapg.setPip();
+    m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
   }
 
   /**
@@ -142,7 +142,9 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureBrakeMode();
-    m_sapg.trackingOff();
+
+    m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     m_autonomousCommand = m_chooser.getSelected();
 
@@ -173,7 +175,9 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureBrakeMode();
-    m_sapg.trackingOff();
+
+    m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -227,21 +231,21 @@ public class Robot extends TimedRobot {
       noPanelCounts++;
     }
 
-    if (m_sapg.isTracking() && hasTargetCounts == 5) {
+    // if (m_sapg.isTracking() && hasTargetCounts == 5) {
 
-      // Target Acquired
-      soundPlaying.setString("i_see_you");
-      noTargetCounts = 0;
+    //   // Target Acquired
+    //   soundPlaying.setString("i_see_you");
+    //   noTargetCounts = 0;
 
-    }
+    // }
 
-    if (m_sapg.isTracking() && noTargetCounts == 5) {
+    // if (m_sapg.isTracking() && noTargetCounts == 5) {
 
-      // Target Lost
-      soundPlaying.setString("cant_see_me");
-      hasTargetCounts = 0;
+    //   // Target Lost
+    //   soundPlaying.setString("cant_see_me");
+    //   hasTargetCounts = 0;
 
-    }
+    // }
 
     if (hasCargoCounts == 5) {
 

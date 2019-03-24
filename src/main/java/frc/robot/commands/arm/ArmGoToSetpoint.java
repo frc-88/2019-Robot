@@ -22,6 +22,8 @@ public class ArmGoToSetpoint extends Command {
   private ArmSetpoint target;
   private ArmSetpoint[] path;
   private int currentPathSetpoint = 0;
+  private boolean elbowLock;
+  private double elbowOffset;
 
   public ArmGoToSetpoint(ArmSetpoint setpoint) {
     requires(Robot.m_arm);
@@ -34,6 +36,7 @@ public class ArmGoToSetpoint extends Command {
     start = arm.getCurrentSetpoint();
     path = ArmPosition.getPath(start, target);
     currentPathSetpoint = 0;
+    elbowLock = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -49,18 +52,28 @@ public class ArmGoToSetpoint extends Command {
         from = path[currentPathSetpoint-1];
       }
 
+      if (to.lockElbow && !elbowLock) {
+        elbowLock = true;
+        elbowOffset = arm.getShoulderMotorDegrees() - arm.getElbowMotorDegrees();
+      }
+
       double shoulderSpeed;
       double elbowSpeed;
 
       double shoulderDist = Math.abs(from.shoulder - to.shoulder);
       double elbowDist = Math.abs(from.elbow - to.elbow);
-      if (shoulderDist / RobotMap.SHOULDER_MAX_SPEED > elbowDist / RobotMap.ELBOW_MAX_SPEED) {
+
+      if (elbowLock) {
+        shoulderSpeed = Math.min(RobotMap.SHOULDER_MAX_SPEED, RobotMap.ELBOW_MAX_SPEED);
+        elbowSpeed = shoulderSpeed;
+      } else if (shoulderDist / RobotMap.SHOULDER_MAX_SPEED > elbowDist / RobotMap.ELBOW_MAX_SPEED) {
         shoulderSpeed = RobotMap.SHOULDER_MAX_SPEED;
         elbowSpeed = RobotMap.SHOULDER_MAX_SPEED * elbowDist / shoulderDist;
       } else {
         elbowSpeed = RobotMap.ELBOW_MAX_SPEED;
         shoulderSpeed = RobotMap.ELBOW_MAX_SPEED * shoulderDist / elbowDist;
       }
+
 
       int passIdx = currentPathSetpoint;
       while (path[passIdx].passShoulder) {
@@ -69,11 +82,16 @@ public class ArmGoToSetpoint extends Command {
       }
       double shoulderTarget = path[passIdx].shoulder;
 
-      passIdx = currentPathSetpoint;
-      while (path[passIdx].passElbow) {
-        passIdx++;
+      double elbowTarget;
+      if (elbowLock) {
+        elbowTarget = arm.getShoulderMotorDegrees() - elbowOffset;
+      } else {
+        passIdx = currentPathSetpoint;
+        while (path[passIdx].passElbow) {
+          passIdx++;
+        }
+        elbowTarget = path[passIdx].elbow;
       }
-      double elbowTarget = path[passIdx].elbow;
 
       arm.setSetpoint(to, shoulderTarget, elbowTarget, shoulderSpeed, elbowSpeed);
 
@@ -94,6 +112,7 @@ public class ArmGoToSetpoint extends Command {
 
       if (shoulderOnTarget && elbowOnTarget) {
         currentPathSetpoint++;
+        elbowLock = false;
       }
 
     }

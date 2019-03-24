@@ -70,7 +70,7 @@ public final class ArmPosition {
             };
             
         }
-        else if (targetSetpoint.equals(CARGO_SHIP_BACK2) 
+        else if (targetSetpoint.equals(CARGO_SHIP_BACK2)
                 && (currentSetpoint.equals(INTAKE) || currentSetpoint.equals(HOME))) {
 
             return new ArmSetpoint[] {
