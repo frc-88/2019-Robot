@@ -34,6 +34,7 @@ public class Limelight extends Subsystem {
   private NetworkTableEntry _camtran;
   private NetworkTableEntry _ledMode;
   private NetworkTableEntry _stream;
+  private NetworkTableEntry _camMode;
   private NetworkTableEntry _pipeline;
   private NetworkTableEntry _getpipe;
 
@@ -68,8 +69,9 @@ public class Limelight extends Subsystem {
     _camtran = _table.getEntry("camtran");
     _ledMode = _table.getEntry("ledMode");
     _stream = _table.getEntry("stream");
+    _camMode = _table.getEntry("camMode");
 
-    _stream.setNumber(2);
+    _stream.setNumber(0);
     setPipeline(0);
   }
 
@@ -146,7 +148,14 @@ public class Limelight extends Subsystem {
     _ledMode.setNumber(3);
   }
 
-  
+  public void camVision() {
+    _camMode.setNumber(0);
+  }
+
+  public void camDriver() {
+    _camMode.setNumber(1);
+  }
+
   // Read all 6 dimensions of your camera’s transform (x,y,z,pitch,yaw,roll)
   // by reading the “camtran�? networktable number array.
 

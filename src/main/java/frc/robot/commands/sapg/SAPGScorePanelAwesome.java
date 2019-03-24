@@ -28,9 +28,12 @@ public class SAPGScorePanelAwesome extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    state = 0;
-    startTime = RobotController.getFPGATime();
-    Robot.m_drive.arcadeDrive(0, 0);
+      state=0;
+      startTime=RobotController.getFPGATime();
+      Robot.m_drive.arcadeDrive(0, 0);
+      Robot.m_limelight_sapg.ledOff();
+      Robot.m_limelight_sapg.camDriver();
+
   }
 
   // Called repeatedly when this Command is scheduled to run

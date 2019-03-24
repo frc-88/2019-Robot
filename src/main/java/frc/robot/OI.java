@@ -19,6 +19,7 @@ import frc.robot.commands.arm.ArmCalibrate;
 import frc.robot.commands.arm.ArmEStop;
 import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.arm.ArmGoToPositionSafe;
+import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.commands.arm.ArmZeroElbow;
 import frc.robot.commands.arm.ArmZeroShoulder;
 import frc.robot.commands.climber.ClimberBasicControl;
@@ -61,36 +62,30 @@ public class OI {
 
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
-    new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(0.5));
-    new JoystickButton(buttonBox, 13).whenReleased(new IntakeDefault());
-    new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(ArmPosition.LOW_ROCKET));
-    new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(ArmPosition.LOW_ROCKET_BACK));
-    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(ArmPosition.CARGO_SHIP_FRONT));
-    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToPosition(ArmPosition.CARGO_SHIP_BACK));
-    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(ArmPosition.MEDIUM_ROCKET_FRONT));
-    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(ArmPosition.MEDIUM_ROCKET_BACK));
-    new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(ArmPosition.HIGH_ROCKET_FRONT));
-    new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(ArmPosition.HIGH_ROCKET_BACK));
-    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(ArmPosition.HOME));
-    new JoystickButton(buttonBox, 17).whenPressed(new IntakeManual(-0.5));
-    new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
+    new JoystickButton(buttonBox, 12).whenPressed(new IntakeManual(0.5));
+    new JoystickButton(buttonBox, 12).whenReleased(new IntakeDefault());
+    new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
+    new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
+    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
+    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK));
+    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_FRONT));
+    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_BACK2));
+    new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_FRONT));
+    new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
+    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
+    new JoystickButton(buttonBox, 11).whenPressed(new IntakeManual(-0.5));
+    new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition("intake")));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
     //new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     //new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
-    new JoystickButton(buttonBox, 12).whenPressed(new SAPGRetract());
+    new JoystickButton(buttonBox, 13).whenPressed(new SAPGRetract());
     //new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
     //new JoystickButton(buttonBox, 11).whenReleased(new SAPGScorePanelAwesome());
-    new JoystickButton(buttonBox, 11).whenPressed(new SAPGDeploy());
-    new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
-    new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
-
-    new Trigger(){
-      @Override
-      public boolean get() {
-        return Robot.m_arm.shoulderSkipped() || Robot.m_arm.elbowSkipped();
-      }
-    }.whenActive(new ArmEStop());
+    new JoystickButton(buttonBox, 17).whenPressed(new SAPGDeploy());
+    // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
+    // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
+    new JoystickButton(buttonBox, 15).whenPressed(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB));
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
