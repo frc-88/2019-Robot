@@ -15,7 +15,7 @@ public class ClimberPrep extends Command {
 
   private Climber climber = Robot.m_climber;
 
-  private final int WINCH_DISTANCE = 100000;
+  private final int WINCH_DISTANCE = 100000; //54,000 string wound wrong way
 
   public ClimberPrep() {
     requires(climber);
