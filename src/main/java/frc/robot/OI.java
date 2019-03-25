@@ -189,6 +189,22 @@ public class OI {
     return driveController.getRightTrigger() > 0.5;
   }
 
+	public boolean isDriverButtonAPressed() {
+		return driveController.getRawButton(1);
+	}
+	
+	public boolean isDriverButtonBPressed() {
+		return driveController.getRawButton(2);
+	}
+	
+	public boolean isDriverButtonXPressed() {
+		return driveController.getRawButton(3);
+	}
+	
+	public boolean isDriverButtonYPressed() {
+		return driveController.getRawButton(4);
+	}
+	
   public double getOperatorLeftXAxis() {
     // double rawValue = operatorController.getLeftStickX();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;

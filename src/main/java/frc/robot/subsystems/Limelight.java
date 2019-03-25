@@ -75,6 +75,14 @@ public class Limelight extends Subsystem {
     setPipeline(0);
   }
 
+  public double turnToTarget() {
+    if (hasTarget()) {
+      return getHorizontalOffsetAngle() / 30;
+    } else {
+      return 0;
+    }
+  }
+
   public void setPip() {
     _stream.setNumber(2);
   }
@@ -242,8 +250,8 @@ public class Limelight extends Subsystem {
   public void updateDashboard() {
     SmartDashboard.putBoolean(name + ":HasTarget", hasTarget());
     SmartDashboard.putBoolean(name + ":IsConnected", isConnected());
-    SmartDashboard.putNumber(name + ":Angle", getTargetAngle());
-    SmartDashboard.putNumber(name + ":Distance", getTargetDistance());
+    // SmartDashboard.putNumber(name + ":Angle", getTargetAngle());
+    // SmartDashboard.putNumber(name + ":Distance", getTargetDistance());
   }
 
   @Override
