@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
@@ -56,18 +57,19 @@ public class Climber extends Subsystem {
       talon.config_kI(ENCODER_PID_IDX, 0, TIMEOUTMS);
       talon.config_kD(ENCODER_PID_IDX, 0, TIMEOUTMS);
       
-      talon.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0);
+      talon.configRemoteFeedbackFilter(RobotMap.SHOULDER_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0);
       talon.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, SHOULDER_PID_IDX, TIMEOUTMS);
       talon.config_kP(SHOULDER_PID_IDX, 1, TIMEOUTMS);
       talon.config_kI(SHOULDER_PID_IDX, 0, TIMEOUTMS);
       talon.config_kD(SHOULDER_PID_IDX, 1, TIMEOUTMS);
-      talon.config_kF(SHOULDER_PID_IDX, 10, TIMEOUTMS);
+      talon.config_kF(SHOULDER_PID_IDX, 1, TIMEOUTMS);
       talon.configMotionCruiseVelocity(Robot.m_arm.convertShoulderDegreesToAbsCounts(RobotMap.CLIMB_ARM_SPEED)/10, TIMEOUTMS); // in/s -> ticks/100ms
       talon.configMotionAcceleration(3*Robot.m_arm.convertShoulderDegreesToAbsCounts(RobotMap.CLIMB_ARM_SPEED)/10, TIMEOUTMS);
   }
 
   public void updateDashboard() {
     SmartDashboard.putNumber("Climber: Position", getPosition());
+    SmartDashboard.putNumber("Climber: Shoulder Pos", winch.getSelectedSensorPosition(SHOULDER_PID_IDX));
     SmartDashboard.putNumber("Climber: Target", winch.getActiveTrajectoryPosition());
   }
 
@@ -82,21 +84,41 @@ public class Climber extends Subsystem {
   }
 
   public void setVoltage(double percentOutput) {
+    winch.setInverted(false);
     winch.set(ControlMode.PercentOutput, percentOutput);
   }
 
   public void moveEncoder(int distance){
-    winch.selectProfileSlot(ENCODER_PID_IDX, ENCODER_PID_IDX);
-    winch.set(ControlMode.MotionMagic, distance);
+    winch.setSensorPhase(false);
+    winch.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, ENCODER_PID_IDX, TIMEOUTMS);
+    winch.config_kP(ENCODER_PID_IDX, 1, TIMEOUTMS);
+    winch.config_kI(ENCODER_PID_IDX, 0, TIMEOUTMS);
+    winch.config_kD(ENCODER_PID_IDX, 1, TIMEOUTMS);
+    winch.config_kF(ENCODER_PID_IDX, 1, TIMEOUTMS);
+    winch.configMotionCruiseVelocity(Robot.m_arm.convertShoulderDegreesToAbsCounts(RobotMap.CLIMB_ARM_SPEED)/10, TIMEOUTMS); // in/s -> ticks/100ms
+    winch.configMotionAcceleration(3*Robot.m_arm.convertShoulderDegreesToAbsCounts(RobotMap.CLIMB_ARM_SPEED)/10, TIMEOUTMS);
+    winch.setInverted(false);
+    winch.set(ControlMode.Position, distance);
   }
 
   public void moveShoulder(double degrees) {
-    winch.selectProfileSlot(SHOULDER_PID_IDX, SHOULDER_PID_IDX);
-    winch.set(ControlMode.MotionMagic, Robot.m_arm.convertShoulderDegreesToAbsCounts(degrees));
+    moveShoulder(degrees, 0);
+  }
+
+  public void moveShoulder(double degrees, double ff) {
+    winch.configRemoteFeedbackFilter(RobotMap.SHOULDER_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0);
+    winch.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, ENCODER_PID_IDX, TIMEOUTMS);
+    winch.config_kP(ENCODER_PID_IDX, 1, TIMEOUTMS);
+    winch.config_kI(ENCODER_PID_IDX, 0, TIMEOUTMS);
+    winch.config_kD(ENCODER_PID_IDX, 1, TIMEOUTMS);
+    winch.config_kF(ENCODER_PID_IDX, 1, TIMEOUTMS);
+    winch.setInverted(true);
+    winch.set(ControlMode.MotionMagic, Robot.m_arm.convertShoulderDegreesToMotorCounts(degrees),
+        DemandType.ArbitraryFeedForward, ff);
   }
 
   public int getPosition(){
-    return winch.getSelectedSensorPosition();
+    return winch.getSelectedSensorPosition(ENCODER_PID_IDX);
   }
 
   public void zeroEncoder(){

@@ -128,7 +128,7 @@ public class RobotMap {
 
   // Climber
 
-  public static final int CLIMB_ARM_SPEED = 50;
+  public static final int CLIMB_ARM_SPEED = 40;
   public static final double CLIMBER_TOLERANCE = 5000;
   public static final double PLATFORM_IR_THRESHOLD = 10;
 

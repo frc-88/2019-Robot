@@ -68,8 +68,7 @@ public class ClimberClimb extends Command {
       arm.moveElbowAbs(LIFT_ELBOW_START + elbowTotalDist * shoulderPercentDone);
 
       if (Math.abs(shoulderPos - LIFT_SHOULDER_END) < RobotMap.ARM_TOLERANCE) {
-        //state++;
-        state = 10;
+        state++;
 
         arm.configureBrakeMode();
       }
@@ -124,7 +123,7 @@ public class ClimberClimb extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return state == 10;
+    return false;
   }
 
   // Called once after isFinished returns true

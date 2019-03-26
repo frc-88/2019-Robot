@@ -272,7 +272,7 @@ public class Arm extends Subsystem {
    * Converts from shoulder degrees to absolute encoder counts.
    */
   public int convertShoulderDegreesToAbsCounts(double degrees) {
-    return (int) (degrees * 4096 / 360 + shoulderOffset);
+    return (int) ((degrees * 4096. / 360. + shoulderOffset));
   }
 
   /**

@@ -28,6 +28,7 @@ import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberDrop;
 import frc.robot.commands.climber.ClimberFinish;
 import frc.robot.commands.climber.ClimberLift;
+import frc.robot.commands.climber.ClimberMoveEncoder;
 import frc.robot.commands.climber.ClimberPrep;
 import frc.robot.commands.climber.ClimberPull;
 import frc.robot.commands.intake.IntakeBasicControl;
@@ -164,6 +165,7 @@ public class OI {
     // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
 
     SmartDashboard.putData("Climb", new ClimberClimb());
+    SmartDashboard.putData("Climber Move Enc", new ClimberMoveEncoder());
 
     SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo(-1));
