@@ -19,7 +19,7 @@ public final class ArmPosition {
     public static final ArmSetpoint INTAKE = new ArmSetpoint(160, 82);
     public static final ArmSetpoint CARGO_SHIP_FRONT = new ArmSetpoint(105, 33);
     public static final ArmSetpoint CARGO_SHIP_BACK = new ArmSetpoint(-105, -33);
-    public static final ArmSetpoint CARGO_SHIP_BACK2 = new ArmSetpoint(-75, -220);
+    public static final ArmSetpoint CARGO_SHIP_BACK2 = new ArmSetpoint(-60, -215);
     public static final ArmSetpoint LOW_ROCKET = new ArmSetpoint(150, 0);
     public static final ArmSetpoint MEDIUM_ROCKET_FRONT = new ArmSetpoint(85, 0);
     public static final ArmSetpoint MEDIUM_ROCKET_FRONT2 = new ArmSetpoint(55, 180);
