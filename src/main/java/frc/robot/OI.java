@@ -84,10 +84,10 @@ public class OI {
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
     //new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     //new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
-    new JoystickButton(buttonBox, 13).whenPressed(new SAPGRetract());
+    new JoystickButton(buttonBox, 17).whenPressed(new SAPGRetract());
     //new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
     //new JoystickButton(buttonBox, 11).whenReleased(new SAPGScorePanelAwesome());
-    new JoystickButton(buttonBox, 17).whenPressed(new SAPGDeploy());
+    new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
     new JoystickButton(buttonBox, 15).whenPressed(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB));
