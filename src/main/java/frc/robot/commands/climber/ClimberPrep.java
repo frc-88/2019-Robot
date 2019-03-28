@@ -15,7 +15,7 @@ public class ClimberPrep extends Command {
 
   private Climber climber = Robot.m_climber;
 
-  private final int WINCH_DISTANCE = -21000;
+  private final int WINCH_DISTANCE = 21000;
 
   public ClimberPrep() {
     requires(climber);
@@ -24,6 +24,7 @@ public class ClimberPrep extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    climber.configForEncoderPID();
     climber.zeroEncoder();
     climber.moveEncoder(WINCH_DISTANCE);
   }

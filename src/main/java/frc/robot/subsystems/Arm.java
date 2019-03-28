@@ -112,10 +112,6 @@ public class Arm extends Subsystem {
     elbow.configRemoteFeedbackFilter(RobotMap.ELBOW_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0,
         TIMEOUTMS);
 
-    elbow.config_kP(AUX_SENSOR_SLOT_IDX, 8, TIMEOUTMS);
-    elbow.config_kI(AUX_SENSOR_SLOT_IDX, 0, TIMEOUTMS);
-    elbow.config_kD(AUX_SENSOR_SLOT_IDX, 0, TIMEOUTMS);
-
     setElbowSpeed(RobotMap.ELBOW_MAX_SPEED);
   }
 
@@ -238,18 +234,37 @@ public class Arm extends Subsystem {
   }
 
   /**
+   * Zeros both encoders
+   */
+  public void zero() {
+    zeroShoulderMotorEncoder();
+    zeroElbowMotorEncoder();
+  }
+
+  /**
    * Zeroes shoulder motor encoder based on the shoulder absolute encoder
    */
-  public void zeroShoulderMotorEncoder() {
-    shoulder.setSelectedSensorPosition(convertShoulderDegreesToMotorCounts(getShoulderAbsDegrees()), MAIN_SLOT_IDX,
+  private void zeroShoulderMotorEncoder() {
+    double degrees = getShoulderAbsDegrees();
+    double normalizedDegrees = (degrees + 180) > 0 ? (degrees + 180) % 360. - 180 : (degrees + 180) % 360. + 180;
+    shoulder.setSelectedSensorPosition(convertShoulderDegreesToAbsCounts(normalizedDegrees), AUX_SENSOR_SLOT_IDX,
+        TIMEOUTMS);
+    shoulder.setSelectedSensorPosition(convertShoulderDegreesToMotorCounts(normalizedDegrees), MAIN_SLOT_IDX,
         TIMEOUTMS);
   }
 
   /**
    * Zeroes elbow motor encoder based on the elbow absolute encoder
    */
-  public void zeroElbowMotorEncoder() {
-    elbow.setSelectedSensorPosition(convertElbowDegreesToMotorCounts(getElbowAbsDegrees()), MAIN_SLOT_IDX, TIMEOUTMS);
+  private void zeroElbowMotorEncoder() {
+    double degrees = convertElbowAbsCountsToDegrees(getElbowAbsCounts());
+    double shoulderDegrees = getShoulderAbsDegrees();
+    double diffFromShoulder = degrees - shoulderDegrees;
+    double normalizedDegrees = (diffFromShoulder + 180) > 0 ? (diffFromShoulder + 180) % 360. - 180
+        : (diffFromShoulder + 180) % 360. + 180;
+    normalizedDegrees -= diffFromShoulder;
+    elbow.setSelectedSensorPosition(convertElbowDegreesToAbsCounts(normalizedDegrees), AUX_SENSOR_SLOT_IDX, TIMEOUTMS);
+    elbow.setSelectedSensorPosition(convertElbowDegreesToMotorCounts(normalizedDegrees), MAIN_SLOT_IDX, TIMEOUTMS);
   }
 
   @Override
@@ -353,9 +368,7 @@ public class Arm extends Subsystem {
    * Get the shoulder degrees as read by the absolute encoder (after springs)
    */
   public double getShoulderAbsDegrees() {
-    double encoderPos = convertShoulderAbsCountsToDegrees(getShoulderAbsCounts());
-    double normalizedPos = (encoderPos + 180) > 0 ? (encoderPos + 180) % 360. - 180 : (encoderPos + 180) % 360. + 180;
-    return normalizedPos;
+    return convertShoulderAbsCountsToDegrees(getShoulderAbsCounts());
   }
 
   /**
@@ -369,13 +382,7 @@ public class Arm extends Subsystem {
    * Get the elbow degrees as read by the absolute encoder (after springs)
    */
   public double getElbowAbsDegrees() {
-    double encoderPos = convertElbowAbsCountsToDegrees(getElbowAbsCounts());
-    double shoulderPos = getShoulderAbsDegrees();
-    double diffFromShoulder = encoderPos - shoulderPos;
-    double normalizedPos = (diffFromShoulder + 180) > 0 ? (diffFromShoulder + 180) % 360. - 180
-        : (diffFromShoulder + 180) % 360. + 180;
-
-    return normalizedPos + shoulderPos;
+    return convertElbowAbsCountsToDegrees(getElbowAbsCounts());
   }
 
   /**
@@ -448,7 +455,8 @@ public class Arm extends Subsystem {
    */
   public void moveElbowAbs(double degrees) {
     currentSetpoint = null;
-    elbow.set(ControlMode.Position, convertElbowDegreesToAbsCounts(degrees));
+    elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(
+        degrees + getElbowMotorDegrees() - getElbowAbsDegrees()));
   }
 
   /**

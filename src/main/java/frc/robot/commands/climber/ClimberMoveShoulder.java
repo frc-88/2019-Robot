@@ -26,6 +26,8 @@ public class ClimberMoveShoulder extends Command {
   protected void initialize() {
     Robot.m_arm.configureCoastMode();
 
+    Robot.m_climber.configForShoulderPID();
+
     shoulderTarget = SmartDashboard.getNumber("SetClimberPosition", 0);
     Robot.m_climber.moveShoulder(shoulderTarget);
     if (shoulderTarget < Robot.m_arm.getShoulderAbsDegrees()) {

@@ -21,6 +21,7 @@ public class ClimberMoveEncoder extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.m_climber.configForEncoderPID();
     Robot.m_climber.zeroEncoder();
     Robot.m_climber.moveEncoder((int)SmartDashboard.getNumber("SetClimberPosition", 0));
   }

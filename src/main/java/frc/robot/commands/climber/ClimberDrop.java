@@ -27,6 +27,7 @@ public class ClimberDrop extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    climber.configForShoulderPID();
     arm.setShoulderVoltage(-0.05);
     climber.moveShoulder(SHOULDER_TARGET);
   }

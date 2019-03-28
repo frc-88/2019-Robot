@@ -8,7 +8,6 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.Arm;
@@ -31,7 +30,7 @@ public class ClimberClimb extends Command {
 
   private final double CLEAR_SHOULDER_TARGET = 121;
 
-  private final int CLEAR_CLIMBER_TARGET = 80000;
+  private final int CLEAR_CLIMBER_TARGET = 21000;
 
   private int state;
 
@@ -46,9 +45,10 @@ public class ClimberClimb extends Command {
   protected void initialize() {
     state = 0;
 
-    drive.arcadeDrive(0, 0);
+    drive.basicDrive(0, 0);
 
     arm.configureCoastMode();
+    climber.configForShoulderPID();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -130,6 +130,8 @@ public class ClimberClimb extends Command {
   @Override
   protected void end() {
     climber.stop();
+    arm.stopArm();
+    drive.basicDrive(0, 0);
   }
 
   // Called when another command which requires one or more of the same

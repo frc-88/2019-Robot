@@ -111,8 +111,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_arm.zeroElbowMotorEncoder();
-    m_arm.zeroShoulderMotorEncoder();
+    m_arm.zero();
     m_arm.configureCoastMode();
 
     soundPlaying.setString("");
@@ -140,8 +139,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_arm.zeroElbowMotorEncoder();
-    m_arm.zeroShoulderMotorEncoder();
+    m_arm.zero();
     m_arm.configureBrakeMode();
 
     m_limelight_sapg.ledOff();
@@ -172,9 +170,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
-    m_arm.zeroElbowMotorEncoder();
-    m_arm.zeroShoulderMotorEncoder();
+    m_arm.zero();
     m_arm.configureBrakeMode();
 
     m_limelight_sapg.ledOff();

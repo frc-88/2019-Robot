@@ -8,6 +8,7 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.Arm;
@@ -33,9 +34,10 @@ public class ClimberLift extends Command {
   @Override
   protected void initialize() {
     arm.configureCoastMode();
+    climber.configForShoulderPID();
 
     arm.setShoulderVoltage(0);
-    climber.moveShoulder(SHOULDER_END, -.15);
+    climber.moveShoulder(SHOULDER_END);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -44,21 +46,20 @@ public class ClimberLift extends Command {
     double shoulderPos = arm.getShoulderAbsDegrees();
     double shoulderPercentDone = Math.max(0, (shoulderPos - SHOULDER_START) / (SHOULDER_END - SHOULDER_START));
     double elbowTotalDist = ELBOW_END - ELBOW_START;
-    arm.moveElbow(180);//arm.moveElbow(ELBOW_START + elbowTotalDist * shoulderPercentDone);
+    arm.moveElbowAbs(ELBOW_START + elbowTotalDist * shoulderPercentDone);
     
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Math.abs(arm.getShoulderAbsDegrees() - SHOULDER_END) < RobotMap.ARM_TOLERANCE;
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
     arm.configureBrakeMode();
-    climber.moveShoulder(SHOULDER_END, 0);
   }
 
   // Called when another command which requires one or more of the same

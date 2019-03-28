@@ -51,14 +51,13 @@ public class Climber extends Subsystem {
       talon.configPeakOutputReverse(-1.0, TIMEOUTMS);
       talon.configNeutralDeadband(0.01, TIMEOUTMS);
       talon.setNeutralMode(NeutralMode.Brake);
+      talon.setInverted(true);
 
-      talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, ENCODER_PID_IDX, TIMEOUTMS);
       talon.config_kP(ENCODER_PID_IDX, 1, TIMEOUTMS);
       talon.config_kI(ENCODER_PID_IDX, 0, TIMEOUTMS);
       talon.config_kD(ENCODER_PID_IDX, 0, TIMEOUTMS);
       
-      talon.configRemoteFeedbackFilter(RobotMap.SHOULDER_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0);
-      talon.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, SHOULDER_PID_IDX, TIMEOUTMS);
+      talon.configRemoteFeedbackFilter(RobotMap.SHOULDER_AUXILARY_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0);
       talon.config_kP(SHOULDER_PID_IDX, 1, TIMEOUTMS);
       talon.config_kI(SHOULDER_PID_IDX, 0, TIMEOUTMS);
       talon.config_kD(SHOULDER_PID_IDX, 1, TIMEOUTMS);
@@ -69,14 +68,23 @@ public class Climber extends Subsystem {
 
   public void updateDashboard() {
     SmartDashboard.putNumber("Climber: Position", getPosition());
-    SmartDashboard.putNumber("Climber: Shoulder Pos", winch.getSelectedSensorPosition(SHOULDER_PID_IDX));
+    SmartDashboard.putNumber("Climber: SelectedSensorPos", winch.getSelectedSensorPosition());
     SmartDashboard.putNumber("Climber: Target", winch.getActiveTrajectoryPosition());
+  }
+
+  public void configForEncoderPID() {
+      winch.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, TIMEOUTMS);
+      winch.selectProfileSlot(ENCODER_PID_IDX, 0);
+  }
+
+  public void configForShoulderPID() {
+      winch.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, 0, TIMEOUTMS);
+      winch.selectProfileSlot(SHOULDER_PID_IDX, 0);
   }
 
   @Override
   public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
+    // None
   }
 
   public void stop() {
@@ -84,41 +92,21 @@ public class Climber extends Subsystem {
   }
 
   public void setVoltage(double percentOutput) {
-    winch.setInverted(false);
     winch.set(ControlMode.PercentOutput, percentOutput);
   }
 
   public void moveEncoder(int distance){
-    winch.setSensorPhase(false);
     winch.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, ENCODER_PID_IDX, TIMEOUTMS);
-    winch.config_kP(ENCODER_PID_IDX, 1, TIMEOUTMS);
-    winch.config_kI(ENCODER_PID_IDX, 0, TIMEOUTMS);
-    winch.config_kD(ENCODER_PID_IDX, 1, TIMEOUTMS);
-    winch.config_kF(ENCODER_PID_IDX, 1, TIMEOUTMS);
-    winch.configMotionCruiseVelocity(Robot.m_arm.convertShoulderDegreesToAbsCounts(RobotMap.CLIMB_ARM_SPEED)/10, TIMEOUTMS); // in/s -> ticks/100ms
-    winch.configMotionAcceleration(3*Robot.m_arm.convertShoulderDegreesToAbsCounts(RobotMap.CLIMB_ARM_SPEED)/10, TIMEOUTMS);
-    winch.setInverted(false);
     winch.set(ControlMode.Position, distance);
   }
 
   public void moveShoulder(double degrees) {
-    moveShoulder(degrees, 0);
-  }
-
-  public void moveShoulder(double degrees, double ff) {
-    winch.configRemoteFeedbackFilter(RobotMap.SHOULDER_ID, RemoteSensorSource.TalonSRX_SelectedSensor, 0);
-    winch.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0, ENCODER_PID_IDX, TIMEOUTMS);
-    winch.config_kP(ENCODER_PID_IDX, 1, TIMEOUTMS);
-    winch.config_kI(ENCODER_PID_IDX, 0, TIMEOUTMS);
-    winch.config_kD(ENCODER_PID_IDX, 1, TIMEOUTMS);
-    winch.config_kF(ENCODER_PID_IDX, 1, TIMEOUTMS);
-    winch.setInverted(true);
-    winch.set(ControlMode.MotionMagic, Robot.m_arm.convertShoulderDegreesToMotorCounts(degrees),
-        DemandType.ArbitraryFeedForward, ff);
+    winch.set(ControlMode.MotionMagic, Robot.m_arm.convertShoulderDegreesToAbsCounts(degrees),
+        DemandType.ArbitraryFeedForward, 0.15);
   }
 
   public int getPosition(){
-    return winch.getSelectedSensorPosition(ENCODER_PID_IDX);
+    return winch.getSensorCollection().getQuadraturePosition();
   }
 
   public void zeroEncoder(){
