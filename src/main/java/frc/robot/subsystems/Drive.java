@@ -332,6 +332,10 @@ public class Drive extends Subsystem {
 
         basicDriveLimited(leftSpeed, rightSpeed);
         // basicDrive(speed + turn, speed - turn);
+
+        SmartDashboard.putNumber("DBUG: jSpeed", joystickSpeed);
+        SmartDashboard.putNumber("DBUG: accelSpeed", speed);
+        SmartDashboard.putNumber("DBUG: trueSpeed", (leftDrive.getClosedLoopTarget() + rightDrive.getClosedLoopTarget())/2);
     }
 
     public double limitAcceleration(double speed) {
@@ -410,7 +414,7 @@ public class Drive extends Subsystem {
                 shiftToLow();
             } else if (!isInHighGear() && Math.abs(getStraightSpeed()) >= RobotMap.SHIFT_INTO_HIGH_GEAR) {
                 shiftToHigh();
-            } else if (isInHighGear() && Math.abs(getStraightSpeed()) >= RobotMap.SHIFT_INTO_LOW_GEAR_STOP
+            } else if (isInHighGear() && Math.abs(getStraightSpeed()) <= RobotMap.SHIFT_INTO_LOW_GEAR_STOP
                     && Math.abs(joystickSpeed) <= RobotMap.COMMANDED_STOP_SPEED) {
                 shiftToLow();
             }
