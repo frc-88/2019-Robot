@@ -12,9 +12,7 @@ import frc.robot.Robot;
 
 public class SAPGDefault extends Command {
   private static final int COUNTS_TO_CLOSE = 10;
-  private static final int COUNTS_TO_CENTER= 50;
 
-  private int panelCounts = 0;
   private int noPanelCounts = 0;
 
   public SAPGDefault() {
@@ -33,29 +31,17 @@ public class SAPGDefault extends Command {
   @Override
   protected void execute() {
 
-    if (!Robot.m_sapg.hasPanel()) {
-      noPanelCounts++;
-      panelCounts = 0;
+    if (Robot.m_sapg.hasPanel()) {
+      noPanelCounts = 0;
     } else {
-      panelCounts++;
-      noPanelCounts = 0;
-    }
-
-    if (Robot.m_sapg.isTracking() && Robot.m_sapg.targetInRange()) {
-      noPanelCounts = 0;
-      panelCounts = 0;
-      Robot.m_sapg.track();
-    } else { 
-      if ((noPanelCounts > COUNTS_TO_CENTER) || (panelCounts > COUNTS_TO_CENTER)) {
-        Robot.m_sapg.goToCenter();
-      }
+      noPanelCounts++;
     }
 
     if (noPanelCounts >= COUNTS_TO_CLOSE) {
-//      Robot.m_sapg.close();
+      //      Robot.m_sapg.close();
     }
 
-    Robot.m_sapg.retract();
+    //    Robot.m_sapg.retract();
   }
 
   // Make this return true when this Command no longer needs to run execute()

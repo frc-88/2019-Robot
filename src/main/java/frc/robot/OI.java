@@ -19,6 +19,7 @@ import frc.robot.commands.arm.ArmCalibrate;
 import frc.robot.commands.arm.ArmEStop;
 import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.arm.ArmGoToPositionSafe;
+import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.commands.arm.ArmZeroElbow;
 import frc.robot.commands.arm.ArmZeroShoulder;
 import frc.robot.commands.climber.ClimberBasicControl;
@@ -31,11 +32,9 @@ import frc.robot.commands.intake.IntakeLoadCargo;
 import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
-import frc.robot.commands.sapg.SAPGBasicControl;
 import frc.robot.commands.sapg.SAPGClose;
 import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.commands.sapg.SAPGDeploy;
-import frc.robot.commands.sapg.SAPGGoToPosition;
 import frc.robot.commands.sapg.SAPGGrabPanel;
 import frc.robot.commands.sapg.SAPGGrabPanelAwesome;
 import frc.robot.commands.sapg.SAPGLoadPreferences;
@@ -43,12 +42,12 @@ import frc.robot.commands.sapg.SAPGOpen;
 import frc.robot.commands.sapg.SAPGRetract;
 import frc.robot.commands.sapg.SAPGScorePanel;
 import frc.robot.commands.sapg.SAPGScorePanelAwesome;
-import frc.robot.commands.sapg.SAPGTrackStart;
-import frc.robot.commands.sapg.SAPGTrackStop;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.TJController;
 import frc.robot.commands.intake.IntakeTester;
+import frc.robot.commands.limelight.LimelightTrackingOff;
+import frc.robot.commands.limelight.LimelightTrackingOn;
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -63,36 +62,35 @@ public class OI {
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
     buttonBox = new Joystick(RobotMap.BUTTON_BOX_PORT);
 
+    driveController.buttonA.whenPressed(new LimelightTrackingOn());
+    driveController.buttonA.whenReleased(new LimelightTrackingOff());
+
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
-    new JoystickButton(buttonBox, 13).whenPressed(new IntakeManual(0.5));
-    new JoystickButton(buttonBox, 13).whenReleased(new IntakeDefault());
-    new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToPosition(ArmPosition.LOW_ROCKET));
-    new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToPosition(ArmPosition.LOW_ROCKET_BACK));
-    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToPosition(ArmPosition.CARGO_SHIP_FRONT));
-    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToPosition(ArmPosition.CARGO_SHIP_BACK));
-    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToPosition(ArmPosition.MEDIUM_ROCKET_FRONT));
-    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToPosition(ArmPosition.MEDIUM_ROCKET_BACK));
-    new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToPosition(ArmPosition.HIGH_ROCKET_FRONT));
-    new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToPosition(ArmPosition.HIGH_ROCKET_BACK));
-    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToPosition(ArmPosition.HOME));
-    new JoystickButton(buttonBox, 17).whenPressed(new IntakeManual(-0.5));
-    new JoystickButton(buttonBox, 17).whenReleased(new IntakeDefault());
+    new JoystickButton(buttonBox, 12).whenPressed(new IntakeManual(0.5));
+    new JoystickButton(buttonBox, 12).whenReleased(new IntakeDefault());
+    new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
+    new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
+    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
+    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK2));
+    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_FRONT));
+    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_BACK2));
+    new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_FRONT));
+    new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
+    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
+    new JoystickButton(buttonBox, 11).whenPressed(new IntakeManual(-0.5));
+    new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToPosition("intake")));
-    new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
-    new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
-    new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
-    new JoystickButton(buttonBox, 11).whenReleased(new SAPGScorePanelAwesome());
-    new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
-    new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
-
-    new Trigger(){
-      @Override
-      public boolean get() {
-        return Robot.m_arm.shoulderSkipped() || Robot.m_arm.elbowSkipped();
-      }
-    }.whenActive(new ArmEStop());
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
+    //new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
+    //new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
+    new JoystickButton(buttonBox, 13).whenPressed(new SAPGRetract());
+    //new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
+    //new JoystickButton(buttonBox, 11).whenReleased(new SAPGScorePanelAwesome());
+    new JoystickButton(buttonBox, 17).whenPressed(new SAPGDeploy());
+    // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
+    // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
+    new JoystickButton(buttonBox, 15).whenPressed(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB));
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
@@ -127,20 +125,16 @@ public class OI {
     //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
-    SmartDashboard.putData("SAPG Basic", new SAPGBasicControl());
     SmartDashboard.putData("SAPG Default", new SAPGDefault());
     SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
     SmartDashboard.putData("SAPG Retract", new SAPGRetract());
     SmartDashboard.putData("SAPG Open", new SAPGOpen());
     SmartDashboard.putData("SAPG Close", new SAPGClose());
-    SmartDashboard.putData("SAPG Grab", new SAPGGrabPanelAwesome());
+    SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
     SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
-    SmartDashboard.putData("SAPG Track Start", new SAPGTrackStart());
-    SmartDashboard.putData("SAPG Track Stop", new SAPGTrackStop());
+    SmartDashboard.putData("SAPG Grab Awesome", new SAPGGrabPanelAwesome());
+    SmartDashboard.putData("SAPG Score Awesome", new SAPGScorePanelAwesome());
     SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
-    SmartDashboard.putData("SAPG GoTo 400", new SAPGGoToPosition(400));
-    SmartDashboard.putData("SAPG GoTo 500", new SAPGGoToPosition(500));
-    SmartDashboard.putData("SAPG GoTo 600", new SAPGGoToPosition(600));
 
     SmartDashboard.putData("Intake Tester", new IntakeTester());
 
@@ -200,6 +194,22 @@ public class OI {
     return driveController.getRightTrigger() > 0.5;
   }
 
+	public boolean isDriverButtonAPressed() {
+		return driveController.getRawButton(1);
+	}
+	
+	public boolean isDriverButtonBPressed() {
+		return driveController.getRawButton(2);
+	}
+	
+	public boolean isDriverButtonXPressed() {
+		return driveController.getRawButton(3);
+	}
+	
+	public boolean isDriverButtonYPressed() {
+		return driveController.getRawButton(4);
+	}
+	
   public double getOperatorLeftXAxis() {
     // double rawValue = operatorController.getLeftStickX();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;

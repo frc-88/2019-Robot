@@ -18,16 +18,16 @@ public class ArmEStop extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_arm.setShoulder(0);
-    Robot.m_arm.setElbow(0);
+    Robot.m_arm.stopArm();
     Robot.soundPlaying.setString("warning");
+
+  System.out.println("Arm E Stop!!!");    
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_arm.setShoulder(0);
-    Robot.m_arm.setElbow(0);
+    Robot.m_arm.stopArm();
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -45,5 +45,6 @@ public class ArmEStop extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

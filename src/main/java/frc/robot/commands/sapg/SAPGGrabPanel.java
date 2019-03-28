@@ -15,8 +15,8 @@ public class SAPGGrabPanel extends Command {
 
     private int state;
     private long startTime;
-    private final long PUSH_TIME=500000; // microseconds
-    private final long OPEN_TIME=500000; // microseconds
+    private final long PUSH_TIME=600000; // microseconds
+    private final long OPEN_TIME=600000; // microseconds
 
   public SAPGGrabPanel() {
     // Use requires() here to declare subsystem dependencies

@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.limelight;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
@@ -13,19 +13,20 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class SAPGTrackStop extends InstantCommand {
+public class LimelightTrackingOn extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public SAPGTrackStop() {
+  public LimelightTrackingOn() {
     super();
-    requires(Robot.m_sapg);
+    requires(Robot.m_limelight_sapg);
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_sapg.trackingOff();
+    Robot.m_limelight_sapg.ledPipeline();
+    Robot.m_limelight_sapg.camVision();
   }
 
 }

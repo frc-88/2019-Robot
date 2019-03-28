@@ -31,6 +31,10 @@ public class ArcadeDrive extends Command {
     double speed=Robot.m_oi.getDriverLeftYAxis();
     double turn=Robot.m_oi.getDriverRightXAxis();
 
+    if (Robot.m_oi.isDriverButtonAPressed()) {
+      turn = 0.5 * Robot.m_limelight_sapg.turnToTarget();
+    }
+
     Robot.m_drive.arcadeDrive(speed, turn);
     
     Robot.m_drive.autoshift();

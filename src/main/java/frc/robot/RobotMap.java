@@ -15,6 +15,8 @@ package frc.robot;
  */
 public class RobotMap {
 
+  public static final boolean DEBUG = false;
+
   /////////////////////////////////////////////////////////////////////////////
   // IDs
   /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +48,8 @@ public class RobotMap {
   // Intake
   
   public static final int INTAKE_ID = 10;
-  public static final int INTAKE_IR_ID = 0;
+  public static final int INTAKE_IR1_ID = 0;
+  public static final int INTAKE_IR2_ID = 3;
 
   // Climber
   public static final int CLIMBER_ID = 12;
@@ -119,9 +122,10 @@ public class RobotMap {
   public static final int DRIVE_MIN_TRAJ_POINTS = 10;
 
   // Arm
-  public static final double ARM_TOLERANCE = 1;
-  public static final int SHOULDER_MAX_SPEED = 120;
-  public static final int ELBOW_MAX_SPEED = 160;
+  public static final double ARM_TOLERANCE = 3;
+  public static final double SHOULDER_MAX_SPEED = 200;
+  public static final double ELBOW_MAX_SPEED = 200;
+  public static final double ACCELERATION_RATIO = 1.5;
 
   // Climber
 
@@ -133,7 +137,7 @@ public class RobotMap {
   public static final double CLIMBER_TOLERANCE = 0.25;
 
   //Intake
-  public static final double INTAKE_HAS_CARGO = 20;
+  public static final double INTAKE_HAS_CARGO = 9;
 
   // SAPG
   public static final double SAPG_TOLERANCE = 2; //inches
@@ -151,5 +155,4 @@ public class RobotMap {
 
   // Misc
   public static final int CAN_TIMEOUT = 0;
-
 }

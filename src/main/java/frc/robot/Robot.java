@@ -53,6 +53,11 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+  long lastTeleopPerStart = Long.MAX_VALUE;
+  long lastTeleopPerEnd = Long.MAX_VALUE;
+  long lastRobotPerEnd = Long.MAX_VALUE;
+  long lastControlPacket = Long.MAX_VALUE;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -77,6 +82,7 @@ public class Robot extends TimedRobot {
     initializeDashboard();
 
     m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -97,9 +103,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    writeDashboard();
+
+    if (RobotMap.DEBUG) writeDashboard();
 
     makeSounds();
+
+    lastRobotPerEnd = RobotController.getFPGATime();
   }
 
   /**
@@ -112,7 +121,6 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureCoastMode();
-    m_sapg.trackingOff();
 
     soundPlaying.setString("");
   }
@@ -121,8 +129,8 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    m_sapg.trackingOff();
-    m_limelight_sapg.setPip();
+    m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
   }
 
   /**
@@ -142,7 +150,9 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureBrakeMode();
-    m_sapg.trackingOff();
+
+    m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     m_autonomousCommand = m_chooser.getSelected();
 
@@ -173,7 +183,9 @@ public class Robot extends TimedRobot {
     m_arm.zeroElbowMotorEncoder();
     m_arm.zeroShoulderMotorEncoder();
     m_arm.configureBrakeMode();
-    m_sapg.trackingOff();
+
+    m_limelight_sapg.ledOff();
+    m_limelight_sapg.camDriver();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -189,8 +201,39 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    soundPlaying.setString("oh_yea_calef");
+
+    long timeNow = RobotController.getFPGATime();
+    long timeTeleopPer = lastTeleopPerEnd - lastTeleopPerStart;
+    long timeRobotPer = lastRobotPerEnd - lastTeleopPerEnd;
+    long timeOther = timeNow - lastRobotPerEnd;
+    long timePacket = timeNow - lastControlPacket;
+
+    System.out.println("TIMING - TeleopPer: " + timeTeleopPer
+        + "   RobotPer: " + timeRobotPer
+        + "   Other: " + timeOther
+        + "   LastPacket: " + timePacket);
+
+    if (timeTeleopPer > 250_000) {
+      System.out.println("WARNING LOOK AT ME: TELEOP TOOK A LONG TIME");
+    }
+    if (timeRobotPer > 250_000) {
+      System.out.println("WARNING LOOK AT ME: ROBOT TOOK A LONG TIME");
+    }
+    if (timeOther > 250_000) {
+      System.out.println("WARNING LOOK AT ME: OTHER TOOK A LONG TIME");
+    }
+    if (timePacket > 250_000) {
+      System.out.println("WARNING LOOK AT ME: PACKET TOOK A LONG TIME");
+    }
+
+    lastTeleopPerStart = timeNow;
+    if (DriverStation.getInstance().isNewControlData()) {
+      lastControlPacket = timeNow;
+    }
+
     Scheduler.getInstance().run();
+
+    lastTeleopPerEnd = RobotController.getFPGATime();
   }
 
   /**
@@ -228,21 +271,21 @@ public class Robot extends TimedRobot {
       noPanelCounts++;
     }
 
-    if (m_sapg.isTracking() && hasTargetCounts == 5) {
+    // if (m_sapg.isTracking() && hasTargetCounts == 5) {
 
-      // Target Acquired
-      soundPlaying.setString("i_see_you");
-      noTargetCounts = 0;
+    //   // Target Acquired
+    //   soundPlaying.setString("i_see_you");
+    //   noTargetCounts = 0;
 
-    }
+    // }
 
-    if (m_sapg.isTracking() && noTargetCounts == 5) {
+    // if (m_sapg.isTracking() && noTargetCounts == 5) {
 
-      // Target Lost
-      soundPlaying.setString("cant_see_me");
-      hasTargetCounts = 0;
+    //   // Target Lost
+    //   soundPlaying.setString("cant_see_me");
+    //   hasTargetCounts = 0;
 
-    }
+    // }
 
     if (hasCargoCounts == 5) {
 
