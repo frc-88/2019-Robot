@@ -53,6 +53,11 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+  long lastTeleopPerStart = Long.MAX_VALUE;
+  long lastTeleopPerEnd = Long.MAX_VALUE;
+  long lastRobotPerEnd = Long.MAX_VALUE;
+  long lastControlPacket = Long.MAX_VALUE;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -98,9 +103,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
     if (RobotMap.DEBUG) writeDashboard();
 
     makeSounds();
+
+    lastRobotPerEnd = RobotController.getFPGATime();
   }
 
   /**
@@ -193,7 +201,39 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+
+    long timeNow = RobotController.getFPGATime();
+    long timeTeleopPer = lastTeleopPerEnd - lastTeleopPerStart;
+    long timeRobotPer = lastRobotPerEnd - lastTeleopPerEnd;
+    long timeOther = timeNow - lastRobotPerEnd;
+    long timePacket = timeNow - lastControlPacket;
+
+    System.out.println("TIMING - TeleopPer: " + timeTeleopPer
+        + "   RobotPer: " + timeRobotPer
+        + "   Other: " + timeOther
+        + "   LastPacket: " + timePacket);
+
+    if (timeTeleopPer > 250_000) {
+      System.out.println("WARNING LOOK AT ME: TELEOP TOOK A LONG TIME");
+    }
+    if (timeRobotPer > 250_000) {
+      System.out.println("WARNING LOOK AT ME: ROBOT TOOK A LONG TIME");
+    }
+    if (timeOther > 250_000) {
+      System.out.println("WARNING LOOK AT ME: OTHER TOOK A LONG TIME");
+    }
+    if (timePacket > 250_000) {
+      System.out.println("WARNING LOOK AT ME: PACKET TOOK A LONG TIME");
+    }
+
+    lastTeleopPerStart = timeNow;
+    if (DriverStation.getInstance().isNewControlData()) {
+      lastControlPacket = timeNow;
+    }
+
     Scheduler.getInstance().run();
+
+    lastTeleopPerEnd = RobotController.getFPGATime();
   }
 
   /**
