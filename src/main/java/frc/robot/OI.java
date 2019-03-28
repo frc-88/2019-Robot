@@ -51,6 +51,8 @@ import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.TJController;
 import frc.robot.commands.intake.IntakeTester;
+import frc.robot.commands.limelight.LimelightTrackingOff;
+import frc.robot.commands.limelight.LimelightTrackingOn;
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -65,6 +67,9 @@ public class OI {
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
     buttonBox = new Joystick(RobotMap.BUTTON_BOX_PORT);
 
+    driveController.buttonA.whenPressed(new LimelightTrackingOn());
+    driveController.buttonA.whenReleased(new LimelightTrackingOff());
+
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
     new JoystickButton(buttonBox, 12).whenPressed(new IntakeManual(0.5));
@@ -72,7 +77,7 @@ public class OI {
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
     new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
     new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
-    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK));
+    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK2));
     new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_FRONT));
     new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_BACK2));
     new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_FRONT));
@@ -204,6 +209,22 @@ public class OI {
     return driveController.getRightTrigger() > 0.5;
   }
 
+	public boolean isDriverButtonAPressed() {
+		return driveController.getRawButton(1);
+	}
+	
+	public boolean isDriverButtonBPressed() {
+		return driveController.getRawButton(2);
+	}
+	
+	public boolean isDriverButtonXPressed() {
+		return driveController.getRawButton(3);
+	}
+	
+	public boolean isDriverButtonYPressed() {
+		return driveController.getRawButton(4);
+	}
+	
   public double getOperatorLeftXAxis() {
     // double rawValue = operatorController.getLeftStickX();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
