@@ -75,6 +75,33 @@ public class Limelight extends Subsystem {
     setPipeline(0);
   }
 
+  public double turnToTarget() {
+    double turn = 0;
+
+    if (hasTarget()) {
+      turn = getHorizontalOffsetAngle() / 30;
+
+      double area0 = _table.getEntry("ta0").getDouble(0);
+      double x0 = _table.getEntry("tx0").getDouble(0);
+      double area1 = _table.getEntry("ta1").getDouble(0);
+      double x1 = _table.getEntry("tx1").getDouble(0);
+
+      if (area0 > 0 && area1 > 0) {
+        double ratio = area0 / area1;
+
+        if (ratio > 1) {
+          if (x0 < x1) { turn -= Math.min(ratio-1,0.15); } 
+          else { turn += Math.min(ratio-1,0.15); }
+        } else {
+          if (x0 < x1) { turn += Math.min(1-ratio,0.15); } 
+          else { turn -= Math.min(1-ratio,0.15); }
+        }
+      }
+    } 
+
+    return turn;
+  }
+
   public void setPip() {
     _stream.setNumber(2);
   }
@@ -242,8 +269,8 @@ public class Limelight extends Subsystem {
   public void updateDashboard() {
     SmartDashboard.putBoolean(name + ":HasTarget", hasTarget());
     SmartDashboard.putBoolean(name + ":IsConnected", isConnected());
-    SmartDashboard.putNumber(name + ":Angle", getTargetAngle());
-    SmartDashboard.putNumber(name + ":Distance", getTargetDistance());
+    // SmartDashboard.putNumber(name + ":Angle", getTargetAngle());
+    // SmartDashboard.putNumber(name + ":Distance", getTargetDistance());
   }
 
   @Override

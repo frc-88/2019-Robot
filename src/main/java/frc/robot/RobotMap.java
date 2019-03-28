@@ -15,6 +15,8 @@ package frc.robot;
  */
 public class RobotMap {
 
+  public static final boolean DEBUG = false;
+
   /////////////////////////////////////////////////////////////////////////////
   // IDs
   /////////////////////////////////////////////////////////////////////////////
@@ -152,5 +154,4 @@ public class RobotMap {
 
   // Misc
   public static final int CAN_TIMEOUT = 0;
-
 }
