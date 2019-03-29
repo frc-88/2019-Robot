@@ -85,6 +85,8 @@ public class Robot extends TimedRobot {
     m_limelight_sapg.ledOff();
     m_limelight_sapg.camDriver();
 
+    m_navx.zeroPitch();
+
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -152,6 +154,8 @@ public class Robot extends TimedRobot {
 
     m_limelight_sapg.ledOff();
     m_limelight_sapg.camDriver();
+
+    m_navx.zeroPitch();
 
     m_autonomousCommand = m_chooser.getSelected();
 

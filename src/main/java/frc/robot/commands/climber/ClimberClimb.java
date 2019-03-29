@@ -35,6 +35,8 @@ public class ClimberClimb extends Command {
 
   private final int CLEAR_CLIMBER_TARGET = 21500;
 
+  private final int CLIMBER_RECOVER_TARGET = 29000;
+
   private int state;
 
   public ClimberClimb() {
@@ -112,6 +114,8 @@ public class ClimberClimb extends Command {
       if (climber.onPlatform()) {
         state++;
       }
+
+      break;
     
     case 4:
 
@@ -120,6 +124,21 @@ public class ClimberClimb extends Command {
       climber.moveEncoder(CLEAR_CLIMBER_TARGET);
       arm.moveShoulder(CLEAR_SHOULDER_TARGET);
       arm.moveElbow(PULL_ELBOW_TARGET);
+
+      // if (Robot.m_navx.getPitch() < -20) {
+      //   state = 10;
+        
+      //   arm.configureCoastMode();
+      //   climber.configForEncoderPID();
+
+      // }
+
+      break;
+
+    case 10:
+
+      arm.stopArm();
+      climber.moveEncoder(CLIMBER_RECOVER_TARGET);
 
       break;
 
@@ -139,6 +158,7 @@ public class ClimberClimb extends Command {
     climber.stop();
     arm.stopArm();
     drive.basicDrive(0, 0);
+    arm.configureBrakeMode();
   }
 
   // Called when another command which requires one or more of the same
