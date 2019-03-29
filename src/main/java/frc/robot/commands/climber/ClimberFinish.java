@@ -17,7 +17,7 @@ public class ClimberFinish extends Command {
   private Climber climber = Robot.m_climber;
   private Arm arm = Robot.m_arm;
 
-  private final int CLIMBER_TARGET = 21000;
+  private final int CLIMBER_TARGET = 21500;
   private final double SHOULDER_TARGET = 86;
   private final double ELBOW_TARGET = 180;
 
@@ -31,6 +31,9 @@ public class ClimberFinish extends Command {
   protected void initialize() {
     climber.configForEncoderPID();
     climber.moveEncoder(CLIMBER_TARGET);
+    
+    arm.setShoulderSpeed(50);
+    arm.setElbowSpeed(50);
     arm.moveShoulder(SHOULDER_TARGET);
     arm.moveElbow(ELBOW_TARGET);
   }

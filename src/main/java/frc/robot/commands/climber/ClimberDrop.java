@@ -18,7 +18,7 @@ public class ClimberDrop extends Command {
   private Arm arm = Robot.m_arm;
 
   private final double SHOULDER_TARGET = 121;
-  private final int CLIMBER_TARGET = 29500;
+  private final int CLIMBER_LIFT_AMOUNT = 500;
 
   public ClimberDrop() {
     requires(climber);
@@ -28,9 +28,10 @@ public class ClimberDrop extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    arm.setShoulderSpeed(50);
     arm.moveShoulder(SHOULDER_TARGET);
     climber.configForEncoderPID();
-    climber.moveEncoder(CLIMBER_TARGET);
+    climber.moveEncoder(climber.getPosition() - CLIMBER_LIFT_AMMOUNT);
   }
 
   // Called repeatedly when this Command is scheduled to run

@@ -107,7 +107,7 @@ public class Climber extends Subsystem {
   }
 
   public int getPosition(){
-    return winch.getSensorCollection().getQuadraturePosition();
+    return winch.getSelectedSensorPosition(0);
   }
 
   public void zeroEncoder(){
