@@ -31,7 +31,7 @@ public class ClimberDrop extends Command {
     arm.setShoulderSpeed(50);
     arm.moveShoulder(SHOULDER_TARGET);
     climber.configForEncoderPID();
-    climber.moveEncoder(climber.getPosition() - CLIMBER_LIFT_AMMOUNT);
+    climber.moveEncoder(climber.getPosition() - CLIMBER_LIFT_AMOUNT);
   }
 
   // Called repeatedly when this Command is scheduled to run
