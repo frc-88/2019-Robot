@@ -125,18 +125,20 @@ public class OI {
     //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
-    SmartDashboard.putData("SAPG Default", new SAPGDefault());
     SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
     SmartDashboard.putData("SAPG Retract", new SAPGRetract());
     SmartDashboard.putData("SAPG Open", new SAPGOpen());
     SmartDashboard.putData("SAPG Close", new SAPGClose());
-    SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
-    SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
-    SmartDashboard.putData("SAPG Grab Awesome", new SAPGGrabPanelAwesome());
-    SmartDashboard.putData("SAPG Score Awesome", new SAPGScorePanelAwesome());
-    SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
+    // SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
+    // SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
+    // SmartDashboard.putData("SAPG Grab Awesome", new SAPGGrabPanelAwesome());
+    // SmartDashboard.putData("SAPG Score Awesome", new SAPGScorePanelAwesome());
+    // SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
 
     SmartDashboard.putData("Intake Tester", new IntakeTester());
+
+    SmartDashboard.putData("Limelight On", new LimelightTrackingOn());
+    SmartDashboard.putData("Limelight Off", new LimelightTrackingOff());
 
     SmartDashboard.putData("Arm Intake Position", new ArmGoToPosition(160, 82));
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
