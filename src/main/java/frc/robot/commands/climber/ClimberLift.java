@@ -22,8 +22,8 @@ public class ClimberLift extends Command {
   private final double SHOULDER_START = 86;
   private final double SHOULDER_END = 127;
   
-  private final double ELBOW_START = 180;
-  private final double ELBOW_END = 164;
+  private final double ELBOW_START = 176;
+  private final double ELBOW_END = 160;
 
   public ClimberLift() {
     requires(climber);

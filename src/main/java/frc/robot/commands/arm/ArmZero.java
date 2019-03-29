@@ -17,7 +17,7 @@ public class ArmZero extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public ArmZeroShoulder() {
+  public ArmZero() {
     super();
     requires(Robot.m_arm);
   }

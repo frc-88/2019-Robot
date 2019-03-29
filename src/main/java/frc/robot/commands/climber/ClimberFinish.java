@@ -18,7 +18,7 @@ public class ClimberFinish extends Command {
   private Arm arm = Robot.m_arm;
 
   private final int CLIMBER_TARGET = 21000;
-  private final double SHOULDER_TARGET = 121;
+  private final double SHOULDER_TARGET = 86;
   private final double ELBOW_TARGET = 180;
 
   public ClimberFinish() {

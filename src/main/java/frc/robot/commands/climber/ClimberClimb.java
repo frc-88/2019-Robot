@@ -23,14 +23,14 @@ public class ClimberClimb extends Command {
   private final double LIFT_SHOULDER_START = 86;
   private final double LIFT_SHOULDER_END = 127;
   
-  private final double LIFT_ELBOW_START = 180;
-  private final double LIFT_ELBOW_END = 164;
+  private final double LIFT_ELBOW_START = 176;
+  private final double LIFT_ELBOW_END = 160;
 
   private final double PULL_ELBOW_TARGET = 180;
 
-  private final double CLEAR_SHOULDER_TARGET = 121;
+  private final double CLEAR_SHOULDER_TARGET = 86;
 
-  private final int CLEAR_CLIMBER_TARGET = 21000;
+  private final int CLEAR_CLIMBER_TARGET = 20500;
 
   private int state;
 
