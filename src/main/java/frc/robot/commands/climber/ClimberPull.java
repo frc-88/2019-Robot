@@ -9,10 +9,19 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 
-public class ClimberBasicControl extends Command {
-  public ClimberBasicControl() {
-    requires(Robot.m_climber);
+public class ClimberPull extends Command {
+  
+  private Climber climber = Robot.m_climber;
+  private Arm arm = Robot.m_arm;
+
+  private final double ELBOW_TARGET = 180;
+
+  public ClimberPull() {
+    requires(climber);
+    requires(arm);
   }
 
   // Called just before this Command runs the first time
@@ -23,7 +32,7 @@ public class ClimberBasicControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_climber.setVoltage(Robot.m_oi.getOperatorRightYAxis());
+      arm.moveElbow(ELBOW_TARGET);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -35,7 +44,6 @@ public class ClimberBasicControl extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.m_climber.stop();
   }
 
   // Called when another command which requires one or more of the same

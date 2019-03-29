@@ -234,9 +234,17 @@ public class Arm extends Subsystem {
   }
 
   /**
+   * Zeros both encoders
+   */
+  public void zero() {
+    zeroShoulderMotorEncoder();
+    zeroElbowMotorEncoder();
+  }
+
+  /**
    * Zeroes shoulder motor encoder based on the shoulder absolute encoder
    */
-  public void zeroShoulderMotorEncoder() {
+  private void zeroShoulderMotorEncoder() {
     shoulder.setSelectedSensorPosition(convertShoulderDegreesToMotorCounts(getShoulderAbsDegrees()), MAIN_SLOT_IDX,
         TIMEOUTMS);
   }
@@ -244,7 +252,7 @@ public class Arm extends Subsystem {
   /**
    * Zeroes elbow motor encoder based on the elbow absolute encoder
    */
-  public void zeroElbowMotorEncoder() {
+  private void zeroElbowMotorEncoder() {
     elbow.setSelectedSensorPosition(convertElbowDegreesToMotorCounts(getElbowAbsDegrees()), MAIN_SLOT_IDX, TIMEOUTMS);
   }
 
@@ -268,7 +276,7 @@ public class Arm extends Subsystem {
    * Converts from shoulder degrees to absolute encoder counts.
    */
   public int convertShoulderDegreesToAbsCounts(double degrees) {
-    return (int) (degrees * 4096 / 360 + shoulderOffset);
+    return (int) ((degrees * 4096. / 360. + shoulderOffset));
   }
 
   /**
@@ -317,7 +325,7 @@ public class Arm extends Subsystem {
    * SENSOR GETTERS
    *****************************************************************************/
 
-  /**
+/**
    * Get the encoder counts read by the shoulder absolute encoder
    */
   public int getShoulderAbsCounts() {
@@ -436,6 +444,16 @@ public class Arm extends Subsystem {
   public void moveElbow(double degrees) {
     currentSetpoint = null;
     elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(degrees));
+  }
+
+  /**
+   * PIDs the elbow to the given position based off the absolute encoder which is
+   * after the springs
+   */
+  public void moveElbowAbs(double degrees) {
+    currentSetpoint = null;
+    elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(
+        degrees + getElbowMotorDegrees() - getElbowAbsDegrees()));
   }
 
   /**

@@ -15,7 +15,7 @@ package frc.robot;
  */
 public class RobotMap {
 
-  public static final boolean DEBUG = false;
+  public static final boolean DEBUG = true;
 
   /////////////////////////////////////////////////////////////////////////////
   // IDs
@@ -52,7 +52,8 @@ public class RobotMap {
   public static final int INTAKE_IR2_ID = 3;
 
   // Climber
-  public static final int CLIMBER_ID = 12;
+  public static final int CLIMBER_ID = 6;
+  public static final int CLIMBER_PLATFORM_IR_ID = 1;
 
   // SAPG
   public static final int SAPG_DEPLOY_FORWARD = 2;
@@ -129,12 +130,9 @@ public class RobotMap {
 
   // Climber
 
-  public static final double CLIMBER_LIFTING_CURRENT = 10.0;
-  public static final double CLIMBER_SEEKING_SPEED = -1;
-  public static final double CLIMBER_SEEKING_RAMP = -0.05;
-  public static final int CLIMBER_TICKS_PER_INCH = 15908;
-  public static final int CLIMBER_MAX_SPEED = 10;
-  public static final double CLIMBER_TOLERANCE = 0.25;
+  public static final int CLIMB_ARM_SPEED = 40;
+  public static final double CLIMBER_TOLERANCE = 5000;
+  public static final double PLATFORM_IR_THRESHOLD = 10;
 
   //Intake
   public static final double INTAKE_HAS_CARGO = 9;
@@ -147,7 +145,8 @@ public class RobotMap {
   public static final int OPERATOR_NONE = 0;
   public static final int OPERATOR_SAPG_TEST = 1;
   public static final int OPERATOR_ARM_TEST = 2;
-  public static final int OPERATOR_CONTROL = OPERATOR_SAPG_TEST;
+  public static final int OPERATOR_CLIMB_TEST = 3;
+  public static final int OPERATOR_CONTROL = OPERATOR_CLIMB_TEST;
 
   public static final int DRIVE_CONTROLLER_PORT = 0;
 

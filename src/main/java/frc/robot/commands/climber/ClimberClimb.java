@@ -8,38 +8,36 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Drive;
 
 public class ClimberClimb extends Command {
 
-  private final double CLIMB_LIMIT = -20;
-  private final double SHOULDER_START_POS = 90;
-  private final double SHOULDER_END_POS = 129;
-  private final double ELBOW_START_POS = 188;
-  private final double ELBOW_END_POS = 172;
+  private Climber climber = Robot.m_climber;
+  private Arm arm = Robot.m_arm;
+  private Drive drive = Robot.m_drive;
 
-  Climber climber;
-  Arm arm;
+  private final double LIFT_SHOULDER_START = 86;
+  private final double LIFT_SHOULDER_END = 127;
+  
+  private final double LIFT_ELBOW_START = 176;
+  private final double LIFT_ELBOW_END = 160;
 
-  int state;
+  private final double PULL_ELBOW_TARGET = 180;
 
-  double seekingSpeed = RobotMap.CLIMBER_SEEKING_SPEED;
-  double curSpeed;
-  double seekingRamp = RobotMap.CLIMBER_SEEKING_RAMP;
+  private final double CLEAR_SHOULDER_TARGET = 86;
+
+  private final int CLEAR_CLIMBER_TARGET = 20500;
+
+  private int state;
 
   public ClimberClimb() {
-    requires(Robot.m_climber);
-    requires(Robot.m_arm);
-
-    climber = Robot.m_climber;
-    arm = Robot.m_arm;
-
-    SmartDashboard.putNumber("climber:seekingSpeed", RobotMap.CLIMBER_SEEKING_SPEED);
-    SmartDashboard.putNumber("climber:seekingRamp", RobotMap.CLIMBER_SEEKING_RAMP);
+    requires(climber);
+    requires(arm);
+    requires(drive);
   }
 
   // Called just before this Command runs the first time
@@ -47,11 +45,10 @@ public class ClimberClimb extends Command {
   protected void initialize() {
     state = 0;
 
-    seekingSpeed = SmartDashboard.getNumber("climber:seekingSpeed", RobotMap.CLIMBER_SEEKING_SPEED);
-    seekingRamp = SmartDashboard.getNumber("climber:seekingRamp", RobotMap.CLIMBER_SEEKING_RAMP);
-    curSpeed = 0;
+    drive.basicDrive(0, 0);
 
-    Robot.m_navx.zeroPitch();
+    arm.configureCoastMode();
+    climber.configForShoulderPID();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -59,54 +56,82 @@ public class ClimberClimb extends Command {
   protected void execute() {
     switch (state) {
 
-    // Get the climber to the ground
+    // Lift the robot
     case 0:
 
-      arm.moveShoulder(SHOULDER_START_POS);
-      arm.moveElbow(ELBOW_START_POS);
-      
-      curSpeed = Math.max(curSpeed + seekingRamp, seekingSpeed);
-      climber.set(curSpeed);
+      arm.setShoulderVoltage(0);
+      climber.moveShoulder(LIFT_SHOULDER_END);
 
-      if (climber.isLifting()) {
-        climber.stop();
-        climber.zeroEncoder();
-        state = 1;
+      double shoulderPos = arm.getShoulderAbsDegrees();
+      double shoulderPercentDone = Math.max(0, (shoulderPos - LIFT_SHOULDER_START) / (LIFT_SHOULDER_END - LIFT_SHOULDER_START));
+      double elbowTotalDist = LIFT_ELBOW_END - LIFT_ELBOW_START;
+      arm.moveElbowAbs(LIFT_ELBOW_START + elbowTotalDist * shoulderPercentDone);
+
+      if (Math.abs(shoulderPos - LIFT_SHOULDER_END) < RobotMap.ARM_TOLERANCE) {
+        state++;
+
+        arm.configureBrakeMode();
       }
       
       break;
 
     case 1:
 
-      climber.move(CLIMB_LIMIT);
+      arm.moveElbowAbs(PULL_ELBOW_TARGET);
 
-      // (SHOULDER_START_POS-SHOULDER_END_POS)/(CLIMB_LIMIT/CLIMB_MAX_SPEED)
-      // arm.setShoulderSpeed((SHOULDER_START_POS-SHOULDER_END_POS)/(CLIMB_LIMIT/RobotMap.CLIMBER_MAX_SPEED));
-      // arm.setElbowSpeed((ELBOW_START_POS-ELBOW_END_POS)/(CLIMB_LIMIT/RobotMap.CLIMBER_MAX_SPEED)
-      // );
-
-      arm.moveShoulder(SHOULDER_END_POS);
-      arm.moveElbow(ELBOW_END_POS);
-
-      if (climber.targetReached() && arm.targetReached()) {
-        state = 2;
+      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE) {
+        state++;
       }
 
       break;
 
+    case 2:
+
+      arm.setShoulderVoltage(-0.05);
+      climber.moveShoulder(CLEAR_SHOULDER_TARGET);
+
+      if (Math.abs(arm.getShoulderAbsDegrees() - CLEAR_SHOULDER_TARGET) < RobotMap.ARM_TOLERANCE) {
+        state++;
+      }
+
+      break;
+
+    case 3:
+
+      drive.arcadeDrive(.1, 0); 
+      drive.autoshift(); 
+
+      if (climber.onPlatform()) {
+        state++;
+      }
+    
+    case 4:
+
+      drive.arcadeDrive(0, 0);
+      drive.autoshift();
+      
+      climber.moveEncoder(CLEAR_CLIMBER_TARGET);
+      arm.moveShoulder(CLEAR_SHOULDER_TARGET);
+      arm.moveElbow(PULL_ELBOW_TARGET);
+
+      break;
+
     }
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return state == 2;
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
     climber.stop();
+    arm.stopArm();
+    drive.basicDrive(0, 0);
   }
 
   // Called when another command which requires one or more of the same

@@ -14,17 +14,23 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.HaveCargoCommand;
 import frc.robot.commands.HavePanelCommand;
+import frc.robot.commands.InPreClimbCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmCalibrate;
 import frc.robot.commands.arm.ArmEStop;
 import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.arm.ArmGoToPositionSafe;
 import frc.robot.commands.arm.ArmGoToSetpoint;
-import frc.robot.commands.arm.ArmZeroElbow;
-import frc.robot.commands.arm.ArmZeroShoulder;
+import frc.robot.commands.arm.ArmZero;
 import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.climber.ClimberClimb;
-import frc.robot.commands.climber.ClimberMove;
+import frc.robot.commands.climber.ClimberDrop;
+import frc.robot.commands.climber.ClimberFinish;
+import frc.robot.commands.climber.ClimberLift;
+import frc.robot.commands.climber.ClimberMoveEncoder;
+import frc.robot.commands.climber.ClimberMoveShoulder;
+import frc.robot.commands.climber.ClimberPrep;
+import frc.robot.commands.climber.ClimberPull;
 import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.commands.intake.IntakeEjectCargo;
@@ -80,8 +86,8 @@ public class OI {
     new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
     new JoystickButton(buttonBox, 11).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
+    new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new ClimberClimb(), new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1))));
+    new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new InstantCommand(), new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE))));
     //new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     //new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 17).whenPressed(new SAPGRetract());
@@ -91,6 +97,7 @@ public class OI {
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
     new JoystickButton(buttonBox, 15).whenPressed(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB));
+    new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrep());
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
@@ -116,6 +123,16 @@ public class OI {
       operatorController.buttonRightBumper.whenPressed(new SAPGGrabPanel());
       operatorController.buttonLeftBumper.whenPressed(new SAPGScorePanel());
       break;
+
+    case RobotMap.OPERATOR_CLIMB_TEST:
+
+      operatorController.buttonA.whenPressed(new ClimberLift());
+      operatorController.buttonB.whenPressed(new ClimberPull());
+      operatorController.buttonX.whenPressed(new ClimberDrop());
+      operatorController.buttonY.whenPressed(new ClimberFinish());
+      operatorController.buttonStart.whenPressed(new ClimberBasicControl());
+      break;
+
     }
 
     // starting config
@@ -143,8 +160,7 @@ public class OI {
     SmartDashboard.putData("Arm Intake Position", new ArmGoToPosition(160, 82));
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
     SmartDashboard.putData("Arm Calibrate", new ArmCalibrate());
-    SmartDashboard.putData("Arm Zero Elbow", new ArmZeroElbow());
-    SmartDashboard.putData("Arm Zero Shoulder", new ArmZeroShoulder());
+    SmartDashboard.putData("Arm Zero", new ArmZero());
     SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
     SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPositionSafe());
     // SmartDashboard.putData("Arm Start", new ArmGoToPositionSafe(ArmPosition.START));
@@ -155,7 +171,8 @@ public class OI {
     // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
 
     SmartDashboard.putData("Climb", new ClimberClimb());
-    SmartDashboard.putData("Move Climber", new ClimberMove());
+    SmartDashboard.putData("Climber Move Enc", new ClimberMoveEncoder());
+    SmartDashboard.putData("Climber Move Shoulder", new ClimberMoveShoulder());
 
     SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo(-1));

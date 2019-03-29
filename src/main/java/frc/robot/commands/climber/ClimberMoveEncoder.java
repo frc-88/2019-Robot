@@ -8,22 +8,28 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.subsystems.Climber;
 
-public class ClimberBasicControl extends Command {
-  public ClimberBasicControl() {
+public class ClimberMoveEncoder extends Command {
+  public ClimberMoveEncoder() {
     requires(Robot.m_climber);
+    SmartDashboard.putNumber("SetClimberPosition", 0);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.m_climber.configForEncoderPID();
+    Robot.m_climber.zeroEncoder();
+    Robot.m_climber.moveEncoder((int)SmartDashboard.getNumber("SetClimberPosition", 0));
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_climber.setVoltage(Robot.m_oi.getOperatorRightYAxis());
+
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -35,13 +41,11 @@ public class ClimberBasicControl extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.m_climber.stop();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

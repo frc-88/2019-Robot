@@ -71,10 +71,11 @@ public class Robot extends TimedRobot {
     m_navx = new NavX();
     m_limelight_sapg = new Limelight("limelight-sapg");
     m_drive = new Drive();
-    m_climber = new Climber();
     m_intake = new Intake();
     m_arm = new Arm();
     m_sapg = new SAPG();
+    m_climber = new Climber();
+    
 
     // instantiate m_oi last...it may reference subsystems
     m_oi = new OI();
@@ -118,8 +119,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_arm.zeroElbowMotorEncoder();
-    m_arm.zeroShoulderMotorEncoder();
+    m_arm.zero();
     m_arm.configureCoastMode();
 
     soundPlaying.setString("");
@@ -147,8 +147,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_arm.zeroElbowMotorEncoder();
-    m_arm.zeroShoulderMotorEncoder();
+    m_arm.zero();
     m_arm.configureBrakeMode();
 
     m_limelight_sapg.ledOff();
@@ -179,9 +178,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
-    m_arm.zeroElbowMotorEncoder();
-    m_arm.zeroShoulderMotorEncoder();
+    m_arm.zero();
     m_arm.configureBrakeMode();
 
     m_limelight_sapg.ledOff();
