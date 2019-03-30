@@ -70,6 +70,7 @@ public class Climber extends Subsystem {
     SmartDashboard.putNumber("Climber: Position", getPosition());
     SmartDashboard.putNumber("Climber: SelectedSensorPos", winch.getSelectedSensorPosition());
     SmartDashboard.putNumber("Climber: Target", winch.getActiveTrajectoryPosition());
+    SmartDashboard.putNumber("Climber: IR Distance", platformIR.getDistance());
   }
 
   public void configForEncoderPID() {

@@ -53,7 +53,7 @@ public class RobotMap {
 
   // Climber
   public static final int CLIMBER_ID = 6;
-  public static final int CLIMBER_PLATFORM_IR_ID = 1;
+  public static final int CLIMBER_PLATFORM_IR_ID = 2;
 
   // SAPG
   public static final int SAPG_DEPLOY_FORWARD = 2;
@@ -63,7 +63,7 @@ public class RobotMap {
   public static final int SAPG_DEPLOY_PCM = 21;
   public static final int SAPG_GRAB_PCM = 21;
   public static final int SAPG_MOTOR_ID = 06;
-  public static final int SAPG_PANEL_IR_ID = 2;
+  public static final int SAPG_PANEL_IR_ID = 4;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;

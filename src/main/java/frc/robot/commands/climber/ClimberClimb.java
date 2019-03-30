@@ -33,9 +33,9 @@ public class ClimberClimb extends Command {
 
   private final double CLEAR_SHOULDER_TARGET = 86;
 
-  private final int CLEAR_CLIMBER_TARGET = 21500;
+  private final int CLEAR_CLIMBER_TARGET = 28000;
 
-  private final int CLIMBER_RECOVER_TARGET = 29000;
+  private final int CLIMBER_RECOVER_TARGET = 38000;
 
   private int state;
 
