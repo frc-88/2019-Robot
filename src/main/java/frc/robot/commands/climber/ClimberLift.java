@@ -25,6 +25,8 @@ public class ClimberLift extends Command {
   private final double ELBOW_START = 176;
   private final double ELBOW_END = 160;
 
+  private final int CLIMBER_TARGET = 39390;
+
   public ClimberLift() {
     requires(climber);
     requires(arm);
@@ -34,10 +36,10 @@ public class ClimberLift extends Command {
   @Override
   protected void initialize() {
     arm.configureCoastMode();
-    climber.configForShoulderPID();
+    climber.configForEncoderPID();
 
     arm.setShoulderVoltage(0);
-    climber.moveShoulder(SHOULDER_END);
+    climber.moveEncoder(CLIMBER_TARGET);
   }
 
   // Called repeatedly when this Command is scheduled to run

@@ -26,6 +26,7 @@ import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberDrop;
 import frc.robot.commands.climber.ClimberFinish;
+import frc.robot.commands.climber.ClimberFullPrep;
 import frc.robot.commands.climber.ClimberLift;
 import frc.robot.commands.climber.ClimberMoveEncoder;
 import frc.robot.commands.climber.ClimberMoveShoulder;
@@ -86,8 +87,8 @@ public class OI {
     new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
     new JoystickButton(buttonBox, 11).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
-    new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new ClimberClimb(), new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1))));
-    new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new InstantCommand(), new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE))));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
     //new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     //new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 17).whenPressed(new SAPGRetract());
@@ -96,8 +97,7 @@ public class OI {
     new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
-    new JoystickButton(buttonBox, 15).whenPressed(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB));
-    new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrep());
+    new JoystickButton(buttonBox, 15).whenPressed(new InPreClimbCommand(new ClimberClimb(), new ClimberFullPrep()));
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:

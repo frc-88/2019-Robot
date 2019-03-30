@@ -33,12 +33,14 @@ public class Climber extends Subsystem {
   private TalonSRX winch;
 
   private SharpIR platformIR;
+  private boolean prepped = false;
 
   public Climber() {
       winch = new TalonSRX(RobotMap.CLIMBER_ID);
       configTalon(winch);
 
       platformIR = new SharpIR(RobotMap.CLIMBER_PLATFORM_IR_ID);
+      prepped = false;
   }
 
   private void configTalon(TalonSRX talon) {
@@ -92,6 +94,14 @@ public class Climber extends Subsystem {
 
   public void stop() {
     setVoltage(0);
+  }
+
+  public void prep() {
+    prepped = true;
+  }
+
+  public boolean isPrepped() {
+    return prepped;
   }
 
   public void setVoltage(double percentOutput) {

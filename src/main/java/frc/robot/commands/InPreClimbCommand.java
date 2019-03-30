@@ -32,6 +32,6 @@ public class InPreClimbCommand extends ConditionalCommand {
 
   @Override
   protected boolean condition() {
-    return Robot.m_arm.getCurrentSetpoint().equals(ArmPosition.PRE_CLIMB);
+    return Robot.m_climber.isPrepped();
   }
 }

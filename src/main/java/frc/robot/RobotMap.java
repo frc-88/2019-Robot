@@ -132,7 +132,7 @@ public class RobotMap {
 
   public static final int CLIMB_ARM_SPEED = 40;
   public static final double CLIMBER_TOLERANCE = 100;
-  public static final double PLATFORM_IR_THRESHOLD = 10;
+  public static final double PLATFORM_IR_THRESHOLD = 8.5;
 
   //Intake
   public static final double INTAKE_HAS_CARGO = 9;

@@ -56,7 +56,8 @@ public class Intake extends Subsystem {
     }
 
     public boolean hasCargo() {
-        return ((intakeSensor1.getDistance() + intakeSensor2.getDistance()) / 2.0) < RobotMap.INTAKE_HAS_CARGO;
+        //return ((intakeSensor1.getDistance() + intakeSensor2.getDistance()) / 2.0) < RobotMap.INTAKE_HAS_CARGO;
+        return intakeSensor1.getDistance() < RobotMap.INTAKE_HAS_CARGO * 2;
     }
 
     private void configTalon(TalonSRX talon) {
