@@ -58,6 +58,8 @@ public class Robot extends TimedRobot {
   long lastRobotPerEnd = Long.MAX_VALUE;
   long lastControlPacket = Long.MAX_VALUE;
 
+  boolean firstAutoInit = true;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -121,7 +123,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_arm.zero();
     m_arm.configureCoastMode();
 
     soundPlaying.setString("");
@@ -149,7 +150,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_arm.zero();
+    if (!DriverStation.getInstance().isFMSAttached() || firstAutoInit) {
+      firstAutoInit = false;
+      m_arm.zero();
+    }
+    
+    
     m_arm.configureBrakeMode();
 
     m_limelight_sapg.ledOff();
@@ -182,7 +188,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_arm.zero();
+    if (!DriverStation.getInstance().isFMSAttached()) {
+      m_arm.zero();
+    }
     m_arm.configureBrakeMode();
 
     m_limelight_sapg.ledOff();

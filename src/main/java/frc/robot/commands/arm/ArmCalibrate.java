@@ -7,6 +7,7 @@
 
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
@@ -30,7 +31,9 @@ public class ArmCalibrate extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_arm.calibrateAbsoluteEncoders();
+    if (!DriverStation.getInstance().isFMSAttached()) {
+      Robot.m_arm.calibrateAbsoluteEncoders();
+    }
   }
 
 }

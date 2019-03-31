@@ -32,6 +32,7 @@ import frc.robot.commands.climber.ClimberMoveEncoder;
 import frc.robot.commands.climber.ClimberMoveShoulder;
 import frc.robot.commands.climber.ClimberPrep;
 import frc.robot.commands.climber.ClimberPull;
+import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.commands.intake.IntakeEjectCargo;
@@ -72,6 +73,10 @@ public class OI {
     driveController.buttonA.whenPressed(new LimelightTrackingOn());
     driveController.buttonA.whenReleased(new LimelightTrackingOff());
 
+    driveController.buttonY.whenPressed(new ArcadeDrive());
+
+    driveController.buttonBack.whenPressed(new ClimberClimb());
+
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
     new JoystickButton(buttonBox, 12).whenPressed(new IntakeManual(0.5));
@@ -97,7 +102,7 @@ public class OI {
     new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
-    new JoystickButton(buttonBox, 15).whenPressed(new InPreClimbCommand(new ClimberClimb(), new ClimberFullPrep()));
+    new JoystickButton(buttonBox, 15).whenPressed(new ClimberFullPrep());
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:

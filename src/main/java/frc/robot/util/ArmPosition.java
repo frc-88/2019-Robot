@@ -16,7 +16,7 @@ import java.util.List;
 public final class ArmPosition {
     public static final ArmSetpoint HOME = new ArmSetpoint(158, 2);
     public static final ArmSetpoint START = new ArmSetpoint(158, 2);
-    public static final ArmSetpoint INTAKE = new ArmSetpoint(160, 82);
+    public static final ArmSetpoint INTAKE = new ArmSetpoint(162, 82);
     public static final ArmSetpoint CARGO_SHIP_FRONT = new ArmSetpoint(105, 33);
     public static final ArmSetpoint CARGO_SHIP_BACK = new ArmSetpoint(-105, -33);
     public static final ArmSetpoint CARGO_SHIP_BACK2 = new ArmSetpoint(-60, -215);

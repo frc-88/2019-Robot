@@ -26,18 +26,18 @@ public class ClimberClimb extends Command {
   private final double LIFT_ELBOW_START = 176;
   private final double LIFT_ELBOW_END = 160;
 
-  private final int LIFT_CLIMBER_TARGET = 39390;
+  private final int LIFT_CLIMBER_TARGET = 38500;
 
-  private final double PULL_ELBOW_TARGET = 176;
+  private final double PULL_ELBOW_TARGET = 174;
 
   private final double DROP_SHOULDER_TARGET = 121;
-  private final int DROP_CLIMBER_TARGET = 38890;
+  private final int DROP_CLIMBER_TARGET = 36500;
 
   private final double CLEAR_SHOULDER_TARGET = 86;
 
-  private final int CLEAR_CLIMBER_TARGET = 39390;
+  private final int CLEAR_CLIMBER_TARGET = 25000;
 
-  private final int CLIMBER_RECOVER_TARGET = 38000;
+  private final int CLIMBER_RECOVER_TARGET = 36500;
 
   private int state;
 
@@ -67,7 +67,7 @@ public class ClimberClimb extends Command {
     case 0:
 
       arm.setShoulderVoltage(0);
-      climber.moveEncoder(LIFT_CLIMBER_TARGET);
+      climber.moveEncoder(LIFT_CLIMBER_TARGET, 0.05);
 
       double shoulderPos = arm.getShoulderAbsDegrees();
       double shoulderPercentDone = Math.max(0, (shoulderPos - LIFT_SHOULDER_START) / (LIFT_SHOULDER_END - LIFT_SHOULDER_START));
@@ -81,14 +81,16 @@ public class ClimberClimb extends Command {
 
         arm.setElbowSpeed(50);
       }
+
       
       break;
 
     case 1:
 
       arm.moveElbowAbs(PULL_ELBOW_TARGET);
+      drive.basicDrive(0.2, 0.2);
 
-      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE) {
+      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE + 2) {
         state++;
 
         arm.setShoulderSpeed(50);        
@@ -102,7 +104,21 @@ public class ClimberClimb extends Command {
       climber.moveEncoder(DROP_CLIMBER_TARGET);
 
       arm.moveShoulder(DROP_SHOULDER_TARGET);
+
+      drive.basicDrive(0.2, 0.2);
       System.out.println("2");
+
+      if (Robot.m_navx.getPitch() < -25) {
+        state = 10;
+        
+        arm.configureCoastMode();
+        climber.configForEncoderPID();
+
+      }
+
+      if (climber.onPlatform()) {
+        state = 4;
+      }
 
       if (Math.abs(arm.getShoulderAbsDegrees() - DROP_SHOULDER_TARGET) < RobotMap.ARM_TOLERANCE) {
         state++;
@@ -112,8 +128,16 @@ public class ClimberClimb extends Command {
 
     case 3:
 
-      drive.basicDrive(0.15, 0.15);
+      drive.basicDrive(0.2, 0.2);
       System.out.println("3");
+
+      if (Robot.m_navx.getPitch() < -25) {
+        state = 10;
+        
+        arm.configureCoastMode();
+        climber.configForEncoderPID();
+
+      }
 
       if (climber.onPlatform()) {
         state++;
@@ -130,20 +154,13 @@ public class ClimberClimb extends Command {
       arm.moveShoulder(CLEAR_SHOULDER_TARGET);
       arm.moveElbow(PULL_ELBOW_TARGET);
 
-      // if (Robot.m_navx.getPitch() < -20) {
-      //   state = 10;
+      if (Robot.m_navx.getPitch() < -25) {
+        state = 10;
         
-      //   arm.configureCoastMode();
-      //   climber.configForEncoderPID();
+        arm.configureCoastMode();
+        climber.configForEncoderPID();
 
-      // }
-
-      break;
-
-    case 10:
-
-      arm.stopArm();
-      climber.moveEncoder(CLIMBER_RECOVER_TARGET);
+      }
 
       break;
 
@@ -154,7 +171,7 @@ public class ClimberClimb extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return state == 10;
   }
 
   // Called once after isFinished returns true

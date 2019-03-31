@@ -35,6 +35,8 @@ public class Climber extends Subsystem {
   private SharpIR platformIR;
   private boolean prepped = false;
 
+  private int encoderTarget = 0;
+
   public Climber() {
       winch = new TalonSRX(RobotMap.CLIMBER_ID);
       configTalon(winch);
@@ -108,8 +110,14 @@ public class Climber extends Subsystem {
     winch.set(ControlMode.PercentOutput, percentOutput);
   }
 
-  public void moveEncoder(int distance){
-    winch.set(ControlMode.Position, distance);
+  public void moveEncoder(int distance) {
+    moveEncoder(distance, 0);
+  }
+
+  public void moveEncoder(int distance, double ff){
+    winch.set(ControlMode.Position, distance,
+        DemandType.ArbitraryFeedForward, ff);
+    encoderTarget = distance;
   }
 
   public void moveShoulder(double degrees) {
@@ -126,7 +134,7 @@ public class Climber extends Subsystem {
   }
 
   public boolean targetReached() {
-    return Math.abs((winch.getClosedLoopError())) < RobotMap.CLIMBER_TOLERANCE;
+    return Math.abs((getPosition() - encoderTarget)) < RobotMap.CLIMBER_TOLERANCE;
   }
 
   public boolean onPlatform() {

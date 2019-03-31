@@ -25,7 +25,7 @@ public class ClimberLift extends Command {
   private final double ELBOW_START = 176;
   private final double ELBOW_END = 160;
 
-  private final int CLIMBER_TARGET = 39390;
+  private final int CLIMBER_TARGET = 38500;
 
   public ClimberLift() {
     requires(climber);
