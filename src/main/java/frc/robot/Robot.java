@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.climber.ClimbPair;
 import frc.robot.commands.climber.ClimberClimb;
+import frc.robot.commands.climber.ClimberClimb2;
 import frc.robot.commands.climber.ClimberFullPrep;
+import frc.robot.commands.climber.ClimberFullPrep2;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
@@ -91,7 +93,7 @@ public class Robot extends TimedRobot {
 
     m_navx.zeroPitch();
 
-    //m_climbChooser.addOption("Level 2", new ClimbPair(new ClimberFullPrep2(), new ClimberClimb2()));
+    m_climbChooser.addOption("Level 2", new ClimbPair(new ClimberFullPrep2(), new ClimberClimb2()));
     m_climbChooser.addOption("Level 3", new ClimbPair(new ClimberFullPrep(), new ClimberClimb()));
     SmartDashboard.putData("Climb Mode", m_climbChooser);
 
