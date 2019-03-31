@@ -18,7 +18,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.commands.climber.ClimbPair;
+import frc.robot.commands.climber.ClimberClimb;
+import frc.robot.commands.climber.ClimberFullPrep;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
@@ -51,7 +53,7 @@ public class Robot extends TimedRobot {
   public static TimeScheduler dashboardScheduler;
 
   Command m_autonomousCommand;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  public static SendableChooser<ClimbPair> m_climbChooser = new SendableChooser<>();
 
   long lastTeleopPerStart = Long.MAX_VALUE;
   long lastTeleopPerEnd = Long.MAX_VALUE;
@@ -89,9 +91,9 @@ public class Robot extends TimedRobot {
 
     m_navx.zeroPitch();
 
-    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
+    //m_climbChooser.addOption("Level 2", new ClimbPair(new ClimberFullPrep2(), new ClimberClimb2()));
+    m_climbChooser.addOption("Level 3", new ClimbPair(new ClimberFullPrep(), new ClimberClimb()));
+    SmartDashboard.putData("Climb Mode", m_climbChooser);
 
     // NetworkTableInstance.getDefault().
     soundPlaying = NetworkTableInstance.getDefault().getTable("alerts").getEntry("sound");
@@ -162,8 +164,6 @@ public class Robot extends TimedRobot {
     m_limelight_sapg.camDriver();
 
     m_navx.zeroPitch();
-
-    m_autonomousCommand = m_chooser.getSelected();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");

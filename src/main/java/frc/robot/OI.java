@@ -24,6 +24,7 @@ import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.commands.arm.ArmZero;
 import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.climber.ClimberClimb;
+import frc.robot.commands.climber.ClimberClimbChosen;
 import frc.robot.commands.climber.ClimberDrop;
 import frc.robot.commands.climber.ClimberFinish;
 import frc.robot.commands.climber.ClimberFullPrep;
@@ -31,6 +32,7 @@ import frc.robot.commands.climber.ClimberLift;
 import frc.robot.commands.climber.ClimberMoveEncoder;
 import frc.robot.commands.climber.ClimberMoveShoulder;
 import frc.robot.commands.climber.ClimberPrep;
+import frc.robot.commands.climber.ClimberPrepChosen;
 import frc.robot.commands.climber.ClimberPull;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.intake.IntakeBasicControl;
@@ -75,7 +77,7 @@ public class OI {
 
     driveController.buttonY.whenPressed(new ArcadeDrive());
 
-    driveController.buttonBack.whenPressed(new ClimberClimb());
+    driveController.buttonBack.whenPressed(new ClimberClimbChosen());
 
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
@@ -102,7 +104,7 @@ public class OI {
     new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
-    new JoystickButton(buttonBox, 15).whenPressed(new ClimberFullPrep());
+    new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrepChosen());
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
@@ -175,7 +177,7 @@ public class OI {
     // SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPositionSafe(ArmPosition.MEDIUM_ROCKET_FRONT));
     // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
 
-    SmartDashboard.putData("Climb", new ClimberClimb());
+    SmartDashboard.putData("Climb", new ClimberClimbChosen());
     SmartDashboard.putData("Climber Move Enc", new ClimberMoveEncoder());
     SmartDashboard.putData("Climber Move Shoulder", new ClimberMoveShoulder());
 
