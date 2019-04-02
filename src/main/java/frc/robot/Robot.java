@@ -55,7 +55,7 @@ public class Robot extends TimedRobot {
   public static TimeScheduler dashboardScheduler;
 
   Command m_autonomousCommand;
-  public static SendableChooser<ClimbPair> m_climbChooser = new SendableChooser<>();
+  public static SendableChooser<ClimbPair> m_climbChooser = new SendableChooser<ClimbPair>();
 
   long lastTeleopPerStart = Long.MAX_VALUE;
   long lastTeleopPerEnd = Long.MAX_VALUE;
@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
     m_navx.zeroPitch();
 
     m_climbChooser.addOption("Level 2", new ClimbPair(new ClimberFullPrep2(), new ClimberClimb2()));
-    m_climbChooser.addOption("Level 3", new ClimbPair(new ClimberFullPrep(), new ClimberClimb()));
+    m_climbChooser.addDefault("Level 3", new ClimbPair(new ClimberFullPrep(), new ClimberClimb()));
     SmartDashboard.putData("Climb Mode", m_climbChooser);
 
     // NetworkTableInstance.getDefault().
