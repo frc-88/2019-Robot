@@ -5,35 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.arm;
+package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-/**
- * ArmCalibrate
- * 
- * This command is used to calibrate the arm.
- * First, pose the arm so that both joints are
- * pointed straight up. Hold that position and
- * run the ArmCalibrate command.
- */
-public class ArmCalibrate extends InstantCommand {
-  /**
-   * Add your docs here.
-   */
-  public ArmCalibrate() {
-    super();
-    requires(Robot.m_arm);
-  }
+public class ClimberClimbChosen extends InstantCommand {
 
-  // Called once when the command executes
+  // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (!DriverStation.getInstance().isFMSAttached()) {
-      Robot.m_arm.calibrateAbsoluteEncoders();
-    }
+    Robot.m_climbChooser.getSelected().climb.start();
   }
-
 }

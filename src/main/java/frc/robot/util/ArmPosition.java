@@ -16,7 +16,7 @@ import java.util.List;
 public final class ArmPosition {
     public static final ArmSetpoint HOME = new ArmSetpoint(158, 2);
     public static final ArmSetpoint START = new ArmSetpoint(158, 2);
-    public static final ArmSetpoint INTAKE = new ArmSetpoint(160, 82);
+    public static final ArmSetpoint INTAKE = new ArmSetpoint(162, 82);
     public static final ArmSetpoint CARGO_SHIP_FRONT = new ArmSetpoint(105, 33);
     public static final ArmSetpoint CARGO_SHIP_BACK = new ArmSetpoint(-105, -33);
     public static final ArmSetpoint CARGO_SHIP_BACK2 = new ArmSetpoint(-60, -215);
@@ -28,6 +28,7 @@ public final class ArmPosition {
     public static final ArmSetpoint HIGH_ROCKET_FRONT = new ArmSetpoint(28, 0);
     public static final ArmSetpoint HIGH_ROCKET_BACK = new ArmSetpoint(-30, 0);
     public static final ArmSetpoint PRE_CLIMB = new ArmSetpoint(75, 176);
+    public static final ArmSetpoint PRE_CLIMB2 = new ArmSetpoint(110, 176);
     public static final ArmSetpoint LOW_ROCKET_BACK = new ArmSetpoint(-90, -180);
 
     public static ArmSetpoint[] getPath(ArmSetpoint currentSetpoint, ArmSetpoint targetSetpoint) {
@@ -92,13 +93,6 @@ public final class ArmPosition {
         }
         else if (targetSetpoint.equals(PRE_CLIMB) && !currentSetpoint.equals(PRE_CLIMB)) {
 
-            // return new ArmSetpoint[] {
-            //     new ArmSetpoint(140, 90).passShoulder().passElbow(),
-            //     new ArmSetpoint(126,126).passShoulder().passElbow(),
-            //     new ArmSetpoint(91, 152).passShoulder(),
-            //     targetSetpoint
-            // };
-
             ArmSetpoint[] toIntake = getPath(currentSetpoint, INTAKE);
             ArmSetpoint[] ret = Arrays.copyOf(toIntake, toIntake.length + 1);
             ret[ret.length - 1] = targetSetpoint;
@@ -114,7 +108,17 @@ public final class ArmPosition {
                 targetSetpoint
             };
     
-        } else if (targetSetpoint.equals(INTAKE) && currentSetpoint.shoulder < 135) {
+        } 
+        else if (targetSetpoint.equals(PRE_CLIMB2) 
+                && !(currentSetpoint.equals(PRE_CLIMB) || currentSetpoint.equals(PRE_CLIMB2))) {
+
+            ArmSetpoint[] to1 = getPath(currentSetpoint, PRE_CLIMB);
+            ArmSetpoint[] ret = Arrays.copyOf(to1, to1.length + 1);
+            ret[ret.length - 1] = targetSetpoint;
+            return ret;
+    
+        }
+        else if (targetSetpoint.equals(INTAKE) && currentSetpoint.shoulder < 135) {
                 
             return new ArmSetpoint[] {
                 new ArmSetpoint(135, Math.max(currentSetpoint.elbow,0)).passShoulder().passElbow(),

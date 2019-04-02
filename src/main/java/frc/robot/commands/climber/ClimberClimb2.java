@@ -13,17 +13,18 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
+import frc.robot.util.ArmPosition;
 
-public class ClimberClimb extends Command {
+public class ClimberClimb2 extends Command {
 
   private Climber climber = Robot.m_climber;
   private Arm arm = Robot.m_arm;
   private Drive drive = Robot.m_drive;
 
-  private final double LIFT_SHOULDER_START = 86;
+  private final double LIFT_SHOULDER_START = 110;
   private final double LIFT_SHOULDER_END = 127;
   
-  private final double LIFT_ELBOW_START = 176;
+  private final double LIFT_ELBOW_START = 165;
   private final double LIFT_ELBOW_END = 160;
 
   private final int LIFT_CLIMBER_TARGET = 38500;
@@ -33,15 +34,13 @@ public class ClimberClimb extends Command {
   private final double DROP_SHOULDER_TARGET = 121;
   private final int DROP_CLIMBER_TARGET = 36500;
 
-  private final double CLEAR_SHOULDER_TARGET = 86;
+  private final double CLEAR_SHOULDER_TARGET = 110;
 
-  private final int CLEAR_CLIMBER_TARGET = 25000;
-
-  private final int CLIMBER_RECOVER_TARGET = 36500;
+  private final int CLEAR_CLIMBER_TARGET = 33000;
 
   private int state;
 
-  public ClimberClimb() {
+  public ClimberClimb2() {
     requires(climber);
     requires(arm);
     requires(drive);
@@ -106,15 +105,6 @@ public class ClimberClimb extends Command {
       arm.moveShoulder(DROP_SHOULDER_TARGET);
 
       drive.basicDrive(0.2, 0.2);
-      System.out.println("2");
-
-      if (Robot.m_navx.getPitch() < -25) {
-        state = 10;
-        
-        arm.configureCoastMode();
-        climber.configForEncoderPID();
-
-      }
 
       if (climber.onPlatform()) {
         state = 4;
@@ -129,15 +119,6 @@ public class ClimberClimb extends Command {
     case 3:
 
       drive.basicDrive(0.2, 0.2);
-      System.out.println("3");
-
-      if (Robot.m_navx.getPitch() < -25) {
-        state = 10;
-        
-        arm.configureCoastMode();
-        climber.configForEncoderPID();
-
-      }
 
       if (climber.onPlatform()) {
         state++;
@@ -148,19 +129,10 @@ public class ClimberClimb extends Command {
     case 4:
 
       drive.basicDrive(0, 0);
-      System.out.println("4");
       
       climber.moveEncoder(CLEAR_CLIMBER_TARGET);
       arm.moveShoulder(CLEAR_SHOULDER_TARGET);
       arm.moveElbow(PULL_ELBOW_TARGET);
-
-      if (Robot.m_navx.getPitch() < -25) {
-        state = 10;
-        
-        arm.configureCoastMode();
-        climber.configForEncoderPID();
-
-      }
 
       break;
 

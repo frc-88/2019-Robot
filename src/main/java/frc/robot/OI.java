@@ -24,13 +24,17 @@ import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.commands.arm.ArmZero;
 import frc.robot.commands.climber.ClimberBasicControl;
 import frc.robot.commands.climber.ClimberClimb;
+import frc.robot.commands.climber.ClimberClimbChosen;
 import frc.robot.commands.climber.ClimberDrop;
 import frc.robot.commands.climber.ClimberFinish;
+import frc.robot.commands.climber.ClimberFullPrep;
 import frc.robot.commands.climber.ClimberLift;
 import frc.robot.commands.climber.ClimberMoveEncoder;
 import frc.robot.commands.climber.ClimberMoveShoulder;
 import frc.robot.commands.climber.ClimberPrep;
+import frc.robot.commands.climber.ClimberPrepChosen;
 import frc.robot.commands.climber.ClimberPull;
+import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.commands.intake.IntakeEjectCargo;
@@ -71,6 +75,10 @@ public class OI {
     driveController.buttonA.whenPressed(new LimelightTrackingOn());
     driveController.buttonA.whenReleased(new LimelightTrackingOff());
 
+    driveController.buttonY.whenPressed(new ArcadeDrive());
+
+    driveController.buttonBack.whenPressed(new ClimberClimbChosen());
+
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
     new JoystickButton(buttonBox, 12).whenPressed(new IntakeManual(0.5));
@@ -86,8 +94,8 @@ public class OI {
     new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
     new JoystickButton(buttonBox, 11).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
-    new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new ClimberClimb(), new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1))));
-    new JoystickButton(buttonBox, 10).whenPressed(new InPreClimbCommand(new InstantCommand(), new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE))));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
     //new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
     //new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 17).whenPressed(new SAPGRetract());
@@ -96,8 +104,7 @@ public class OI {
     new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
     // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
-    new JoystickButton(buttonBox, 15).whenPressed(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB));
-    new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrep());
+    new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrepChosen());
 
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
@@ -170,7 +177,7 @@ public class OI {
     // SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPositionSafe(ArmPosition.MEDIUM_ROCKET_FRONT));
     // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
 
-    SmartDashboard.putData("Climb", new ClimberClimb());
+    SmartDashboard.putData("Climb", new ClimberClimbChosen());
     SmartDashboard.putData("Climber Move Enc", new ClimberMoveEncoder());
     SmartDashboard.putData("Climber Move Shoulder", new ClimberMoveShoulder());
 

@@ -9,33 +9,25 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 
-public class ClimberFinish extends Command {
+public class ClimberPrep2 extends Command {
 
   private Climber climber = Robot.m_climber;
-  private Arm arm = Robot.m_arm;
 
-  private final int CLIMBER_TARGET = 21500;
-  private final double SHOULDER_TARGET = 86;
-  private final double ELBOW_TARGET = 180;
+  private final int WINCH_DISTANCE = 33000; //2100 on jupiter
 
-  public ClimberFinish() {
+  public ClimberPrep2() {
     requires(climber);
-    requires(arm);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
     climber.configForEncoderPID();
-    climber.moveEncoder(CLIMBER_TARGET);
-    
-    arm.setShoulderSpeed(50);
-    arm.setElbowSpeed(50);
-    arm.moveShoulder(SHOULDER_TARGET);
-    arm.moveElbow(ELBOW_TARGET);
+    climber.zeroEncoder();
+    climber.moveEncoder(WINCH_DISTANCE);
+    climber.prep();
   }
 
   // Called repeatedly when this Command is scheduled to run

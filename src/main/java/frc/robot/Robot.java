@@ -18,7 +18,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.commands.climber.ClimbPair;
+import frc.robot.commands.climber.ClimberClimb;
+import frc.robot.commands.climber.ClimberClimb2;
+import frc.robot.commands.climber.ClimberFullPrep;
+import frc.robot.commands.climber.ClimberFullPrep2;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
@@ -51,12 +55,14 @@ public class Robot extends TimedRobot {
   public static TimeScheduler dashboardScheduler;
 
   Command m_autonomousCommand;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  public static SendableChooser<ClimbPair> m_climbChooser = new SendableChooser<ClimbPair>();
 
   long lastTeleopPerStart = Long.MAX_VALUE;
   long lastTeleopPerEnd = Long.MAX_VALUE;
   long lastRobotPerEnd = Long.MAX_VALUE;
   long lastControlPacket = Long.MAX_VALUE;
+
+  boolean firstAutoInit = true;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -85,9 +91,11 @@ public class Robot extends TimedRobot {
     m_limelight_sapg.ledOff();
     m_limelight_sapg.camDriver();
 
-    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
+    m_navx.zeroPitch();
+
+    m_climbChooser.addOption("Level 2", new ClimbPair(new ClimberFullPrep2(), new ClimberClimb2()));
+    m_climbChooser.addDefault("Level 3", new ClimbPair(new ClimberFullPrep(), new ClimberClimb()));
+    SmartDashboard.putData("Climb Mode", m_climbChooser);
 
     // NetworkTableInstance.getDefault().
     soundPlaying = NetworkTableInstance.getDefault().getTable("alerts").getEntry("sound");
@@ -119,7 +127,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_arm.zero();
     m_arm.configureCoastMode();
 
     soundPlaying.setString("");
@@ -147,13 +154,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_arm.zero();
+    if (!DriverStation.getInstance().isFMSAttached() || firstAutoInit) {
+      firstAutoInit = false;
+      m_arm.zero();
+    }
+    
+    
     m_arm.configureBrakeMode();
 
     m_limelight_sapg.ledOff();
     m_limelight_sapg.camDriver();
 
-    m_autonomousCommand = m_chooser.getSelected();
+    m_navx.zeroPitch();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -178,7 +190,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_arm.zero();
+    if (!DriverStation.getInstance().isFMSAttached()) {
+      m_arm.zero();
+    }
     m_arm.configureBrakeMode();
 
     m_limelight_sapg.ledOff();

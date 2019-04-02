@@ -15,7 +15,7 @@ public class ClimberPrep extends Command {
 
   private Climber climber = Robot.m_climber;
 
-  private final int WINCH_DISTANCE = 27500; //2100 on jupiter
+  private final int WINCH_DISTANCE = 23000; //2100 on jupiter
 
   public ClimberPrep() {
     requires(climber);
@@ -27,6 +27,7 @@ public class ClimberPrep extends Command {
     climber.configForEncoderPID();
     climber.zeroEncoder();
     climber.moveEncoder(WINCH_DISTANCE);
+    climber.prep();
   }
 
   // Called repeatedly when this Command is scheduled to run
