@@ -37,6 +37,10 @@ public class ArcadeDrive extends Command {
       turn = 0.5 * Robot.m_limelight_sapg.turnToTarget();
     }
 
+    if (Robot.m_oi.isDriverButtonBPressed()) {
+      turn = 0.5 * Robot.m_limelight_sapg.turnToTarget();
+      speed = Robot.m_limelight_sapg.hasTarget()? -0.3:0;
+    }
     Robot.m_drive.arcadeDrive(speed, turn);
   }
   
