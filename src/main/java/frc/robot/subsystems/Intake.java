@@ -3,11 +3,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import frc.robot.*;
+
+import frc.robot.RobotMap;
 import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.util.SharpIR;
 
@@ -25,34 +29,44 @@ public class Intake extends Subsystem {
     private final static int TIMEOUTMS = 0;
     private boolean objectSeen = false;
 
-
     public Intake() {
         rollerTalon = new TalonSRX(RobotMap.INTAKE_ID);
-        configTalon(rollerTalon);
         intakeSensor1 = new SharpIR(RobotMap.INTAKE_IR1_ID);
         intakeSensor2 = new SharpIR(RobotMap.INTAKE_IR2_ID);
+
+        configTalon(rollerTalon);
     }
 
-    public void updateDashboard(){
-    // double distance = intakeSensor1.getDistance();
-    //
-    //     if (distance < 20) {
-    //         if (!objectSeen) {
-    //             System.out.println("<TJ2>object seen!</TJ2>");
-    //             objectSeen = true;
-    //         }
-    //         System.out.format("<TJ2>%f</TJ2>%n", distance);
-    //     } else {
-    //         if (objectSeen) {
-    //             System.out.println("<TJ2>object gone!</TJ2>");
-    //             objectSeen = false;
-    //         }
-    //     }
-
+    public void updateDashboard() {
         SmartDashboard.putNumber("Cargo Distance 1", intakeSensor1.getDistance());
         SmartDashboard.putNumber("Cargo Distance 2", intakeSensor2.getDistance());
-        SmartDashboard.putNumber("Cargo Distance Avg", (intakeSensor1.getDistance() + intakeSensor2.getDistance()) / 2.0);
+        SmartDashboard.putNumber("Cargo Distance Avg", getAverageDistance());
         SmartDashboard.putBoolean("Has Cargo", hasCargo());
+    }
+
+    public void logDistanceData(BufferedWriter file) {
+        double dist1 = intakeSensor1.getDistance();
+        double dist2 = intakeSensor2.getDistance();
+
+        try {
+            if (hasCargo()) {
+                if (!objectSeen) {
+                    file.write("object begin");
+                    file.newLine();
+                    objectSeen = true;
+                }
+                file.write(String.format("%f,%f%n", dist1, dist2));
+                file.newLine();
+            } else {
+                if (objectSeen) {
+                    file.write("object end");
+                    file.newLine();
+                    objectSeen = false;
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     public boolean hasCargo() {
@@ -80,15 +94,13 @@ public class Intake extends Subsystem {
         talon.config_kF(SLOTIDX, 0, TIMEOUTMS);
         talon.configMotionCruiseVelocity(50, TIMEOUTMS);
         talon.configMotionAcceleration(50, TIMEOUTMS);
-
     }
 
     public void initDefaultCommand() {
         setDefaultCommand(new IntakeDefault());
-
     }
 
-    public void set(double percentOutput){
+    public void set(double percentOutput) {
         rollerTalon.set(ControlMode.PercentOutput, percentOutput);
     }
 }
