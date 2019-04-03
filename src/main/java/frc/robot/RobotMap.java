@@ -55,15 +55,15 @@ public class RobotMap {
   public static final int CLIMBER_ID = 6;
   public static final int CLIMBER_PLATFORM_IR_ID = 2;
 
-  // SAPG
-  public static final int SAPG_DEPLOY_FORWARD = 2;
-  public static final int SAPG_DEPLOY_REVERSE = 5;
-  public static final int SAPG_GRAB_FORWARD = 4;
-  public static final int SAPG_GRAB_REVERSE = 3;
-  public static final int SAPG_DEPLOY_PCM = 21;
-  public static final int SAPG_GRAB_PCM = 21;
-  public static final int SAPG_MOTOR_ID = 06;
-  public static final int SAPG_PANEL_IR_ID = 4;
+  // WAPG
+  public static final int WAPG_DEPLOY_FORWARD = 2;
+  public static final int WAPG_DEPLOY_REVERSE = 5;
+  public static final int WAPG_GRAB_FORWARD = 4;
+  public static final int WAPG_GRAB_REVERSE = 3;
+  public static final int WAPG_DEPLOY_PCM = 21;
+  public static final int WAPG_GRAB_PCM = 21;
+  public static final int WAPG_MOTOR_ID = 06;
+  public static final int WAPG_PANEL_IR_ID = 4;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;
@@ -137,13 +137,9 @@ public class RobotMap {
   //Intake
   public static final double INTAKE_HAS_CARGO = 11;
 
-  // SAPG
-  public static final double SAPG_TOLERANCE = 2; //inches
-
   // OI  
   public static final int OPERATOR_CONTROLLER_PORT = 1;
   public static final int OPERATOR_NONE = 0;
-  public static final int OPERATOR_SAPG_TEST = 1;
   public static final int OPERATOR_ARM_TEST = 2;
   public static final int OPERATOR_CLIMB_TEST = 3;
   public static final int OPERATOR_CONTROL = OPERATOR_CLIMB_TEST;

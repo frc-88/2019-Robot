@@ -10,12 +10,12 @@ import frc.robot.util.SharpIR;
 
 /**
  * 
- *      SAPG. Is it two
- *  Syllables or is it four?
- * Who cares? Watch it score!
+ * it's wicked awesome 
+ * and really good at grabbing 
+ * yellow hatch panels
  * 
  */
-public class SAPG extends Subsystem {
+public class WAPG extends Subsystem {
     private static final Preferences prefs = Preferences.getInstance();
 
     private DoubleSolenoid deployPiston;
@@ -25,10 +25,10 @@ public class SAPG extends Subsystem {
     // Preferences with their default values
     private double panelThreshold = 4.5;
 
-    public SAPG() {
-        deployPiston = new DoubleSolenoid(RobotMap.SAPG_DEPLOY_PCM, RobotMap.SAPG_DEPLOY_FORWARD, RobotMap.SAPG_DEPLOY_REVERSE);
-        grabPiston = new DoubleSolenoid(RobotMap.SAPG_GRAB_PCM, RobotMap.SAPG_GRAB_FORWARD, RobotMap.SAPG_GRAB_REVERSE);
-        panelDetector = new SharpIR(RobotMap.SAPG_PANEL_IR_ID);
+    public WAPG() {
+        deployPiston = new DoubleSolenoid(RobotMap.WAPG_DEPLOY_PCM, RobotMap.WAPG_DEPLOY_FORWARD, RobotMap.WAPG_DEPLOY_REVERSE);
+        grabPiston = new DoubleSolenoid(RobotMap.WAPG_GRAB_PCM, RobotMap.WAPG_GRAB_FORWARD, RobotMap.WAPG_GRAB_REVERSE);
+        panelDetector = new SharpIR(RobotMap.WAPG_PANEL_IR_ID);
 
         initPreferences();
         fetchPreferences();
@@ -37,13 +37,13 @@ public class SAPG extends Subsystem {
     }
 
     private void initPreferences() {
-        if (!prefs.containsKey("SAPG:Panel_Threshold")) {
-            prefs.putDouble("SAPG:Panel_Threshold", panelThreshold);
+        if (!prefs.containsKey("WAPG:Panel_Threshold")) {
+            prefs.putDouble("WAPG:Panel_Threshold", panelThreshold);
         }
     }
 
     public void fetchPreferences() {
-        panelThreshold = prefs.getDouble("SAPG:Panel_Threshold", panelThreshold);
+        panelThreshold = prefs.getDouble("WAPG:Panel_Threshold", panelThreshold);
     }
 
     public void open() {
@@ -71,11 +71,11 @@ public class SAPG extends Subsystem {
     }
 
     public void updateDashboard() {
-        SmartDashboard.putNumber("SAPG:PanelDistance", getPanelDistance());
-        SmartDashboard.putBoolean("SAPG:HasPanel", hasPanel());
+        SmartDashboard.putNumber("WAPG:PanelDistance", getPanelDistance());
+        SmartDashboard.putBoolean("WAPG:HasPanel", hasPanel());
 
         // write prefs back to the dashboard
-        SmartDashboard.putNumber("SAPG:Panel_Threshold", panelThreshold);
+        SmartDashboard.putNumber("WAPG:Panel_Threshold", panelThreshold);
     }
 
     @Override

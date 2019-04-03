@@ -42,10 +42,10 @@ import frc.robot.commands.intake.IntakeLoadCargo;
 import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
-import frc.robot.commands.sapg.SAPGClose;
-import frc.robot.commands.sapg.SAPGDeploy;
-import frc.robot.commands.sapg.SAPGOpen;
-import frc.robot.commands.sapg.SAPGRetract;
+import frc.robot.commands.wapg.WAPGClose;
+import frc.robot.commands.wapg.WAPGDeploy;
+import frc.robot.commands.wapg.WAPGOpen;
+import frc.robot.commands.wapg.WAPGRetract;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.TJController;
@@ -73,8 +73,8 @@ public class OI {
 
     driveController.buttonBack.whenPressed(new ClimberClimbChosen());
 
-    new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
-    new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
+    new JoystickButton(buttonBox, 16).whenPressed(new WAPGClose());
+    new JoystickButton(buttonBox, 14).whenPressed(new WAPGOpen());
     new JoystickButton(buttonBox, 12).whenPressed(new IntakeManual(0.5));
     new JoystickButton(buttonBox, 12).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
@@ -90,8 +90,8 @@ public class OI {
     new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
-    new JoystickButton(buttonBox, 17).whenPressed(new SAPGRetract());
-    new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
+    new JoystickButton(buttonBox, 17).whenPressed(new WAPGRetract());
+    new JoystickButton(buttonBox, 13).whenPressed(new WAPGDeploy());
     new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrepChosen());
 
     switch (RobotMap.OPERATOR_CONTROL) {
@@ -108,12 +108,6 @@ public class OI {
       operatorController.buttonY.whenPressed(new ArmGoToPosition(105, 35));
       operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo(-1));
       operatorController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
-      break;
-    case RobotMap.OPERATOR_SAPG_TEST:
-      operatorController.buttonA.whenPressed(new SAPGDeploy());
-      operatorController.buttonB.whenPressed(new SAPGRetract());
-      operatorController.buttonX.whenPressed(new SAPGOpen());
-      operatorController.buttonY.whenPressed(new SAPGClose());
       break;
 
     case RobotMap.OPERATOR_CLIMB_TEST:
@@ -134,10 +128,10 @@ public class OI {
     //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
-    SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
-    SmartDashboard.putData("SAPG Retract", new SAPGRetract());
-    SmartDashboard.putData("SAPG Open", new SAPGOpen());
-    SmartDashboard.putData("SAPG Close", new SAPGClose());
+    SmartDashboard.putData("WAPG Deploy", new WAPGDeploy());
+    SmartDashboard.putData("WAPG Retract", new WAPGRetract());
+    SmartDashboard.putData("WAPG Open", new WAPGOpen());
+    SmartDashboard.putData("WAPG Close", new WAPGClose());
 
     SmartDashboard.putData("Intake Tester", new IntakeTester());
 
