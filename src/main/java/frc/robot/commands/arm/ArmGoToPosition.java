@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.util.ArmSetpoint;
 
 public class ArmGoToPosition extends Command {
   private double shoulder_target;
@@ -35,11 +36,11 @@ public class ArmGoToPosition extends Command {
     usePrefences = true;
   }
 
-  public ArmGoToPosition(double [] position) {
+  public ArmGoToPosition(ArmSetpoint position) {
     requires(Robot.m_arm);
 
-    shoulder_degrees = position[0];
-    elbow_degrees = position[1];
+    shoulder_degrees = position.shoulder;
+    elbow_degrees = position.elbow;
 
     usePrefences = false;
   }
@@ -68,11 +69,11 @@ public class ArmGoToPosition extends Command {
         elbowTarget = "Arm:ElbowTarget";
       }
 
-      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(prefs.getDouble(shoulderTarget, 0.0));
-      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(prefs.getDouble(elbowTarget,0.0));
+      shoulder_target = prefs.getDouble(shoulderTarget, 0.0);
+      elbow_target = prefs.getDouble(elbowTarget,0.0);
     } else {
-      shoulder_target = Robot.m_arm.convertShoulderDegreesToMotor(shoulder_degrees);
-      elbow_target = Robot.m_arm.convertElbowDegreesToMotor(elbow_degrees);
+      shoulder_target = shoulder_degrees;
+      elbow_target = elbow_degrees;
     }
   }
 
@@ -80,7 +81,7 @@ public class ArmGoToPosition extends Command {
   @Override
   protected void execute() {
     Robot.m_arm.moveShoulder(shoulder_target);
-    if(goingToIntake && Robot.m_arm.getShoulderDegrees()>135){
+    if(goingToIntake && Robot.m_arm.getShoulderAbsDegrees()>135){
     Robot.m_arm.moveElbow(elbow_target);
 
     }
@@ -88,8 +89,8 @@ public class ArmGoToPosition extends Command {
           Robot.m_arm.moveElbow(elbow_target);
 
     }
-    else if(goingToIntake && Robot.m_arm.getShoulderDegrees()<135){
-      Robot.m_arm.moveElbow(Robot.m_arm.convertElbowDegreesToMotor(0));
+    else if(goingToIntake && Robot.m_arm.getShoulderAbsDegrees()<135){
+      Robot.m_arm.moveElbow(0);
     }
 
     SmartDashboard.putNumber("Arm:commandShoulder", shoulder_target);

@@ -5,29 +5,31 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.arm;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.subsystems.Climber;
 
-public class ArmEStop extends Command {
-  public ArmEStop() {
-    requires(Robot.m_arm);
+public class ClimberMoveEncoder extends Command {
+  public ClimberMoveEncoder() {
+    requires(Robot.m_climber);
+    SmartDashboard.putNumber("SetClimberPosition", 0);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_arm.stopArm();
-    Robot.soundPlaying.setString("warning");
-
-  System.out.println("Arm E Stop!!!");    
+    Robot.m_climber.configForEncoderPID();
+    Robot.m_climber.zeroEncoder();
+    Robot.m_climber.moveEncoder((int)SmartDashboard.getNumber("SetClimberPosition", 0));
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_arm.stopArm();
+
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -45,6 +47,5 @@ public class ArmEStop extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

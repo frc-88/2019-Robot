@@ -5,21 +5,28 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.limelight;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-public class SAPGRetract extends InstantCommand {
-  public SAPGRetract() {
+/**
+ * Add your docs here.
+ */
+public class LimelightTrackingOff extends InstantCommand {
+  /**
+   * Add your docs here.
+   */
+  public LimelightTrackingOff() {
     super();
-    requires(Robot.m_sapg);
+    requires(Robot.m_limelight_sapg);
   }
 
-  // Called just before this Command runs the first time
+  // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_sapg.retract();
+    Robot.m_limelight_sapg.ledOff();
+    Robot.m_limelight_sapg.camDriver();
   }
 
 }

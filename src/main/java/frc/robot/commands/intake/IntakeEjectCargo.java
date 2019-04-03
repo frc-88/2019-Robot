@@ -22,8 +22,8 @@ public class IntakeEjectCargo extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    double shoulder = Robot.m_arm.getMotorShoulderDegrees();
-    double elbow = Robot.m_arm.getMotorElbowDegrees();
+    double shoulder = Robot.m_arm.getShoulderMotorDegrees();
+    double elbow = Robot.m_arm.getElbowMotorDegrees();
     double speed = INTAKE_SPEED;
 
     counts = 0;

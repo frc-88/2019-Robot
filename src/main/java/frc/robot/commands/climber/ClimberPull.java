@@ -5,57 +5,35 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 
-public class SAPGDefault extends Command {
-  private static final int COUNTS_TO_CLOSE = 10;
-  private static final int COUNTS_TO_CENTER= 50;
+public class ClimberPull extends Command {
+  
+  private Climber climber = Robot.m_climber;
+  private Arm arm = Robot.m_arm;
 
-  private int panelCounts = 0;
-  private int noPanelCounts = 0;
+  private final double ELBOW_TARGET = 180;
 
-  public SAPGDefault() {
-    requires(Robot.m_sapg);
+  public ClimberPull() {
+    requires(climber);
+    requires(arm);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    // This command will be interrupted often by other SAPG commands (most InstantCommands)
-    // remember that initialize will be called each time this command starts again after
-    // being interrupted. So...let's not re-initialize our counts and just keep them over time.
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-
-    if (!Robot.m_sapg.hasPanel()) {
-      noPanelCounts++;
-      panelCounts = 0;
-    } else {
-      panelCounts++;
-      noPanelCounts = 0;
-    }
-
-    if (Robot.m_sapg.isTracking() && Robot.m_sapg.targetInRange()) {
-      noPanelCounts = 0;
-      panelCounts = 0;
-      Robot.m_sapg.track();
-    } else { 
-      if ((noPanelCounts > COUNTS_TO_CENTER) || (panelCounts > COUNTS_TO_CENTER)) {
-        Robot.m_sapg.goToCenter();
-      }
-    }
-
-    if (noPanelCounts >= COUNTS_TO_CLOSE) {
-//      Robot.m_sapg.close();
-    }
-
-    Robot.m_sapg.retract();
+      arm.setElbowSpeed(50);
+      arm.moveElbowAbs(ELBOW_TARGET);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -73,5 +51,6 @@ public class SAPGDefault extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

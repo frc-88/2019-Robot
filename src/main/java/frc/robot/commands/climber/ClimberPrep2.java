@@ -5,29 +5,34 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.arm;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Climber;
 
-public class ArmEStop extends Command {
-  public ArmEStop() {
-    requires(Robot.m_arm);
+public class ClimberPrep2 extends Command {
+
+  private Climber climber = Robot.m_climber;
+
+  private final int WINCH_DISTANCE = 33000; //2100 on jupiter
+
+  public ClimberPrep2() {
+    requires(climber);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_arm.stopArm();
-    Robot.soundPlaying.setString("warning");
-
-  System.out.println("Arm E Stop!!!");    
+    climber.configForEncoderPID();
+    climber.zeroEncoder();
+    climber.moveEncoder(WINCH_DISTANCE);
+    climber.prep();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_arm.stopArm();
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -45,6 +50,5 @@ public class ArmEStop extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

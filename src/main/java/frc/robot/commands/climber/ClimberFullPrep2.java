@@ -5,27 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.arm.ArmGoToSetpoint;
+import frc.robot.util.ArmPosition;
 
-/**
- * Add your docs here.
- */
-public class SAPGTrackStart extends InstantCommand {
+public class ClimberFullPrep2 extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public SAPGTrackStart() {
-    super();
-    requires(Robot.m_sapg);
+  public ClimberFullPrep2() {
+    addParallel(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB2));
+    addParallel(new ClimberPrep2());
   }
-
-  // Called once when the command executes
-  @Override
-  protected void initialize() {
-    Robot.m_sapg.trackingOn();
-  }
-
 }

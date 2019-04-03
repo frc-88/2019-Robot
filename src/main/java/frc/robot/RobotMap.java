@@ -15,6 +15,8 @@ package frc.robot;
  */
 public class RobotMap {
 
+  public static final boolean DEBUG = true;
+
   /////////////////////////////////////////////////////////////////////////////
   // IDs
   /////////////////////////////////////////////////////////////////////////////
@@ -46,10 +48,12 @@ public class RobotMap {
   // Intake
   
   public static final int INTAKE_ID = 10;
-  public static final int INTAKE_IR_ID = 0;
+  public static final int INTAKE_IR1_ID = 0;
+  public static final int INTAKE_IR2_ID = 3;
 
   // Climber
-  public static final int CLIMBER_ID = 12;
+  public static final int CLIMBER_ID = 6;
+  public static final int CLIMBER_PLATFORM_IR_ID = 2;
 
   // SAPG
   public static final int SAPG_DEPLOY_FORWARD = 2;
@@ -59,7 +63,7 @@ public class RobotMap {
   public static final int SAPG_DEPLOY_PCM = 21;
   public static final int SAPG_GRAB_PCM = 21;
   public static final int SAPG_MOTOR_ID = 06;
-  public static final int SAPG_PANEL_IR_ID = 2;
+  public static final int SAPG_PANEL_IR_ID = 4;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;
@@ -119,21 +123,19 @@ public class RobotMap {
   public static final int DRIVE_MIN_TRAJ_POINTS = 10;
 
   // Arm
-  public static final double ARM_TOLERANCE = 1;
-  public static final int SHOULDER_MAX_SPEED = 120;
-  public static final int ELBOW_MAX_SPEED = 160;
+  public static final double ARM_TOLERANCE = 3;
+  public static final double SHOULDER_MAX_SPEED = 200;
+  public static final double ELBOW_MAX_SPEED = 200;
+  public static final double ACCELERATION_RATIO = 1.5;
 
   // Climber
 
-  public static final double CLIMBER_LIFTING_CURRENT = 10.0;
-  public static final double CLIMBER_SEEKING_SPEED = -1;
-  public static final double CLIMBER_SEEKING_RAMP = -0.05;
-  public static final int CLIMBER_TICKS_PER_INCH = 15908;
-  public static final int CLIMBER_MAX_SPEED = 10;
-  public static final double CLIMBER_TOLERANCE = 0.25;
+  public static final int CLIMB_ARM_SPEED = 40;
+  public static final double CLIMBER_TOLERANCE = 200;
+  public static final double PLATFORM_IR_THRESHOLD = 8.5;
 
   //Intake
-  public static final double INTAKE_HAS_CARGO = 20;
+  public static final double INTAKE_HAS_CARGO = 11;
 
   // SAPG
   public static final double SAPG_TOLERANCE = 2; //inches
@@ -143,7 +145,8 @@ public class RobotMap {
   public static final int OPERATOR_NONE = 0;
   public static final int OPERATOR_SAPG_TEST = 1;
   public static final int OPERATOR_ARM_TEST = 2;
-  public static final int OPERATOR_CONTROL = OPERATOR_SAPG_TEST;
+  public static final int OPERATOR_CLIMB_TEST = 3;
+  public static final int OPERATOR_CONTROL = OPERATOR_CLIMB_TEST;
 
   public static final int DRIVE_CONTROLLER_PORT = 0;
 
@@ -151,5 +154,4 @@ public class RobotMap {
 
   // Misc
   public static final int CAN_TIMEOUT = 0;
-
 }

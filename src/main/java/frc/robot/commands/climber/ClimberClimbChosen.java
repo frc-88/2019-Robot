@@ -5,21 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-public class SAPGRetract extends InstantCommand {
-  public SAPGRetract() {
-    super();
-    requires(Robot.m_sapg);
-  }
+public class ClimberClimbChosen extends InstantCommand {
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_sapg.retract();
+    Robot.m_climbChooser.getSelected().climb.start();
   }
-
 }

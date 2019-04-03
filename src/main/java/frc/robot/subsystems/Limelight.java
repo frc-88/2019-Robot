@@ -34,6 +34,7 @@ public class Limelight extends Subsystem {
   private NetworkTableEntry _camtran;
   private NetworkTableEntry _ledMode;
   private NetworkTableEntry _stream;
+  private NetworkTableEntry _camMode;
   private NetworkTableEntry _pipeline;
   private NetworkTableEntry _getpipe;
 
@@ -68,9 +69,37 @@ public class Limelight extends Subsystem {
     _camtran = _table.getEntry("camtran");
     _ledMode = _table.getEntry("ledMode");
     _stream = _table.getEntry("stream");
+    _camMode = _table.getEntry("camMode");
 
-    _stream.setNumber(2);
+    _stream.setNumber(0);
     setPipeline(0);
+  }
+
+  public double turnToTarget() {
+    double turn = 0;
+
+    if (hasTarget()) {
+      turn = getHorizontalOffsetAngle() / 30;
+
+      double area0 = _table.getEntry("ta0").getDouble(0);
+      double x0 = _table.getEntry("tx0").getDouble(0);
+      double area1 = _table.getEntry("ta1").getDouble(0);
+      double x1 = _table.getEntry("tx1").getDouble(0);
+
+      if (area0 > 0 && area1 > 0) {
+        double ratio = area0 / area1;
+
+        if (ratio > 1) {
+          if (x0 < x1) { turn -= Math.min(ratio-1,0.15); } 
+          else { turn += Math.min(ratio-1,0.15); }
+        } else {
+          if (x0 < x1) { turn += Math.min(1-ratio,0.15); } 
+          else { turn -= Math.min(1-ratio,0.15); }
+        }
+      }
+    } 
+
+    return turn;
   }
 
   public void setPip() {
@@ -146,7 +175,14 @@ public class Limelight extends Subsystem {
     _ledMode.setNumber(3);
   }
 
-  
+  public void camVision() {
+    _camMode.setNumber(0);
+  }
+
+  public void camDriver() {
+    _camMode.setNumber(1);
+  }
+
   // Read all 6 dimensions of your camera’s transform (x,y,z,pitch,yaw,roll)
   // by reading the “camtran�? networktable number array.
 
@@ -233,8 +269,8 @@ public class Limelight extends Subsystem {
   public void updateDashboard() {
     SmartDashboard.putBoolean(name + ":HasTarget", hasTarget());
     SmartDashboard.putBoolean(name + ":IsConnected", isConnected());
-    SmartDashboard.putNumber(name + ":Angle", getTargetAngle());
-    SmartDashboard.putNumber(name + ":Distance", getTargetDistance());
+    // SmartDashboard.putNumber(name + ":Angle", getTargetAngle());
+    // SmartDashboard.putNumber(name + ":Distance", getTargetDistance());
   }
 
   @Override

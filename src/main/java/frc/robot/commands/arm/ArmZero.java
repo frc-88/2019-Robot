@@ -13,11 +13,11 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class ArmZeroShoulder extends InstantCommand {
+public class ArmZero extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public ArmZeroShoulder() {
+  public ArmZero() {
     super();
     requires(Robot.m_arm);
   }
@@ -25,7 +25,7 @@ public class ArmZeroShoulder extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_arm.zeroShoulderMotorEncoder();
+    Robot.m_arm.zero();
   }
 
 }

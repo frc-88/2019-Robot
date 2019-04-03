@@ -20,7 +20,7 @@ import frc.robot.util.SharpIR;
  */
 public class Intake extends Subsystem {
     TalonSRX rollerTalon;
-    SharpIR intakeSensor;
+    SharpIR intakeSensor1, intakeSensor2;
     private final static int SLOTIDX = 0;
     private final static int TIMEOUTMS = 0;
     private boolean objectSeen = false;
@@ -29,12 +29,13 @@ public class Intake extends Subsystem {
     public Intake() {
         rollerTalon = new TalonSRX(RobotMap.INTAKE_ID);
         configTalon(rollerTalon);
-        intakeSensor = new SharpIR(RobotMap.INTAKE_IR_ID);
+        intakeSensor1 = new SharpIR(RobotMap.INTAKE_IR1_ID);
+        intakeSensor2 = new SharpIR(RobotMap.INTAKE_IR2_ID);
     }
 
     public void updateDashboard(){
-        double distance = intakeSensor.getDistance();
-        
+    // double distance = intakeSensor1.getDistance();
+    //
     //     if (distance < 20) {
     //         if (!objectSeen) {
     //             System.out.println("<TJ2>object seen!</TJ2>");
@@ -48,12 +49,19 @@ public class Intake extends Subsystem {
     //         }
     //     }
 
-        SmartDashboard.putNumber("Cargo Distance", distance);
+        SmartDashboard.putNumber("Cargo Distance 1", intakeSensor1.getDistance());
+        SmartDashboard.putNumber("Cargo Distance 2", intakeSensor2.getDistance());
+        SmartDashboard.putNumber("Cargo Distance Avg", (intakeSensor1.getDistance() + intakeSensor2.getDistance()) / 2.0);
         SmartDashboard.putBoolean("Has Cargo", hasCargo());
     }
 
     public boolean hasCargo() {
-        return intakeSensor.getDistance() < RobotMap.INTAKE_HAS_CARGO;
+        return getAverageDistance() < RobotMap.INTAKE_HAS_CARGO;
+        //return intakeSensor1.getDistance() < RobotMap.INTAKE_HAS_CARGO * 2;
+    }
+
+    public double getAverageDistance() {
+        return ((intakeSensor1.getDistance() + intakeSensor2.getDistance()) / 2.0);
     }
 
     private void configTalon(TalonSRX talon) {

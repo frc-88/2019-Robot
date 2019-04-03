@@ -332,6 +332,10 @@ public class Drive extends Subsystem {
 
         basicDriveLimited(leftSpeed, rightSpeed);
         // basicDrive(speed + turn, speed - turn);
+
+        SmartDashboard.putNumber("DBUG: jSpeed", joystickSpeed);
+        SmartDashboard.putNumber("DBUG: accelSpeed", speed);
+        SmartDashboard.putNumber("DBUG: trueSpeed", (leftDrive.getClosedLoopTarget() + rightDrive.getClosedLoopTarget())/2);
     }
 
     public double limitAcceleration(double speed) {
@@ -408,10 +412,9 @@ public class Drive extends Subsystem {
         } else {
             if (isInHighGear() && Math.abs(getStraightSpeed()) <= RobotMap.SHIFT_INTO_LOW_GEAR) {
                 shiftToLow();
-            } else if (!isInHighGear() && Math.abs(getStraightSpeed()) >= RobotMap.SHIFT_INTO_HIGH_GEAR
-                    && Math.abs(joystickSpeed) > RobotMap.COMMANDED_STOP_SPEED) {
+            } else if (!isInHighGear() && Math.abs(getStraightSpeed()) >= RobotMap.SHIFT_INTO_HIGH_GEAR) {
                 shiftToHigh();
-            } else if (isInHighGear() && Math.abs(getStraightSpeed()) >= RobotMap.SHIFT_INTO_LOW_GEAR_STOP
+            } else if (isInHighGear() && Math.abs(getStraightSpeed()) <= RobotMap.SHIFT_INTO_LOW_GEAR_STOP
                     && Math.abs(joystickSpeed) <= RobotMap.COMMANDED_STOP_SPEED) {
                 shiftToLow();
             }
@@ -422,8 +425,10 @@ public class Drive extends Subsystem {
     public void shiftToLow() {
         leftShifter.set(Value.kForward);
         rightShifter.set(Value.kForward);
+
         leftTransmission.shiftToLow();
         rightTransmission.shiftToLow();
+
         leftVelocityController.setKP(RobotMap.DRIVE_VEL_LOW_KP);
         leftVelocityController.setKI(RobotMap.DRIVE_VEL_LOW_KI);
         leftVelocityController.setKD(RobotMap.DRIVE_VEL_LOW_KD);
@@ -440,8 +445,10 @@ public class Drive extends Subsystem {
     public void shiftToHigh() {
         leftShifter.set(Value.kReverse);
         rightShifter.set(Value.kReverse);
+
         leftTransmission.shiftToHigh();
         rightTransmission.shiftToHigh();
+
         leftVelocityController.setKP(RobotMap.DRIVE_VEL_HIGH_KP);
         leftVelocityController.setKI(RobotMap.DRIVE_VEL_HIGH_KI);
         leftVelocityController.setKD(RobotMap.DRIVE_VEL_HIGH_KD);

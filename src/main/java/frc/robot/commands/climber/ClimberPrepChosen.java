@@ -5,27 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-/**
- * Add your docs here.
- */
-public class SAPGTrackStop extends InstantCommand {
-  /**
-   * Add your docs here.
-   */
-  public SAPGTrackStop() {
-    super();
-    requires(Robot.m_sapg);
-  }
+public class ClimberPrepChosen extends InstantCommand {
 
-  // Called once when the command executes
+  // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_sapg.trackingOff();
+    Robot.m_climbChooser.getSelected().prep.start();
   }
-
 }

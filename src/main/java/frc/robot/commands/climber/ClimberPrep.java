@@ -5,29 +5,34 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.Climber;
 
-public class SAPGGoToPosition extends Command {
-  private int target;
-  public SAPGGoToPosition(int position) {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    requires(Robot.m_sapg);
-    target = position;
+public class ClimberPrep extends Command {
+
+  private Climber climber = Robot.m_climber;
+
+  private final int WINCH_DISTANCE = 23000; //2100 on jupiter
+
+  public ClimberPrep() {
+    requires(climber);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    climber.configForEncoderPID();
+    climber.zeroEncoder();
+    climber.moveEncoder(WINCH_DISTANCE);
+    climber.prep();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_sapg.goToPosition(target);
   }
 
   // Make this return true when this Command no longer needs to run execute()

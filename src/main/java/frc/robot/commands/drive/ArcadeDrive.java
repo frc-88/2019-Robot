@@ -28,12 +28,20 @@ public class ArcadeDrive extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.m_drive.autoshift();
+    
     double speed=Robot.m_oi.getDriverLeftYAxis();
     double turn=Robot.m_oi.getDriverRightXAxis();
 
+    if (Robot.m_oi.isDriverButtonAPressed()) {
+      turn = 0.5 * Robot.m_limelight_sapg.turnToTarget();
+    }
+
+    if (Robot.m_oi.isDriverButtonBPressed()) {
+      turn = 0.5 * Robot.m_limelight_sapg.turnToTarget();
+      speed = Robot.m_limelight_sapg.hasTarget()? -0.3:0;
+    }
     Robot.m_drive.arcadeDrive(speed, turn);
-    
-    Robot.m_drive.autoshift();
   }
   
 

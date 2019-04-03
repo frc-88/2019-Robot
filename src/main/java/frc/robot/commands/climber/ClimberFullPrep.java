@@ -5,21 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.arm.ArmGoToSetpoint;
+import frc.robot.util.ArmPosition;
 
-public class SAPGRetract extends InstantCommand {
-  public SAPGRetract() {
-    super();
-    requires(Robot.m_sapg);
+public class ClimberFullPrep extends CommandGroup {
+  /**
+   * Add your docs here.
+   */
+  public ClimberFullPrep() {
+    addParallel(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB));
+    addParallel(new ClimberPrep());
   }
-
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
-    Robot.m_sapg.retract();
-  }
-
 }
