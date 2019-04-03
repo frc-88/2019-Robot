@@ -40,10 +40,10 @@ import frc.robot.commands.intake.IntakeLoadCargo2;
 import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
-import frc.robot.commands.sapg.SAPGClose;
-import frc.robot.commands.sapg.SAPGDeploy;
-import frc.robot.commands.sapg.SAPGOpen;
-import frc.robot.commands.sapg.SAPGRetract;
+import frc.robot.commands.wapg.WAPGClose;
+import frc.robot.commands.wapg.WAPGDeploy;
+import frc.robot.commands.wapg.WAPGOpen;
+import frc.robot.commands.wapg.WAPGRetract;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.TJButtonBox;
@@ -74,10 +74,10 @@ public class OI {
     driveController.buttonY.whenPressed(new ArcadeDrive());
 
     // Operator button box    
-    buttonBox.buttonWhiteLeftTop.whenPressed(new SAPGDeploy());
-    buttonBox.buttonWhiteTopLeft.whenPressed(new SAPGOpen());
-    buttonBox.buttonWhiteTopRight.whenPressed(new SAPGClose());
-    buttonBox.buttonWhiteRightTop.whenPressed(new SAPGRetract());
+    buttonBox.buttonWhiteLeftTop.whenPressed(new WAPGDeploy());
+    buttonBox.buttonWhiteTopLeft.whenPressed(new WAPGOpen());
+    buttonBox.buttonWhiteTopRight.whenPressed(new WAPGClose());
+    buttonBox.buttonWhiteRightTop.whenPressed(new WAPGRetract());
     buttonBox.buttonYellowTriangle.whenPressed(new IntakeManual(0.5));
     buttonBox.buttonYellowTriangle.whenReleased(new IntakeDefault());
     buttonBox.buttonWhiteTriangle.whenPressed(new IntakeManual(-0.5));
@@ -110,13 +110,6 @@ public class OI {
       testController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
       break;
 
-    case RobotMap.OPERATOR_SAPG_TEST:
-      testController.buttonA.whenPressed(new SAPGDeploy());
-      testController.buttonB.whenPressed(new SAPGRetract());
-      testController.buttonX.whenPressed(new SAPGOpen());
-      testController.buttonY.whenPressed(new SAPGClose());
-      break;
-
     case RobotMap.OPERATOR_CLIMB_TEST:
       testController.buttonA.whenPressed(new ClimberLift());
       testController.buttonB.whenPressed(new ClimberPull());
@@ -132,10 +125,10 @@ public class OI {
     }
 
     // setup dashboard buttons for testing and debug
-    SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
-    SmartDashboard.putData("SAPG Retract", new SAPGRetract());
-    SmartDashboard.putData("SAPG Open", new SAPGOpen());
-    SmartDashboard.putData("SAPG Close", new SAPGClose());
+    SmartDashboard.putData("WAPG Deploy", new WAPGDeploy());
+    SmartDashboard.putData("WAPG Retract", new WAPGRetract());
+    SmartDashboard.putData("WAPG Open", new WAPGOpen());
+    SmartDashboard.putData("WAPG Close", new WAPGClose());
 
     SmartDashboard.putData("Limelight On", new LimelightTrackingOn());
     SmartDashboard.putData("Limelight Off", new LimelightTrackingOff());

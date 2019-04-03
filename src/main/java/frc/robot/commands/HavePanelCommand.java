@@ -31,6 +31,6 @@ public class HavePanelCommand extends ConditionalCommand {
 
   @Override
   protected boolean condition() {
-    return Robot.m_sapg.hasPanel();
+    return Robot.m_wapg.hasPanel();
   }
 }
