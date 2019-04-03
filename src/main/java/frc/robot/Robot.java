@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -54,8 +55,12 @@ public class Robot extends TimedRobot {
 
   public static TimeScheduler dashboardScheduler;
 
+  public boolean debugMode = false;
+
   Command m_autonomousCommand;
   public static SendableChooser<ClimbPair> m_climbChooser = new SendableChooser<ClimbPair>();
+
+  Preferences prefs = Preferences.getInstance();
 
   long lastTeleopPerStart = Long.MAX_VALUE;
   long lastTeleopPerEnd = Long.MAX_VALUE;
@@ -87,6 +92,7 @@ public class Robot extends TimedRobot {
     m_oi = new OI();
 
     initializeDashboard();
+    initPreferences();
 
     m_limelight_sapg.ledOff();
     m_limelight_sapg.camDriver();
@@ -112,8 +118,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    fetchPreferences();
 
-    if (RobotMap.DEBUG) writeDashboard();
+    if (debugMode) writeDashboard();
 
     makeSounds();
 
@@ -353,6 +360,16 @@ public class Robot extends TimedRobot {
     }
 
     lastLoopTime = RobotController.getFPGATime();
+  }
+
+  private void initPreferences() {
+    if (!prefs.containsKey("Robot:debug")) {
+      prefs.putBoolean("Robot:debug", debugMode);
+    }
+  }
+
+  private void fetchPreferences() {
+    debugMode = prefs.getBoolean("Robot:debug", debugMode);
   }
 
   private void initializeDashboard() {
