@@ -43,15 +43,9 @@ import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.sapg.SAPGClose;
-import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.commands.sapg.SAPGDeploy;
-import frc.robot.commands.sapg.SAPGGrabPanel;
-import frc.robot.commands.sapg.SAPGGrabPanelAwesome;
-import frc.robot.commands.sapg.SAPGLoadPreferences;
 import frc.robot.commands.sapg.SAPGOpen;
 import frc.robot.commands.sapg.SAPGRetract;
-import frc.robot.commands.sapg.SAPGScorePanel;
-import frc.robot.commands.sapg.SAPGScorePanelAwesome;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.TJController;
@@ -96,14 +90,8 @@ public class OI {
     new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
-    //new JoystickButton(buttonBox, 12).whenPressed(new SAPGGrabPanelAwesome());
-    //new JoystickButton(buttonBox, 12).whenReleased(new SAPGRetract());
     new JoystickButton(buttonBox, 17).whenPressed(new SAPGRetract());
-    //new JoystickButton(buttonBox, 11).whenPressed(new SAPGTrackStart());
-    //new JoystickButton(buttonBox, 11).whenReleased(new SAPGScorePanelAwesome());
     new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
-    // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroShoulder());
-    // new JoystickButton(buttonBox, 15).whenReleased(new ArmZeroElbow());
     new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrepChosen());
 
     switch (RobotMap.OPERATOR_CONTROL) {
@@ -126,9 +114,6 @@ public class OI {
       operatorController.buttonB.whenPressed(new SAPGRetract());
       operatorController.buttonX.whenPressed(new SAPGOpen());
       operatorController.buttonY.whenPressed(new SAPGClose());
-
-      operatorController.buttonRightBumper.whenPressed(new SAPGGrabPanel());
-      operatorController.buttonLeftBumper.whenPressed(new SAPGScorePanel());
       break;
 
     case RobotMap.OPERATOR_CLIMB_TEST:
@@ -153,11 +138,6 @@ public class OI {
     SmartDashboard.putData("SAPG Retract", new SAPGRetract());
     SmartDashboard.putData("SAPG Open", new SAPGOpen());
     SmartDashboard.putData("SAPG Close", new SAPGClose());
-    // SmartDashboard.putData("SAPG Grab", new SAPGGrabPanel());
-    // SmartDashboard.putData("SAPG Score", new SAPGScorePanel());
-    // SmartDashboard.putData("SAPG Grab Awesome", new SAPGGrabPanelAwesome());
-    // SmartDashboard.putData("SAPG Score Awesome", new SAPGScorePanelAwesome());
-    // SmartDashboard.putData("SAPG Load Prefs", new SAPGLoadPreferences());
 
     SmartDashboard.putData("Intake Tester", new IntakeTester());
 

@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
-import frc.robot.commands.sapg.SAPGDefault;
 import frc.robot.util.SharpIR;
 
 /**
@@ -81,7 +80,7 @@ public class SAPG extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        //setDefaultCommand(new SAPGDefault());
+        // no default command
     }
 
 }
