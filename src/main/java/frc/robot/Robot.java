@@ -261,8 +261,6 @@ public class Robot extends TimedRobot {
   long lastLoopTime = Long.MAX_VALUE;
   int hasTargetCounts = 0;
   int noTargetCounts = 0;
-  int hasPanelCounts = 0;
-  int noPanelCounts = 0;
   int hasCargoCounts = 0;
   int noCargoCounts = 0;
   int lastNumPlayed = -1;
@@ -278,11 +276,6 @@ public class Robot extends TimedRobot {
       hasCargoCounts++;
     } else {
       noCargoCounts++;
-    }
-    if (m_wapg.hasPanel()) {
-      hasPanelCounts++;
-    } else {
-      noPanelCounts++;
     }
 
     // if (m_limelight_wapg.isTracking() && hasTargetCounts == 5) {
@@ -310,22 +303,6 @@ public class Robot extends TimedRobot {
     }
 
     if (noCargoCounts == 5) {
-
-      // Lost cargo
-      soundPlaying.setString("oopsie_daisy");
-      hasCargoCounts = 0;
-
-    }
-
-    if (hasPanelCounts == 5) {
-
-      // Got cargo
-      soundPlaying.setString("got_it");
-      noCargoCounts = 0;
-
-    }
-
-    if (noPanelCounts == 5) {
 
       // Lost cargo
       soundPlaying.setString("oopsie_daisy");
@@ -379,7 +356,6 @@ public class Robot extends TimedRobot {
 
     m_drive.updateShuffleboard();
     m_arm.updateDashboard();
-    m_wapg.updateDashboard();
     m_intake.updateDashboard();
     m_climber.updateDashboard();
     m_navx.updateDashboard();
