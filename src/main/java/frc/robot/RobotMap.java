@@ -62,8 +62,6 @@ public class RobotMap {
   public static final int WAPG_GRAB_REVERSE = 3;
   public static final int WAPG_DEPLOY_PCM = 21;
   public static final int WAPG_GRAB_PCM = 21;
-  public static final int WAPG_MOTOR_ID = 06;
-  public static final int WAPG_PANEL_IR_ID = 4;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;
