@@ -431,12 +431,14 @@ public class Drive extends Subsystem {
             this.shiftToLow();
             maxSpeed = RobotMap.MAX_SPEED_FORCE_LOW;
         } else {
-            if (isInHighGear() && Math.abs(getStraightSpeed()) <= RobotMap.SHIFT_INTO_LOW_GEAR) {
+            double currentSpeed = getStraightSpeed();
+            if (isInHighGear() && Math.abs(currentSpeed) <= RobotMap.SHIFT_INTO_LOW_GEAR) {
                 shiftToLow();
-            } else if (!isInHighGear() && Math.abs(getStraightSpeed()) >= RobotMap.SHIFT_INTO_HIGH_GEAR) {
+            } else if (!isInHighGear() && Math.abs(currentSpeed) >= RobotMap.SHIFT_INTO_HIGH_GEAR) {
                 shiftToHigh();
-            } else if (isInHighGear() && Math.abs(getStraightSpeed()) <= RobotMap.SHIFT_INTO_LOW_GEAR_STOP
-                    && Math.abs(joystickSpeed) <= RobotMap.COMMANDED_STOP_SPEED) {
+            } else if (isInHighGear() && Math.abs(currentSpeed) <= RobotMap.SHIFT_INTO_LOW_GEAR_STOP
+                    && (Math.signum(joystickSpeed) != Math.signum(currentSpeed)
+                        || Math.abs(joystickSpeed) <= RobotMap.COMMANDED_STOP_SPEED)) {
                 shiftToLow();
             }
             maxSpeed = RobotMap.MAX_SPEED_HIGH;
