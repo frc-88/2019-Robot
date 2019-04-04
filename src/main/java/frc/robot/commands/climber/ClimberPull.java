@@ -32,8 +32,11 @@ public class ClimberPull extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-      arm.setElbowSpeed(50);
-      arm.moveElbowAbs(ELBOW_TARGET);
+    if (arm.getElbowAbsDegrees() < 170) {
+      arm.moveElbowAbs(ELBOW_TARGET, .1);
+    } else {
+      arm.moveElbowAbs(ELBOW_TARGET, 0);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
