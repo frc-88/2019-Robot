@@ -39,6 +39,7 @@ import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.commands.intake.IntakeEjectCargo;
 import frc.robot.commands.intake.IntakeLoadCargo;
+import frc.robot.commands.intake.IntakeLoadCargo2;
 import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
@@ -93,7 +94,7 @@ public class OI {
     new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
     new JoystickButton(buttonBox, 11).whenPressed(new IntakeManual(-0.5));
     new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
+    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo2(-1)));
     new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
     new JoystickButton(buttonBox, 17).whenPressed(new SAPGRetract());
     new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
