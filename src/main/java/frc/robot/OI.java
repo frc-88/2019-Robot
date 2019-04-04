@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.ArmIntakeLoadCargo;
 import frc.robot.commands.HaveCargoCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmCalibrate;
@@ -88,8 +89,7 @@ public class OI {
     buttonBox.buttonBlueHigh.whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
     buttonBox.buttonWhiteHome.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
 
-    buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
+    buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
 
     // secondary testing controller
     switch (RobotMap.OPERATOR_CONTROL) {
