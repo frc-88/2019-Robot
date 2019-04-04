@@ -7,31 +7,22 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.HaveCargoCommand;
-import frc.robot.commands.HavePanelCommand;
-import frc.robot.commands.InPreClimbCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmCalibrate;
-import frc.robot.commands.arm.ArmEStop;
 import frc.robot.commands.arm.ArmGoToPosition;
 import frc.robot.commands.arm.ArmGoToPositionSafe;
 import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.commands.arm.ArmZero;
 import frc.robot.commands.climber.ClimberBasicControl;
-import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberClimbChosen;
 import frc.robot.commands.climber.ClimberDrop;
 import frc.robot.commands.climber.ClimberFinish;
-import frc.robot.commands.climber.ClimberFullPrep;
 import frc.robot.commands.climber.ClimberLift;
 import frc.robot.commands.climber.ClimberMoveEncoder;
 import frc.robot.commands.climber.ClimberMoveShoulder;
-import frc.robot.commands.climber.ClimberPrep;
 import frc.robot.commands.climber.ClimberPrepChosen;
 import frc.robot.commands.climber.ClimberPull;
 import frc.robot.commands.drive.ArcadeDrive;
@@ -48,10 +39,12 @@ import frc.robot.commands.sapg.SAPGOpen;
 import frc.robot.commands.sapg.SAPGRetract;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
+import frc.robot.util.TJButtonBox;
 import frc.robot.util.TJController;
 import frc.robot.commands.intake.IntakeTester;
 import frc.robot.commands.limelight.LimelightTrackingOff;
 import frc.robot.commands.limelight.LimelightTrackingOn;
+
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -59,62 +52,54 @@ import frc.robot.commands.limelight.LimelightTrackingOn;
 public class OI {
   private TJController driveController;
   private TJController operatorController;
-  private Joystick buttonBox;
+  private TJButtonBox buttonBox;
 
   public OI() {
     operatorController = new TJController(RobotMap.OPERATOR_CONTROLLER_PORT);
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
-    buttonBox = new Joystick(RobotMap.BUTTON_BOX_PORT);
+    buttonBox = new TJButtonBox(RobotMap.BUTTON_BOX_PORT);
 
     // Driver controller
     driveController.buttonA.whenPressed(new LimelightTrackingOn());
     driveController.buttonA.whenReleased(new LimelightTrackingOff());
-    
     driveController.buttonB.whenPressed(new LimelightTrackingOn());
     driveController.buttonB.whenReleased(new LimelightTrackingOff());
-
     driveController.buttonY.whenPressed(new ArcadeDrive());
-
     driveController.buttonBack.whenPressed(new ClimberClimbChosen());
 
     // Operator button box    
-    new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
-    new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
-    new JoystickButton(buttonBox, 12).whenPressed(new IntakeManual(0.5));
-    new JoystickButton(buttonBox, 12).whenReleased(new IntakeDefault());
-    new JoystickButton(buttonBox, 1).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
-    new JoystickButton(buttonBox, 5).whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
-    new JoystickButton(buttonBox, 2).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
-    new JoystickButton(buttonBox, 6).whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK2));
-    new JoystickButton(buttonBox, 3).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_FRONT));
-    new JoystickButton(buttonBox, 7).whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_BACK2));
-    new JoystickButton(buttonBox, 4).whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_FRONT));
-    new JoystickButton(buttonBox, 8).whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
-    new JoystickButton(buttonBox, 9).whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
-    new JoystickButton(buttonBox, 11).whenPressed(new IntakeManual(-0.5));
-    new JoystickButton(buttonBox, 11).whenReleased(new IntakeDefault());
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
-    new JoystickButton(buttonBox, 10).whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
-    new JoystickButton(buttonBox, 17).whenPressed(new SAPGRetract());
-    new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
-    new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrepChosen());
+    buttonBox.buttonWhiteTopRight.whenPressed(new SAPGClose());
+    buttonBox.buttonWhiteTopLeft.whenPressed(new SAPGOpen());
+    buttonBox.buttonYellowTriangle.whenPressed(new IntakeManual(0.5));
+    buttonBox.buttonYellowTriangle.whenReleased(new IntakeDefault());
+    buttonBox.buttonRedLow.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
+    buttonBox.buttonBlueLow.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
+    buttonBox.buttonRedCargo.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
+    buttonBox.buttonBlueCargo.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK2));
+    buttonBox.buttonRedMid.whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_FRONT));
+    buttonBox.buttonBlueMid.whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_BACK2));
+    buttonBox.buttonRedHigh.whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_FRONT));
+    buttonBox.buttonBlueHigh.whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
+    buttonBox.buttonWhiteHome.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
+    buttonBox.buttonWhiteTriangle.whenPressed(new IntakeManual(-0.5));
+    buttonBox.buttonWhiteTriangle.whenReleased(new IntakeDefault());
+    buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
+    buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
+    buttonBox.buttonWhiteRightTop.whenPressed(new SAPGRetract());
+    buttonBox.buttonWhiteLeftTop.whenPressed(new SAPGDeploy());
+    buttonBox.buttonGreenTriangle.whenPressed(new ClimberPrepChosen());
 
     // secondary testing controller
     switch (RobotMap.OPERATOR_CONTROL) {
-    case RobotMap.OPERATOR_NONE:
-      break;
     case RobotMap.OPERATOR_ARM_TEST:
-      // intake
-      operatorController.buttonA.whenPressed(new ArmGoToPosition(164, 85));
-      // secure
-      operatorController.buttonB.whenPressed(new ArmGoToPosition(160, 10));
-      // low rocket
-      operatorController.buttonX.whenPressed(new ArmGoToPosition(150, 0));
-      // cargo ship
-      operatorController.buttonY.whenPressed(new ArmGoToPosition(105, 35));
+      operatorController.buttonA.whenPressed(new ArmGoToSetpoint(ArmPosition.INTAKE));
+      operatorController.buttonB.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME);
+      operatorController.buttonX.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
+      operatorController.buttonY.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
       operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo(-1));
       operatorController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
       break;
+
     case RobotMap.OPERATOR_SAPG_TEST:
       operatorController.buttonA.whenPressed(new SAPGDeploy());
       operatorController.buttonB.whenPressed(new SAPGRetract());
@@ -123,7 +108,6 @@ public class OI {
       break;
 
     case RobotMap.OPERATOR_CLIMB_TEST:
-
       operatorController.buttonA.whenPressed(new ClimberLift());
       operatorController.buttonB.whenPressed(new ClimberPull());
       operatorController.buttonX.whenPressed(new ClimberDrop());
@@ -131,45 +115,36 @@ public class OI {
       operatorController.buttonStart.whenPressed(new ClimberBasicControl());
       break;
 
+    case RobotMap.OPERATOR_NONE:
+    default:
+      break;
+
     }
 
-    // starting config
-    //operatorController.buttonStart.whenPressed(new ArmGoToPosition(164, 0));
-
     // setup dashboard buttons for testing and debug
-    //SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
-    SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
-
     SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
     SmartDashboard.putData("SAPG Retract", new SAPGRetract());
     SmartDashboard.putData("SAPG Open", new SAPGOpen());
     SmartDashboard.putData("SAPG Close", new SAPGClose());
 
-    SmartDashboard.putData("Intake Tester", new IntakeTester());
-
     SmartDashboard.putData("Limelight On", new LimelightTrackingOn());
     SmartDashboard.putData("Limelight Off", new LimelightTrackingOff());
 
-    SmartDashboard.putData("Arm Intake Position", new ArmGoToPosition(160, 82));
-    SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
     SmartDashboard.putData("Arm Calibrate", new ArmCalibrate());
     SmartDashboard.putData("Arm Zero", new ArmZero());
-    SmartDashboard.putData("Arm Go To Position", new ArmGoToPosition());
-    SmartDashboard.putData("Arm Go To Position Safe", new ArmGoToPositionSafe());
-    // SmartDashboard.putData("Arm Start", new ArmGoToPositionSafe(ArmPosition.START));
-    SmartDashboard.putData("Arm High Rocket", new ArmGoToPosition(28, 0));
-    SmartDashboard.putData("Arm Cargo Ship",new ArmGoToPosition(105, 33));
-    SmartDashboard.putData("Arm Starting Position", new ArmGoToPosition(150, 0));
-    // SmartDashboard.putData("Arm Medium Rocket", new ArmGoToPositionSafe(ArmPosition.MEDIUM_ROCKET_FRONT));
-    // SmartDashboard.putData("Arm Pre-Climb", new ArmGoToPositionSafe(ArmPosition.PRE_CLIMB));
+    SmartDashboard.putData("Arm Goto Home", new ArmGoToSetpoint(ArmPosition.HOME));
+    SmartDashboard.putData("Arm Goto Intake", new ArmGoToSetpoint(ArmPosition.INTAKE));
+    SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
 
     SmartDashboard.putData("Climb", new ClimberClimbChosen());
     SmartDashboard.putData("Climber Move Enc", new ClimberMoveEncoder());
     SmartDashboard.putData("Climber Move Shoulder", new ClimberMoveShoulder());
+    SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
 
-    SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo(-1));
     SmartDashboard.putData("Intake Eject", new IntakeEjectCargo());
+    SmartDashboard.putData("Intake Tester", new IntakeTester());
+    SmartDashboard.putData("Intake Basic", new IntakeBasicControl());
 
     SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
     SmartDashboard.putData("Zero Pitch", new NavXZeroPitch());
@@ -206,22 +181,22 @@ public class OI {
     return driveController.getRightTrigger() > 0.5;
   }
 
-	public boolean isDriverButtonAPressed() {
-		return driveController.getRawButton(1);
-	}
-	
-	public boolean isDriverButtonBPressed() {
-		return driveController.getRawButton(2);
-	}
-	
-	public boolean isDriverButtonXPressed() {
-		return driveController.getRawButton(3);
-	}
-	
-	public boolean isDriverButtonYPressed() {
-		return driveController.getRawButton(4);
-	}
-	
+  public boolean isDriverButtonAPressed() {
+    return driveController.getRawButton(1);
+  }
+
+  public boolean isDriverButtonBPressed() {
+    return driveController.getRawButton(2);
+  }
+
+  public boolean isDriverButtonXPressed() {
+    return driveController.getRawButton(3);
+  }
+
+  public boolean isDriverButtonYPressed() {
+    return driveController.getRawButton(4);
+  }
+
   public double getOperatorLeftXAxis() {
     // double rawValue = operatorController.getLeftStickX();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
@@ -248,6 +223,6 @@ public class OI {
   }
 
   public boolean getArmResetButton() {
-    return new JoystickButton(buttonBox, 15).get();
+    return buttonBox.buttonGreenTriangle.get();
   }
 }
