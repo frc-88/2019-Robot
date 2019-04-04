@@ -95,7 +95,7 @@ public class OI {
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_ARM_TEST:
       operatorController.buttonA.whenPressed(new ArmGoToSetpoint(ArmPosition.INTAKE));
-      operatorController.buttonB.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME);
+      operatorController.buttonB.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
       operatorController.buttonX.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
       operatorController.buttonY.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
       operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo(-1));
