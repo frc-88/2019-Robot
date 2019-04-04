@@ -68,10 +68,16 @@ public class OI {
     driveController.buttonBack.whenPressed(new ClimberClimbChosen());
 
     // Operator button box    
-    buttonBox.buttonWhiteTopRight.whenPressed(new SAPGClose());
+    buttonBox.buttonWhiteLeftTop.whenPressed(new SAPGDeploy());
     buttonBox.buttonWhiteTopLeft.whenPressed(new SAPGOpen());
+    buttonBox.buttonWhiteTopRight.whenPressed(new SAPGClose());
+    buttonBox.buttonWhiteRightTop.whenPressed(new SAPGRetract());
     buttonBox.buttonYellowTriangle.whenPressed(new IntakeManual(0.5));
     buttonBox.buttonYellowTriangle.whenReleased(new IntakeDefault());
+    buttonBox.buttonWhiteTriangle.whenPressed(new IntakeManual(-0.5));
+    buttonBox.buttonWhiteTriangle.whenReleased(new IntakeDefault());
+    buttonBox.buttonGreenTriangle.whenPressed(new ClimberPrepChosen());
+
     buttonBox.buttonRedLow.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
     buttonBox.buttonBlueLow.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
     buttonBox.buttonRedCargo.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
@@ -81,13 +87,9 @@ public class OI {
     buttonBox.buttonRedHigh.whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_FRONT));
     buttonBox.buttonBlueHigh.whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
     buttonBox.buttonWhiteHome.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
-    buttonBox.buttonWhiteTriangle.whenPressed(new IntakeManual(-0.5));
-    buttonBox.buttonWhiteTriangle.whenReleased(new IntakeDefault());
+
     buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new IntakeLoadCargo(-1)));
     buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new InstantCommand(), new ArmGoToSetpoint(ArmPosition.INTAKE)));
-    buttonBox.buttonWhiteRightTop.whenPressed(new SAPGRetract());
-    buttonBox.buttonWhiteLeftTop.whenPressed(new SAPGDeploy());
-    buttonBox.buttonGreenTriangle.whenPressed(new ClimberPrepChosen());
 
     // secondary testing controller
     switch (RobotMap.OPERATOR_CONTROL) {
