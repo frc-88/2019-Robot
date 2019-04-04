@@ -206,6 +206,10 @@ public class OI {
     return driveController.getRightTrigger() > 0.5;
   }
 
+  public boolean getPushingModeButton() {
+    return driveController.getLeftTrigger() > 0.5;
+  }
+
 	public boolean isDriverButtonAPressed() {
 		return driveController.getRawButton(1);
 	}

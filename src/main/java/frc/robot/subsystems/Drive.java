@@ -252,7 +252,7 @@ public class Drive extends Subsystem {
         // Test Constant Voltage Command
         // startTime = RobotController.getFPGATime();
         constantDriveTestCommand.setVoltage(sbTestDriveVoltage.getDouble(0));
-        currentLimit = sbCurrentLimit.getDouble(RobotMap.DRIVE_CURRENT_LIMIT);
+        // currentLimit = sbCurrentLimit.getDouble(RobotMap.DRIVE_CURRENT_LIMIT);
         // System.out.println("Voltage Command status: " +
         // (RobotController.getFPGATime()-startTime));
 
@@ -294,6 +294,13 @@ public class Drive extends Subsystem {
      * limiting current draw.
      */
     public void basicDriveLimited(double leftVelocity, double rightVelocity) {
+
+        if (Robot.m_oi.getPushingModeButton()) {
+            currentLimit = RobotMap.PUSHING_MODE_CURRENT_LIMIT;
+        } else {
+            currentLimit = RobotMap.DRIVE_CURRENT_LIMIT;
+        }
+
         leftCommandedSpeed = leftVelocity;
         rightCommandedSpeed = rightVelocity;
         leftDrive.setVelocityCurrentLimited(leftVelocity, currentLimit / 2);
@@ -326,7 +333,11 @@ public class Drive extends Subsystem {
         // speed = DriveUtils.signedPow(speed, 3);
         // turn = DriveUtils.signedPow(speed, 3);
 
-        speed = limitAcceleration(speed);
+        if (Robot.m_oi.getPushingModeButton()) {
+            speed = limitDeccelerationOnly(speed);
+        } else {
+            speed = limitAcceleration(speed);
+        }
 
         // turn = DriveUtils.cheesyTurn(speed, turn);
 
@@ -369,6 +380,55 @@ public class Drive extends Subsystem {
             } else {
                 return vel;
             }
+        } else {
+
+            double vel = getStraightSpeed() - maxAccel;
+
+            if (!deccelerating) {
+                lastLimitSpeed = currentSpeed;
+                deccelerating = true;
+            }
+
+            if (speed > vel) {
+                lastLimitSpeed = speed;
+                return speed;
+            } else {
+                if (vel > lastLimitSpeed) {
+                    return lastLimitSpeed;
+                } else {
+                    lastLimitSpeed = vel;
+                    return vel;
+                }
+            }
+
+        }
+
+    }
+
+    public double limitDeccelerationOnly(double speed) {
+
+        double maxAccel;
+        if (isInHighGear()) {
+            if (Robot.m_arm.getDistanceFromBase() >= RobotMap.ARM_TIPPY_DISTANCE) {
+                maxAccel = RobotMap.MAX_ACCEL_HIGH_TIPPY;
+            } else {
+                maxAccel = RobotMap.MAX_ACCEL_HIGH;
+            }
+        } else {
+            if (Robot.m_arm.getDistanceFromBase() >= RobotMap.ARM_TIPPY_DISTANCE) {
+                maxAccel = RobotMap.MAX_ACCEL_LOW_TIPPY;
+            } else {
+                maxAccel = RobotMap.MAX_ACCEL_LOW;
+            }
+        }
+
+        double currentSpeed = getStraightSpeed();
+        if (speed - currentSpeed > 0) {
+            
+            deccelerating = false;
+
+            return speed;
+
         } else {
 
             double vel = getStraightSpeed() - maxAccel;
