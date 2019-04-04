@@ -54,6 +54,9 @@ public class Drive extends Subsystem {
 
     private double maxSpeed;
 
+    private double lastLimitSpeed = 0;
+    private boolean deccelerating = false;
+
     private NetworkTableEntry sbLeftDriveMode;
     private NetworkTableEntry sbRightDriveMode;
     private NetworkTableEntry sbLeftVoltage;
@@ -339,6 +342,7 @@ public class Drive extends Subsystem {
     }
 
     public double limitAcceleration(double speed) {
+
         double maxAccel;
         if (isInHighGear()) {
             if (Robot.m_arm.getDistanceFromBase() >= RobotMap.ARM_TIPPY_DISTANCE) {
@@ -354,19 +358,36 @@ public class Drive extends Subsystem {
             }
         }
 
-        if (speed - getStraightSpeed() > 0) {
-            double vel = getStraightSpeed() + maxAccel;
+        double currentSpeed = getStraightSpeed();
+        if (speed - currentSpeed > 0) {
+            
+            deccelerating = false;
+
+            double vel = currentSpeed + maxAccel;
             if (speed < vel) {
                 return speed;
             } else {
                 return vel;
             }
         } else {
+
             double vel = getStraightSpeed() - maxAccel;
+
+            if (!deccelerating) {
+                lastLimitSpeed = currentSpeed;
+                deccelerating = true;
+            }
+
             if (speed > vel) {
+                lastLimitSpeed = speed;
                 return speed;
             } else {
-                return vel;
+                if (vel > lastLimitSpeed) {
+                    return lastLimitSpeed;
+                } else {
+                    lastLimitSpeed = vel;
+                    return vel;
+                }
             }
 
         }
