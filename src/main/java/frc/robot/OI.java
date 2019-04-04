@@ -66,13 +66,18 @@ public class OI {
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
     buttonBox = new Joystick(RobotMap.BUTTON_BOX_PORT);
 
+    // Driver controller
     driveController.buttonA.whenPressed(new LimelightTrackingOn());
     driveController.buttonA.whenReleased(new LimelightTrackingOff());
+    
+    driveController.buttonB.whenPressed(new LimelightTrackingOn());
+    driveController.buttonB.whenReleased(new LimelightTrackingOff());
 
     driveController.buttonY.whenPressed(new ArcadeDrive());
 
     driveController.buttonBack.whenPressed(new ClimberClimbChosen());
 
+    // Operator button box    
     new JoystickButton(buttonBox, 16).whenPressed(new SAPGClose());
     new JoystickButton(buttonBox, 14).whenPressed(new SAPGOpen());
     new JoystickButton(buttonBox, 12).whenPressed(new IntakeManual(0.5));
@@ -94,6 +99,7 @@ public class OI {
     new JoystickButton(buttonBox, 13).whenPressed(new SAPGDeploy());
     new JoystickButton(buttonBox, 15).whenPressed(new ClimberPrepChosen());
 
+    // secondary testing controller
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_NONE:
       break;
