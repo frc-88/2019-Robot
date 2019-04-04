@@ -49,13 +49,13 @@ import frc.robot.commands.limelight.LimelightTrackingOn;
  */
 public class OI {
   private TJController driveController;
-  private TJController operatorController;
+  private TJController testController;
   private TJButtonBox buttonBox;
 
   public OI() {
-    operatorController = new TJController(RobotMap.OPERATOR_CONTROLLER_PORT);
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
     buttonBox = new TJButtonBox(RobotMap.BUTTON_BOX_PORT);
+    testController = new TJController(RobotMap.OPERATOR_CONTROLLER_PORT);
 
     // Driver controller
     driveController.buttonA.whenPressed(new LimelightTrackingOn());
@@ -88,30 +88,30 @@ public class OI {
 
     buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
 
-    // secondary testing controller
+    // optional testing controller
     switch (RobotMap.OPERATOR_CONTROL) {
     case RobotMap.OPERATOR_ARM_TEST:
-      operatorController.buttonA.whenPressed(new ArmGoToSetpoint(ArmPosition.INTAKE));
-      operatorController.buttonB.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
-      operatorController.buttonX.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
-      operatorController.buttonY.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
-      operatorController.buttonRightBumper.whenPressed(new IntakeLoadCargo(-1));
-      operatorController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
+      testController.buttonA.whenPressed(new ArmGoToSetpoint(ArmPosition.INTAKE));
+      testController.buttonB.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
+      testController.buttonX.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
+      testController.buttonY.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
+      testController.buttonRightBumper.whenPressed(new IntakeLoadCargo(-1));
+      testController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
       break;
 
     case RobotMap.OPERATOR_SAPG_TEST:
-      operatorController.buttonA.whenPressed(new SAPGDeploy());
-      operatorController.buttonB.whenPressed(new SAPGRetract());
-      operatorController.buttonX.whenPressed(new SAPGOpen());
-      operatorController.buttonY.whenPressed(new SAPGClose());
+      testController.buttonA.whenPressed(new SAPGDeploy());
+      testController.buttonB.whenPressed(new SAPGRetract());
+      testController.buttonX.whenPressed(new SAPGOpen());
+      testController.buttonY.whenPressed(new SAPGClose());
       break;
 
     case RobotMap.OPERATOR_CLIMB_TEST:
-      operatorController.buttonA.whenPressed(new ClimberLift());
-      operatorController.buttonB.whenPressed(new ClimberPull());
-      operatorController.buttonX.whenPressed(new ClimberDrop());
-      operatorController.buttonY.whenPressed(new ClimberFinish());
-      operatorController.buttonStart.whenPressed(new ClimberBasicControl());
+      testController.buttonA.whenPressed(new ClimberLift());
+      testController.buttonB.whenPressed(new ClimberPull());
+      testController.buttonX.whenPressed(new ClimberDrop());
+      testController.buttonY.whenPressed(new ClimberFinish());
+      testController.buttonStart.whenPressed(new ClimberBasicControl());
       break;
 
     case RobotMap.OPERATOR_NONE:
@@ -199,25 +199,25 @@ public class OI {
   public double getOperatorLeftXAxis() {
     // double rawValue = operatorController.getLeftStickX();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
-    return DriveUtils.deadbandExponential(operatorController.getLeftStickX(), 1, .075);
+    return DriveUtils.deadbandExponential(testController.getLeftStickX(), 1, .075);
   }
 
   public double getOperatorLeftYAxis() {
     // double rawValue = operatorController.getLeftStickY();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
-    return DriveUtils.deadbandExponential(operatorController.getLeftStickY(), 1, .075);
+    return DriveUtils.deadbandExponential(testController.getLeftStickY(), 1, .075);
   }
 
   public double getOperatorRightXAxis() {
     // double rawValue = operatorController.getRightStickX();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
-    return DriveUtils.deadbandExponential(operatorController.getRightStickX(), 1, .075);
+    return DriveUtils.deadbandExponential(testController.getRightStickX(), 1, .075);
   }
 
   public double getOperatorRightYAxis() {
     // double rawValue = operatorController.getRightStickY();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;
-    return DriveUtils.deadbandExponential(operatorController.getRightStickY(), 1, .075);
+    return DriveUtils.deadbandExponential(testController.getRightStickY(), 1, .075);
 
   }
 
