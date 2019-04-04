@@ -12,11 +12,13 @@ import frc.robot.Robot;
 
 public class IntakeLoadCargo2 extends Command {
   private double speed = 1.0;
-  private double lastDistance;
   private double direction = -1.0;
+  private double lastDistance;
   private int state;
 
-  private int hasCounts;
+  public IntakeLoadCargo2() {
+    requires(Robot.m_intake);
+  }
 
   public IntakeLoadCargo2(double speed) {
     requires(Robot.m_intake);
@@ -34,39 +36,36 @@ public class IntakeLoadCargo2 extends Command {
   @Override
   protected void execute() {
     double distance = Robot.m_intake.getAverageDistance();
+
     switch (state) {
     case 0:
       Robot.m_intake.set(speed * direction);
-      hasCounts = 0;
       state++;
       break;
 
     case 1:
       if (Robot.m_intake.hasCargo()) {
-        hasCounts++;
-      }
-      if (hasCounts > 0) {
+        Robot.m_intake.set(0);
         state++;
       }
       break;
 
     case 2:
-      Robot.m_intake.set(0);
-      speed = 0.5;
-      state++;
-      break;
-
-    case 3:
       if (distance > lastDistance) {
-        direction = direction * -1;
-        speed -= 0.1;
+        // if the ball is getting further away, switch directions and slow down
+        direction *= -1;
+        speed -= 0.2;
       }
+
       Robot.m_intake.set(speed * direction);
-      if (speed < 0.09) {
-        state++;
+
+      if (speed < 0.1) {
+        state = 10;
       }
       break;
 
+    default:
+      break;
     }
 
     lastDistance = distance;
@@ -76,7 +75,7 @@ public class IntakeLoadCargo2 extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return state == 4;
+    return state == 10;
   }
 
   // Called once after isFinished returns true

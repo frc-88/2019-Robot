@@ -28,6 +28,7 @@ import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.commands.intake.IntakeEjectCargo;
 import frc.robot.commands.intake.IntakeLoadCargo;
+import frc.robot.commands.intake.IntakeLoadCargo2;
 import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
@@ -180,22 +181,26 @@ public class OI {
     return driveController.getRightTrigger() > 0.5;
   }
 
-  public boolean isDriverButtonAPressed() {
-    return driveController.getRawButton(1);
+  public boolean getPushingModeButton() {
+    return driveController.getLeftTrigger() > 0.5;
   }
 
-  public boolean isDriverButtonBPressed() {
-    return driveController.getRawButton(2);
-  }
-
-  public boolean isDriverButtonXPressed() {
-    return driveController.getRawButton(3);
-  }
-
-  public boolean isDriverButtonYPressed() {
-    return driveController.getRawButton(4);
-  }
-
+	public boolean isDriverButtonAPressed() {
+		return driveController.getRawButton(1);
+	}
+	
+	public boolean isDriverButtonBPressed() {
+		return driveController.getRawButton(2);
+	}
+	
+	public boolean isDriverButtonXPressed() {
+		return driveController.getRawButton(3);
+	}
+	
+	public boolean isDriverButtonYPressed() {
+		return driveController.getRawButton(4);
+	}
+	
   public double getOperatorLeftXAxis() {
     // double rawValue = operatorController.getLeftStickX();
     // return Math.abs(rawValue) < .075 ? 0 : rawValue;

@@ -72,14 +72,12 @@ public class ClimberClimb extends Command {
       double shoulderPos = arm.getShoulderAbsDegrees();
       double shoulderPercentDone = Math.max(0, (shoulderPos - LIFT_SHOULDER_START) / (LIFT_SHOULDER_END - LIFT_SHOULDER_START));
       double elbowTotalDist = LIFT_ELBOW_END - LIFT_ELBOW_START;
-      arm.moveElbowAbs(LIFT_ELBOW_START + elbowTotalDist * shoulderPercentDone);
+      arm.moveElbowAbs(LIFT_ELBOW_START + elbowTotalDist * shoulderPercentDone, 0);
 
       if (climber.targetReached()) {
         state++;
 
         arm.configureBrakeMode();
-
-        arm.setElbowSpeed(50);
       }
 
       
@@ -87,7 +85,11 @@ public class ClimberClimb extends Command {
 
     case 1:
 
-      arm.moveElbowAbs(PULL_ELBOW_TARGET);
+      if (arm.getElbowAbsDegrees() < 170) {
+        arm.moveElbowAbs(PULL_ELBOW_TARGET, .1);
+      } else {
+        arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
+      }
       drive.basicDrive(0.2, 0.2);
 
       if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE + 2) {
