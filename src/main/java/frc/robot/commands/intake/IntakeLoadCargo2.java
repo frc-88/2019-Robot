@@ -15,14 +15,14 @@ public class IntakeLoadCargo2 extends Command {
   private double direction = -1.0;
   private double lastDistance;
   private int state;
-
+  private double initSpeed=-1;
   public IntakeLoadCargo2() {
     requires(Robot.m_intake);
   }
 
   public IntakeLoadCargo2(double speed) {
     requires(Robot.m_intake);
-    this.speed = Math.abs(speed);
+    this.initSpeed = Math.abs(speed);
     direction = Math.signum(speed);
   }
 
@@ -30,6 +30,8 @@ public class IntakeLoadCargo2 extends Command {
   @Override
   protected void initialize() {
     state = 0;
+    direction=-1;
+    speed=initSpeed;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -47,14 +49,22 @@ public class IntakeLoadCargo2 extends Command {
       if (Robot.m_intake.hasCargo()) {
         Robot.m_intake.set(0);
         state++;
+        direction *= -1;
+        speed = 0.3;
       }
       break;
 
-    case 2:
+    case 2:  
+      Robot.m_intake.set(speed * direction);
+      state++;
+      break;
+
+    case 3:
       if (distance > lastDistance) {
         // if the ball is getting further away, switch directions and slow down
         direction *= -1;
-        speed -= 0.2;
+        speed = 0;
+        state=10;
       }
 
       Robot.m_intake.set(speed * direction);
