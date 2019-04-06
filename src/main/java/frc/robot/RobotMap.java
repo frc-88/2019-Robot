@@ -51,6 +51,10 @@ public class RobotMap {
 
   // Climber
   public static final int CLIMBER_ID = 6;
+  public static final int CLIMBER_FOLLOWER_ID = 12;
+  public static final int CLIMBER_SELECTOR_FORWARD = 6;
+  public static final int CLIMBER_SELECTOR_REVERSE = 1;
+  public static final int CLIMBER_SELECTOR_PCM = 22;
   public static final int CLIMBER_PLATFORM_IR_ID = 2;
 
   // SAPG
@@ -130,7 +134,7 @@ public class RobotMap {
   // Climber
 
   public static final int CLIMB_ARM_SPEED = 40;
-  public static final double CLIMBER_TOLERANCE = 200;
+  public static final int CLIMBER_TOLERANCE = 200;
   public static final double PLATFORM_IR_THRESHOLD = 8.5;
 
   //Intake

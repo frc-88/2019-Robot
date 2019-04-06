@@ -22,6 +22,9 @@ public class TJButtonBox extends Joystick {
 	private static final int BUTTON_GREEN_TRIANGLE = 15;
 	private static final int BUTTON_WHITE_TOP_RIGHT = 16;
 	private static final int BUTTON_WHITE_RIGHT_TOP = 17;
+	private static final int BUTTON_BBB_RED = 18;
+	private static final int BUTTON_BBB_BLUE = 19;
+	private static final int BUTTON_BBB_SWITCH = 20;
 	
 	public Button buttonRedLow = new JoystickButton(this, BUTTON_RED_LOW);
 	public Button buttonRedCargo = new JoystickButton(this, BUTTON_RED_CARGO);
@@ -40,6 +43,9 @@ public class TJButtonBox extends Joystick {
 	public Button buttonGreenTriangle = new JoystickButton(this, BUTTON_GREEN_TRIANGLE);
 	public Button buttonWhiteTopRight = new JoystickButton(this, BUTTON_WHITE_TOP_RIGHT);
 	public Button buttonWhiteRightTop = new JoystickButton(this, BUTTON_WHITE_RIGHT_TOP);
+	public Button buttonBBBRed = new JoystickButton(this, BUTTON_BBB_RED);
+	public Button buttonBBBBlue = new JoystickButton(this, BUTTON_BBB_BLUE);
+	public Button buttonBBBSwitch = new JoystickButton(this, BUTTON_BBB_SWITCH);
 
 	public TJButtonBox(int port) {
 		super(port);

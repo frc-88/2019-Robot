@@ -110,9 +110,9 @@ public class Arm extends Subsystem {
     elbow.config_kD(MAGIC_ELBOW_PID_IDX, 0, TIMEOUTMS);
     elbow.config_kF(MAGIC_ELBOW_PID_IDX, 3.0, TIMEOUTMS);
 
-    elbow.config_kP(POSITION_ELBOW_PID_IDX, 10, TIMEOUTMS);
+    elbow.config_kP(POSITION_ELBOW_PID_IDX, 20, TIMEOUTMS);
     elbow.config_kI(POSITION_ELBOW_PID_IDX, 0, TIMEOUTMS);
-    elbow.config_kD(POSITION_ELBOW_PID_IDX, 20, TIMEOUTMS);
+    elbow.config_kD(POSITION_ELBOW_PID_IDX, 50, TIMEOUTMS);
     elbow.config_kF(POSITION_ELBOW_PID_IDX, 0, TIMEOUTMS);
 
     elbow.setInverted(false);

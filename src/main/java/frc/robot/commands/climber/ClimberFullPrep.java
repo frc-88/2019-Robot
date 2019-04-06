@@ -7,7 +7,9 @@
 
 package frc.robot.commands.climber;
 
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.Robot;
 import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.util.ArmPosition;
 
@@ -18,5 +20,13 @@ public class ClimberFullPrep extends CommandGroup {
   public ClimberFullPrep() {
     addParallel(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB));
     addParallel(new ClimberPrep());
+    addSequential(new Command(){
+    
+      @Override
+      protected boolean isFinished() {
+        return Robot.m_arm.getCurrentSetpoint().equals(ArmPosition.PRE_CLIMB);
+      }
+    });
+    addParallel(new ClimberActivateLevel3());
   }
 }

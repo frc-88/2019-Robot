@@ -15,6 +15,8 @@ import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -31,18 +33,26 @@ public class Climber extends Subsystem {
   private final static int TIMEOUTMS = 0;
 
   private TalonSRX winch;
+  private TalonSRX follower;
 
   private SharpIR platformIR;
   private boolean prepped = false;
+
+  private DoubleSolenoid selector;
 
   private int encoderTarget = 0;
 
   public Climber() {
       winch = new TalonSRX(RobotMap.CLIMBER_ID);
+      follower = new TalonSRX(RobotMap.CLIMBER_FOLLOWER_ID);
       configTalon(winch);
+      configFollower();
 
       platformIR = new SharpIR(RobotMap.CLIMBER_PLATFORM_IR_ID);
       prepped = false;
+
+      selector = new DoubleSolenoid(RobotMap.CLIMBER_SELECTOR_PCM, 
+          RobotMap.CLIMBER_SELECTOR_FORWARD, RobotMap.CLIMBER_SELECTOR_REVERSE);
   }
 
   private void configTalon(TalonSRX talon) {
@@ -55,9 +65,10 @@ public class Climber extends Subsystem {
       talon.configPeakOutputReverse(-1.0, TIMEOUTMS);
       talon.configNeutralDeadband(0.01, TIMEOUTMS);
       talon.setNeutralMode(NeutralMode.Brake);
-      talon.setInverted(true);
+      talon.setInverted(false);
+      talon.setSensorPhase(true);
 
-      talon.config_kP(ENCODER_PID_IDX, 1, TIMEOUTMS);
+      talon.config_kP(ENCODER_PID_IDX, 2, TIMEOUTMS);
       talon.config_kI(ENCODER_PID_IDX, 0, TIMEOUTMS);
       talon.config_kD(ENCODER_PID_IDX, 0, TIMEOUTMS);
       
@@ -70,6 +81,11 @@ public class Climber extends Subsystem {
       talon.configMotionAcceleration(3*Robot.m_arm.convertShoulderDegreesToMotorCounts(RobotMap.CLIMB_ARM_SPEED)/10, TIMEOUTMS);
   }
 
+  private void configFollower() {
+    follower.configFactoryDefault();
+    follower.follow(winch);
+  }
+
   public void updateDashboard() {
     SmartDashboard.putNumber("Climber: Position", getPosition());
     SmartDashboard.putNumber("Climber: SelectedSensorPos", winch.getSelectedSensorPosition());
@@ -80,7 +96,7 @@ public class Climber extends Subsystem {
   public void configForEncoderPID() {
       winch.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, TIMEOUTMS);
       winch.selectProfileSlot(ENCODER_PID_IDX, 0);
-      winch.setSensorPhase(false);
+      winch.setSensorPhase(true);
   }
 
   public void configForShoulderPID() {
@@ -134,11 +150,23 @@ public class Climber extends Subsystem {
   }
 
   public boolean targetReached() {
-    return Math.abs((getPosition() - encoderTarget)) < RobotMap.CLIMBER_TOLERANCE;
+    return targetReached(RobotMap.CLIMBER_TOLERANCE);
+  }
+
+  public boolean targetReached(int tolerance) {
+    return Math.abs((getPosition() - encoderTarget)) < tolerance;
   }
 
   public boolean onPlatform() {
     return platformIR.getDistance() < RobotMap.PLATFORM_IR_THRESHOLD;
+  }
+
+  public void holdLevel2() {
+    selector.set(Value.kForward);
+  }
+
+  public void activateLevel3() {
+    selector.set(Value.kReverse);
   }
 
 }

@@ -10,28 +10,29 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
-import frc.robot.util.ArmPosition;
 
-public class InPreClimbCommand extends ConditionalCommand {
+public class ClimberSwitchCommand extends ConditionalCommand {
 
-	public InPreClimbCommand(Command inPreClimb) {
-		super(inPreClimb);
+    public ClimberSwitchCommand(Command switchOff) {
+		super(switchOff);
 	}
 
-	public InPreClimbCommand(Command inPreClimb, Command notPreClimb) {
-		super(inPreClimb, notPreClimb);
+	public ClimberSwitchCommand(Command switchOff, Command switchOn) {
+		super(switchOff, switchOn);
 	}
 
-	public InPreClimbCommand(String name, Command inPreClimb) {
-		super(name, inPreClimb);
+	public ClimberSwitchCommand(String name, Command switchOff) {
+		super(name, switchOff);
 	}
 
-	public InPreClimbCommand(String name, Command inPreClimb, Command notPreClimb) {
-		super(name, inPreClimb, notPreClimb);
+	public ClimberSwitchCommand(String name, Command switchOff, Command switchOn) {
+		super(name, switchOff, switchOn);
 	}
 
-  @Override
-  protected boolean condition() {
-    return Robot.m_climber.isPrepped();
-  }
+    @Override
+    protected boolean condition() {
+        return Robot.m_oi.inLevel3Mode();
+    }
+
+
 }

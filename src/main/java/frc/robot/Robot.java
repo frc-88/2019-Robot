@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.climber.ClimbPair;
 import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberClimb2;
 import frc.robot.commands.climber.ClimberFullPrep;
@@ -58,7 +57,6 @@ public class Robot extends TimedRobot {
   public boolean debugMode = false;
 
   Command m_autonomousCommand;
-  public static SendableChooser<ClimbPair> m_climbChooser = new SendableChooser<ClimbPair>();
 
   Preferences prefs = Preferences.getInstance();
 
@@ -98,10 +96,6 @@ public class Robot extends TimedRobot {
     m_limelight_sapg.camDriver();
 
     m_navx.zeroPitch();
-
-    m_climbChooser.addOption("Level 2", new ClimbPair(new ClimberFullPrep2(), new ClimberClimb2()));
-    m_climbChooser.addDefault("Level 3", new ClimbPair(new ClimberFullPrep(), new ClimberClimb()));
-    SmartDashboard.putData("Climb Mode", m_climbChooser);
 
     // NetworkTableInstance.getDefault().
     soundPlaying = NetworkTableInstance.getDefault().getTable("alerts").getEntry("sound");
@@ -164,6 +158,7 @@ public class Robot extends TimedRobot {
     if (!DriverStation.getInstance().isFMSAttached() || firstAutoInit) {
       firstAutoInit = false;
       m_arm.zero();
+      m_climber.holdLevel2();
     }
     
     
@@ -199,6 +194,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     if (!DriverStation.getInstance().isFMSAttached()) {
       m_arm.zero();
+      m_climber.holdLevel2();
     }
     m_arm.configureBrakeMode();
 

@@ -28,7 +28,7 @@ public final class ArmPosition {
     public static final ArmSetpoint HIGH_ROCKET_FRONT = new ArmSetpoint(28, 0);
     public static final ArmSetpoint HIGH_ROCKET_BACK = new ArmSetpoint(-30, 0);
     public static final ArmSetpoint PRE_CLIMB = new ArmSetpoint(75, 176);
-    public static final ArmSetpoint PRE_CLIMB2 = new ArmSetpoint(103, 176);
+    public static final ArmSetpoint PRE_CLIMB2 = new ArmSetpoint(103, 170);
     public static final ArmSetpoint LOW_ROCKET_BACK = new ArmSetpoint(-90, -180);
 
     public static ArmSetpoint[] getPath(ArmSetpoint currentSetpoint, ArmSetpoint targetSetpoint) {

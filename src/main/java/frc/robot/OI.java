@@ -7,21 +7,29 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArmIntakeLoadCargo;
+import frc.robot.commands.ClimberSwitchCommand;
 import frc.robot.commands.HaveCargoCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmCalibrate;
 import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.commands.arm.ArmZero;
+import frc.robot.commands.climber.ClimberActivateLevel3;
 import frc.robot.commands.climber.ClimberBasicControl;
-import frc.robot.commands.climber.ClimberClimbChosen;
+import frc.robot.commands.climber.ClimberClimb;
+import frc.robot.commands.climber.ClimberClimb2;
 import frc.robot.commands.climber.ClimberDrop;
 import frc.robot.commands.climber.ClimberFinish;
+import frc.robot.commands.climber.ClimberFullPrep;
+import frc.robot.commands.climber.ClimberFullPrep2;
+import frc.robot.commands.climber.ClimberHoldLevel2;
 import frc.robot.commands.climber.ClimberLift;
 import frc.robot.commands.climber.ClimberMoveEncoder;
 import frc.robot.commands.climber.ClimberMoveShoulder;
-import frc.robot.commands.climber.ClimberPrepChosen;
+import frc.robot.commands.climber.ClimberPrep;
+import frc.robot.commands.climber.ClimberPrep2;
 import frc.robot.commands.climber.ClimberPull;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.intake.IntakeBasicControl;
@@ -64,7 +72,6 @@ public class OI {
     driveController.buttonB.whenPressed(new LimelightTrackingOn());
     driveController.buttonB.whenReleased(new LimelightTrackingOff());
     driveController.buttonY.whenPressed(new ArcadeDrive());
-    driveController.buttonBack.whenPressed(new ClimberClimbChosen());
 
     // Operator button box    
     buttonBox.buttonWhiteLeftTop.whenPressed(new SAPGDeploy());
@@ -75,7 +82,7 @@ public class OI {
     buttonBox.buttonYellowTriangle.whenReleased(new IntakeDefault());
     buttonBox.buttonWhiteTriangle.whenPressed(new IntakeManual(-0.5));
     buttonBox.buttonWhiteTriangle.whenReleased(new IntakeDefault());
-    buttonBox.buttonGreenTriangle.whenPressed(new ClimberPrepChosen());
+    buttonBox.buttonGreenTriangle.whenPressed(new ArmZero());
 
     buttonBox.buttonRedLow.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
     buttonBox.buttonBlueLow.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
@@ -88,6 +95,9 @@ public class OI {
     buttonBox.buttonWhiteHome.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
 
     buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
+
+    buttonBox.buttonBBBRed.whenPressed(new ClimberSwitchCommand(new ClimberFullPrep(), new ClimberFullPrep2()));
+    buttonBox.buttonBBBBlue.whenPressed(new ClimberSwitchCommand(new ClimberClimb(), new ClimberClimb2()));
 
     // optional testing controller
     switch (RobotMap.OPERATOR_CONTROL) {
@@ -136,10 +146,11 @@ public class OI {
     SmartDashboard.putData("Arm Goto Intake", new ArmGoToSetpoint(ArmPosition.INTAKE));
     SmartDashboard.putData("Arm Basic", new ArmBasicCommand());
 
-    SmartDashboard.putData("Climb", new ClimberClimbChosen());
     SmartDashboard.putData("Climber Move Enc", new ClimberMoveEncoder());
     SmartDashboard.putData("Climber Move Shoulder", new ClimberMoveShoulder());
     SmartDashboard.putData("Climber Basic", new ClimberBasicControl());
+    SmartDashboard.putData("Climber Activate Level 3", new ClimberActivateLevel3());
+    SmartDashboard.putData("Climber Hold Level 2", new ClimberHoldLevel2());
 
     SmartDashboard.putData("Intake Cargo", new IntakeLoadCargo(-1));
     SmartDashboard.putData("Intake Eject", new IntakeEjectCargo());
@@ -228,5 +239,9 @@ public class OI {
 
   public boolean getArmResetButton() {
     return buttonBox.buttonGreenTriangle.get();
+  }
+
+  public boolean inLevel3Mode() {
+    return !buttonBox.buttonBBBSwitch.get();
   }
 }

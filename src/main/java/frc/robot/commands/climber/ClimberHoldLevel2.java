@@ -10,11 +10,20 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-public class ClimberClimbChosen extends InstantCommand {
+/**
+ * Add your docs here.
+ */
+public class ClimberHoldLevel2 extends InstantCommand {
+  /**
+   * Add your docs here.
+   */
+  public ClimberHoldLevel2() {
+  }
 
-  // Called just before this Command runs the first time
+  // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_climbChooser.getSelected().climb.start();
+    Robot.m_climber.holdLevel2();
   }
+
 }
