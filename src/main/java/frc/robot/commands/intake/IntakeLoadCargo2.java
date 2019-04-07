@@ -61,20 +61,15 @@ public class IntakeLoadCargo2 extends Command {
 
     case 3:
       if (distance > lastDistance) {
-        // if the ball is getting further away, switch directions and slow down
         direction *= -1;
-        speed = 0;
-        state=10;
+        state++;
       }
-
       Robot.m_intake.set(speed * direction);
-
-      if (speed < 0.1) {
-        state = 10;
-      }
       break;
 
+    case 4:
     default:
+      state = 10;
       break;
     }
 
