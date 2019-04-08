@@ -12,15 +12,17 @@ import frc.robot.Robot;
 
 public class IntakeLoadCargo2 extends Command {
   private double speed = 1.0;
-  private double lastDistance;
   private double direction = -1.0;
+  private double lastDistance;
   private int state;
-
-  private int hasCounts;
+  private double initSpeed=-1;
+  public IntakeLoadCargo2() {
+    requires(Robot.m_intake);
+  }
 
   public IntakeLoadCargo2(double speed) {
     requires(Robot.m_intake);
-    this.speed = Math.abs(speed);
+    this.initSpeed = Math.abs(speed);
     direction = Math.signum(speed);
   }
 
@@ -28,45 +30,47 @@ public class IntakeLoadCargo2 extends Command {
   @Override
   protected void initialize() {
     state = 0;
+    direction=-1;
+    speed=initSpeed;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     double distance = Robot.m_intake.getAverageDistance();
+
     switch (state) {
     case 0:
       Robot.m_intake.set(speed * direction);
-      hasCounts = 0;
       state++;
       break;
 
     case 1:
       if (Robot.m_intake.hasCargo()) {
-        hasCounts++;
-      }
-      if (hasCounts > 0) {
+        Robot.m_intake.set(0);
         state++;
+        direction *= -1;
+        speed = 0.3;
       }
       break;
 
-    case 2:
-      Robot.m_intake.set(0);
-      speed = 0.5;
+    case 2:  
+      Robot.m_intake.set(speed * direction);
       state++;
       break;
 
     case 3:
       if (distance > lastDistance) {
-        direction = direction * -1;
-        speed -= 0.1;
-      }
-      Robot.m_intake.set(speed * direction);
-      if (speed < 0.09) {
+        direction *= -1;
         state++;
       }
+      Robot.m_intake.set(speed * direction);
       break;
 
+    case 4:
+    default:
+      state = 10;
+      break;
     }
 
     lastDistance = distance;
@@ -76,7 +80,7 @@ public class IntakeLoadCargo2 extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return state == 4;
+    return state == 10;
   }
 
   // Called once after isFinished returns true

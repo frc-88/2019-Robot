@@ -48,7 +48,7 @@ public class ClimberLift extends Command {
     double shoulderPos = arm.getShoulderAbsDegrees();
     double shoulderPercentDone = Math.max(0, (shoulderPos - SHOULDER_START) / (SHOULDER_END - SHOULDER_START));
     double elbowTotalDist = ELBOW_END - ELBOW_START;
-    arm.moveElbowAbs(ELBOW_START + elbowTotalDist * shoulderPercentDone);
+    arm.moveElbowAbs(ELBOW_START + elbowTotalDist * shoulderPercentDone, 0);
     
   }
 

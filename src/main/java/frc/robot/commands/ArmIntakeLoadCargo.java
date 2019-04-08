@@ -5,16 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.climber;
+package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.arm.ArmGoToSetpoint;
+import frc.robot.commands.intake.IntakeLoadCargo2;
+import frc.robot.util.ArmPosition;
 
-public class ClimberPrepChosen extends InstantCommand {
-
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
-    Robot.m_climbChooser.getSelected().prep.start();
+public class ArmIntakeLoadCargo extends CommandGroup {
+  /**
+   * Add your docs here.
+   */
+  public ArmIntakeLoadCargo() {
+    addParallel(new IntakeLoadCargo2(-0.9));
+    addParallel(new ArmGoToSetpoint(ArmPosition.INTAKE));
   }
 }

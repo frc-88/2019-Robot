@@ -7,6 +7,7 @@
 
 package frc.robot.commands.climber;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Climber;
@@ -15,7 +16,7 @@ public class ClimberPrep extends Command {
 
   private Climber climber = Robot.m_climber;
 
-  private final int WINCH_DISTANCE = 23000; //2100 on jupiter
+  private int WINCH_DISTANCE = 23000; //2100 on jupiter
 
   public ClimberPrep() {
     requires(climber);
@@ -24,6 +25,13 @@ public class ClimberPrep extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Preferences prefs = Preferences.getInstance();
+    if (prefs.containsKey("Climber:PrepTarget")) {
+      WINCH_DISTANCE = prefs.getInt("Climber:PrepTarget", WINCH_DISTANCE);
+    } else {
+      prefs.putInt("Climber:PrepTarget", WINCH_DISTANCE);
+    }
+
     climber.configForEncoderPID();
     climber.zeroEncoder();
     climber.moveEncoder(WINCH_DISTANCE);

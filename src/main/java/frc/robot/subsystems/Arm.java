@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
@@ -51,6 +52,8 @@ public class Arm extends Subsystem {
   // Talon Info
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
+  private final static int MAGIC_ELBOW_PID_IDX = 0;
+  private final static int POSITION_ELBOW_PID_IDX = 1;
   private final static int TIMEOUTMS = 0;
 
   private TalonSRX shoulder, elbow;
@@ -102,10 +105,15 @@ public class Arm extends Subsystem {
   private void configElbowTalon() {
     configTalonCommon(elbow);
 
-    elbow.config_kP(MAIN_SLOT_IDX, 8, TIMEOUTMS);
-    elbow.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    elbow.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    elbow.config_kF(MAIN_SLOT_IDX, 3.0, TIMEOUTMS);
+    elbow.config_kP(MAGIC_ELBOW_PID_IDX, 8, TIMEOUTMS);
+    elbow.config_kI(MAGIC_ELBOW_PID_IDX, 0, TIMEOUTMS);
+    elbow.config_kD(MAGIC_ELBOW_PID_IDX, 0, TIMEOUTMS);
+    elbow.config_kF(MAGIC_ELBOW_PID_IDX, 3.0, TIMEOUTMS);
+
+    elbow.config_kP(POSITION_ELBOW_PID_IDX, 20, TIMEOUTMS);
+    elbow.config_kI(POSITION_ELBOW_PID_IDX, 0, TIMEOUTMS);
+    elbow.config_kD(POSITION_ELBOW_PID_IDX, 50, TIMEOUTMS);
+    elbow.config_kF(POSITION_ELBOW_PID_IDX, 0, TIMEOUTMS);
 
     elbow.setInverted(false);
 
@@ -443,6 +451,7 @@ public class Arm extends Subsystem {
    */
   public void moveElbow(double degrees) {
     currentSetpoint = null;
+    elbow.selectProfileSlot(MAGIC_ELBOW_PID_IDX, 0);
     elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(degrees));
   }
 
@@ -450,10 +459,12 @@ public class Arm extends Subsystem {
    * PIDs the elbow to the given position based off the absolute encoder which is
    * after the springs
    */
-  public void moveElbowAbs(double degrees) {
+  public void moveElbowAbs(double degrees, double ff) {
     currentSetpoint = null;
+    elbow.selectProfileSlot(POSITION_ELBOW_PID_IDX, 0);
     elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(
-        degrees + getElbowMotorDegrees() - getElbowAbsDegrees()));
+        degrees + getElbowMotorDegrees() - getElbowAbsDegrees()),
+        DemandType.ArbitraryFeedForward, ff);
   }
 
   /**

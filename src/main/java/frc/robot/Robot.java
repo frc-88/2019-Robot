@@ -12,13 +12,13 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.climber.ClimbPair;
 import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberClimb2;
 import frc.robot.commands.climber.ClimberFullPrep;
@@ -54,8 +54,11 @@ public class Robot extends TimedRobot {
 
   public static TimeScheduler dashboardScheduler;
 
+  public boolean debugMode = false;
+
   Command m_autonomousCommand;
-  public static SendableChooser<ClimbPair> m_climbChooser = new SendableChooser<ClimbPair>();
+
+  Preferences prefs = Preferences.getInstance();
 
   long lastTeleopPerStart = Long.MAX_VALUE;
   long lastTeleopPerEnd = Long.MAX_VALUE;
@@ -87,15 +90,12 @@ public class Robot extends TimedRobot {
     m_oi = new OI();
 
     initializeDashboard();
+    initPreferences();
 
     m_limelight_wapg.ledOff();
     m_limelight_wapg.camDriver();
 
     m_navx.zeroPitch();
-
-    m_climbChooser.addOption("Level 2", new ClimbPair(new ClimberFullPrep2(), new ClimberClimb2()));
-    m_climbChooser.addDefault("Level 3", new ClimbPair(new ClimberFullPrep(), new ClimberClimb()));
-    SmartDashboard.putData("Climb Mode", m_climbChooser);
 
     // NetworkTableInstance.getDefault().
     soundPlaying = NetworkTableInstance.getDefault().getTable("alerts").getEntry("sound");
@@ -112,8 +112,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    fetchPreferences();
 
-    if (RobotMap.DEBUG) writeDashboard();
+    if (debugMode) writeDashboard();
 
     makeSounds();
 
@@ -157,6 +158,7 @@ public class Robot extends TimedRobot {
     if (!DriverStation.getInstance().isFMSAttached() || firstAutoInit) {
       firstAutoInit = false;
       m_arm.zero();
+      m_climber.holdLevel2();
     }
     
     
@@ -192,6 +194,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     if (!DriverStation.getInstance().isFMSAttached()) {
       m_arm.zero();
+      m_climber.holdLevel2();
     }
     m_arm.configureBrakeMode();
 
@@ -330,6 +333,16 @@ public class Robot extends TimedRobot {
     }
 
     lastLoopTime = RobotController.getFPGATime();
+  }
+
+  private void initPreferences() {
+    if (!prefs.containsKey("Robot:debug")) {
+      prefs.putBoolean("Robot:debug", debugMode);
+    }
+  }
+
+  private void fetchPreferences() {
+    debugMode = prefs.getBoolean("Robot:debug", debugMode);
   }
 
   private void initializeDashboard() {

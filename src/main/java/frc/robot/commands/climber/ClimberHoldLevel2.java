@@ -7,25 +7,23 @@
 
 package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
-import frc.robot.commands.arm.ArmGoToSetpoint;
-import frc.robot.util.ArmPosition;
 
-public class ClimberFullPrep2 extends CommandGroup {
+/**
+ * Add your docs here.
+ */
+public class ClimberHoldLevel2 extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public ClimberFullPrep2() {
-    addParallel(new ArmGoToSetpoint(ArmPosition.PRE_CLIMB2));
-    addSequential(new Command(){
-    
-      @Override
-      protected boolean isFinished() {
-        return Robot.m_arm.getCurrentSetpoint().equals(ArmPosition.PRE_CLIMB);
-      }
-    });
-    addParallel(new ClimberPrep());
+  public ClimberHoldLevel2() {
   }
+
+  // Called once when the command executes
+  @Override
+  protected void initialize() {
+    Robot.m_climber.holdLevel2();
+  }
+
 }
