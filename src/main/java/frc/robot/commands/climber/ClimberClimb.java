@@ -22,7 +22,7 @@ public class ClimberClimb extends Command {
   private Drive drive = Robot.m_drive;
 
   private final double LIFT_SHOULDER_START = 86;
-  private final double LIFT_SHOULDER_END = 127;
+  private final double LIFT_SHOULDER_END = 122;
   
   private final double LIFT_ELBOW_START = 176;
   private final double LIFT_ELBOW_END = 160;
@@ -95,14 +95,12 @@ public class ClimberClimb extends Command {
       climber.moveEncoder(LIFT_CLIMBER_TARGET, 0.05);
 
       double shoulderPos = arm.getShoulderAbsDegrees();
-      double shoulderPercentDone = Math.max(0, (shoulderPos - LIFT_SHOULDER_START) / (LIFT_SHOULDER_END - LIFT_SHOULDER_START));
+      double shoulderPercentDone = Math.min(Math.max(0, (shoulderPos - LIFT_SHOULDER_START) / (LIFT_SHOULDER_END - LIFT_SHOULDER_START)), 1);
       double elbowTotalDist = LIFT_ELBOW_END - LIFT_ELBOW_START;
       arm.moveElbowAbs(LIFT_ELBOW_START + elbowTotalDist * shoulderPercentDone, 0);
 
-      if (climber.targetReached(3000)) {
+      if (climber.targetReached(3000) && Math.abs(arm.getElbowAbsDegrees() - LIFT_ELBOW_END) < RobotMap.ARM_TOLERANCE) {
         state++;
-
-        arm.configureBrakeMode();
       }
 
       
@@ -115,10 +113,12 @@ public class ClimberClimb extends Command {
       } else {
         arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
       }
-      drive.basicDrive(0.2, 0.2);
+      drive.basicDrive(0.4, 0.4);
 
-      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE + 2) {
+      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE + 1) {
         state++;
+
+        arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
 
         arm.setShoulderSpeed(50);        
       }
@@ -132,15 +132,10 @@ public class ClimberClimb extends Command {
 
       arm.moveShoulder(DROP_SHOULDER_TARGET);
 
-      drive.basicDrive(0.2, 0.2);
-      System.out.println("2");
+      drive.basicDrive(0.4, 0.4);
 
       if (Robot.m_navx.getPitch() < -25) {
         state = 10;
-        
-        arm.configureCoastMode();
-        climber.configForEncoderPID();
-
       }
 
       if (climber.onPlatform()) {
@@ -158,14 +153,10 @@ public class ClimberClimb extends Command {
 
     case 3:
 
-      drive.basicDrive(0.2, 0.2);
+      drive.basicDrive(0.4, 0.4);
 
       if (Robot.m_navx.getPitch() < -25) {
         state = 10;
-        
-        arm.configureCoastMode();
-        climber.configForEncoderPID();
-
       }
 
       if (climber.onPlatform()) {
