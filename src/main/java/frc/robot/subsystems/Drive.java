@@ -328,6 +328,8 @@ public class Drive extends Subsystem {
 
         // turn = DriveUtils.cheesyTurn(speed, turn);
 
+        speed = limitAcceleration(speed);
+
         double leftSpeed = (speed + turn);
         double rightSpeed = (speed - turn);
 
