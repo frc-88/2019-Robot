@@ -27,18 +27,16 @@ public class ClimberClimb extends Command {
   private final double LIFT_ELBOW_START = 176;
   private final double LIFT_ELBOW_END = 160;
 
-  private int LIFT_CLIMBER_TARGET = 38500;
+  private int LIFT_CLIMBER_TARGET = 48500;
 
-  private final double PULL_ELBOW_TARGET = 174;
+  private final double PULL_ELBOW_TARGET = 173;
 
   private final double DROP_SHOULDER_TARGET = 121;
-  private int DROP_CLIMBER_TARGET = 36500;
+  private int DROP_CLIMBER_TARGET = 46500;
 
   private final double CLEAR_SHOULDER_TARGET = 86;
 
-  private int CLEAR_CLIMBER_TARGET = 25000;
-
-  private final int CLIMBER_RECOVER_TARGET = 36500;
+  private int CLEAR_CLIMBER_TARGET = 35000;
 
   private int state;
   private double leftDriveTarget;
@@ -132,6 +130,8 @@ public class ClimberClimb extends Command {
 
       arm.moveShoulder(DROP_SHOULDER_TARGET);
 
+      arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
+
       drive.basicDrive(0.4, 0.4);
 
       if (Robot.m_navx.getPitch() < -25) {
@@ -155,6 +155,8 @@ public class ClimberClimb extends Command {
 
       drive.basicDrive(0.4, 0.4);
 
+      arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
+
       if (Robot.m_navx.getPitch() < -25) {
         state = 10;
       }
@@ -169,6 +171,8 @@ public class ClimberClimb extends Command {
       break;
     
     case 4:
+
+      arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
 
       if (!climber.onPlatform()) {
         leftDone = true;
