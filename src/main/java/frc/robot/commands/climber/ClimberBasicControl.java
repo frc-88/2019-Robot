@@ -23,7 +23,7 @@ public class ClimberBasicControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_climber.setVoltage(Robot.m_oi.getOperatorRightYAxis());
+    Robot.m_climber.setVoltage(Math.pow(Robot.m_oi.getOperatorRightYAxis(),3));
   }
 
   // Make this return true when this Command no longer needs to run execute()
