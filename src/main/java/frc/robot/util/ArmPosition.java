@@ -17,6 +17,7 @@ public final class ArmPosition {
     public static final ArmSetpoint HOME = new ArmSetpoint(158, 2);
     public static final ArmSetpoint START = new ArmSetpoint(158, 2);
     public static final ArmSetpoint INTAKE = new ArmSetpoint(162, 82);
+    public static final ArmSetpoint BATTLE_MODE = new ArmSetpoint(168, -10);
     public static final ArmSetpoint CARGO_SHIP_FRONT = new ArmSetpoint(105, 33);
     public static final ArmSetpoint CARGO_SHIP_BACK = new ArmSetpoint(-105, -33);
     public static final ArmSetpoint CARGO_SHIP_BACK2 = new ArmSetpoint(-60, -215);
@@ -91,7 +92,8 @@ public final class ArmPosition {
             };
     
         }
-        else if (targetSetpoint.equals(PRE_CLIMB) && !currentSetpoint.equals(PRE_CLIMB)) {
+        else if (targetSetpoint.equals(PRE_CLIMB) 
+                && !(currentSetpoint.equals(PRE_CLIMB) || currentSetpoint.equals(PRE_CLIMB2))) {
 
             ArmSetpoint[] toIntake = getPath(currentSetpoint, INTAKE);
             ArmSetpoint[] ret = Arrays.copyOf(toIntake, toIntake.length + 1);

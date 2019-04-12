@@ -7,12 +7,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.command.WaitCommand;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.ArmInPositionCommand;
 import frc.robot.commands.ArmIntakeLoadCargo;
+import frc.robot.commands.ClimberSelectedCommand;
 import frc.robot.commands.ClimberSwitchCommand;
 import frc.robot.commands.HaveCargoCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
+import frc.robot.commands.arm.ArmBattleMode;
 import frc.robot.commands.arm.ArmCalibrate;
 import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.commands.arm.ArmZero;
@@ -31,6 +38,7 @@ import frc.robot.commands.climber.ClimberMoveShoulder;
 import frc.robot.commands.climber.ClimberPrep;
 import frc.robot.commands.climber.ClimberPrep2;
 import frc.robot.commands.climber.ClimberPull;
+import frc.robot.commands.climber.ClimberSwitchTo3;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeDefault;
@@ -46,6 +54,7 @@ import frc.robot.commands.wapg.WAPGOpen;
 import frc.robot.commands.wapg.WAPGRetract;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
+import frc.robot.util.DebouncedButton;
 import frc.robot.util.TJButtonBox;
 import frc.robot.util.TJController;
 import frc.robot.commands.intake.IntakeTester;
@@ -60,6 +69,8 @@ public class OI {
   private TJController driveController;
   private TJController testController;
   private TJButtonBox buttonBox;
+
+  private Trigger preclimbButton;
 
   public OI() {
     driveController = new TJController(RobotMap.DRIVE_CONTROLLER_PORT);
@@ -85,7 +96,6 @@ public class OI {
     buttonBox.buttonGreenTriangle.whenPressed(new ArmZero());
 
     buttonBox.buttonRedLow.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
-    buttonBox.buttonBlueLow.whenPressed(new ArmGoToSetpoint(ArmPosition.LOW_ROCKET_BACK));
     buttonBox.buttonRedCargo.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
     buttonBox.buttonBlueCargo.whenPressed(new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK2));
     buttonBox.buttonRedMid.whenPressed(new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_FRONT));
@@ -94,10 +104,42 @@ public class OI {
     buttonBox.buttonBlueHigh.whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
     buttonBox.buttonWhiteHome.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
 
+    buttonBox.buttonBlueLow.whenPressed(new ArmInPositionCommand(ArmPosition.HOME, new ArmGoToSetpoint(ArmPosition.BATTLE_MODE)));
+    buttonBox.buttonBlueLow.whenReleased(new ArmGoToSetpoint(ArmPosition.HOME));
+
     buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
 
-    buttonBox.buttonBBBRed.whenPressed(new ClimberSwitchCommand(new ClimberFullPrep(), new ClimberFullPrep2()));
-    buttonBox.buttonBBBBlue.whenPressed(new ClimberSwitchCommand(new ClimberClimb(), new ClimberClimb2()));
+    preclimbButton = new DebouncedButton(buttonBox.buttonBBBRed);
+    preclimbButton.whenActive(new ClimberSwitchCommand(new ClimberFullPrep(), new ClimberFullPrep2()));
+    buttonBox.buttonBBBBlue.whenPressed(new ClimberSelectedCommand(new ClimberClimb(), new ClimberClimb2()));
+    buttonBox.buttonBBBSwitch.whenInactive(new ClimberSelectedCommand(new WaitCommand(0), new ClimberSwitchTo3()));
+
+    // Backup Button Tab
+    ShuffleboardTab backupTab = Shuffleboard.getTab("British Columbia");
+    backupTab.add(new SAPGDeploy());
+    backupTab.add(new SAPGOpen());
+    backupTab.add(new SAPGClose());
+    backupTab.add(new SAPGRetract());
+    backupTab.add("Intake Forwards", new IntakeManual(0.5));
+    backupTab.add("Intake Reverse", new IntakeManual(-0.5));
+    backupTab.add(new ArmZero());
+    backupTab.add("Red Button", new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
+
+    backupTab.add("Low Rocket", new ArmGoToSetpoint(ArmPosition.LOW_ROCKET));
+    backupTab.add("Cargo Ship", new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_FRONT));
+    backupTab.add("Cargo Ship Back", new ArmGoToSetpoint(ArmPosition.CARGO_SHIP_BACK2));
+    backupTab.add("Mid Rocket", new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_FRONT));
+    backupTab.add("Mid Rocket Back", new ArmGoToSetpoint(ArmPosition.MEDIUM_ROCKET_BACK2));
+    backupTab.add("High Rocket", new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_FRONT));
+    backupTab.add("High Rocket Back", new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
+    backupTab.add("Home", new ArmGoToSetpoint(ArmPosition.HOME));
+
+    backupTab.add("Battle",new ArmGoToSetpoint(ArmPosition.BATTLE_MODE));
+
+    backupTab.add("Preclimb 3", new ClimberFullPrep());
+    backupTab.add("Preclimb 2", new ClimberFullPrep2());
+    backupTab.add("Climb 3", new ClimberClimb());
+    backupTab.add("Climb 2", new ClimberClimb2());
 
     // optional testing controller
     switch (RobotMap.OPERATOR_CONTROL) {
