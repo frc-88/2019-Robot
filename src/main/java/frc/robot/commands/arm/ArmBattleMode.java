@@ -1,53 +1,47 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drive;
+package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-/**
- * An example command.  You can replace me with your own command.
- */
-public class ArcadeDrive extends Command {
-  public ArcadeDrive() {
-    // Use requires() here to declare subsystem dependencies
-    requires(Robot.m_drive);
+public class ArmBattleMode extends Command {
+
+  private double shoulderSpeed = 0.2;
+  private double elbowSpeed = 0.2;
+
+  public ArmBattleMode() {
+    requires(Robot.m_arm);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_drive.resetVelocityPID();
+    Preferences prefs = Preferences.getInstance();
+    if (prefs.containsKey("Arm:BattleModeShoulder")) {
+      shoulderSpeed = prefs.getDouble("Arm:BattleModeShoulder", shoulderSpeed);
+    } else {
+      prefs.putDouble("Arm:BattleModeShoulder", shoulderSpeed);
+    }
+    if (prefs.containsKey("Arm:BattleModeElbow")) {
+      elbowSpeed = prefs.getDouble("Arm:BattleModeElbow", elbowSpeed);
+    } else {
+      prefs.putDouble("Arm:BattleModeElbow", elbowSpeed);
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_drive.autoshift();
-    
-    double speed=Robot.m_oi.getDriverLeftYAxis();
-    double turn=Robot.m_oi.getDriverRightXAxis();
-
-    if (Robot.m_oi.isDriverButtonAPressed()) {
-
-      turn = 0.8 * Robot.m_limelight_sapg.turnToTarget();
-    }
-
-    if (Robot.m_oi.isDriverButtonBPressed()) {
-      turn = 0.6 * Robot.m_limelight_sapg.turnToTarget();
-      
-      //if (Math.abs(turn) < 0.1) {
-        speed = Robot.m_limelight_sapg.hasTarget()? -0.3:0;
-      //}
-    }
-    Robot.m_drive.arcadeDrive(speed, turn);
+    Robot.m_arm.setShoulderVoltage(shoulderSpeed);
+    Robot.m_arm.setElbowVoltage(elbowSpeed);
   }
-  
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
@@ -58,7 +52,7 @@ public class ArcadeDrive extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.m_drive.basicDrive(0, 0);
+    Robot.m_arm.stopArm();
   }
 
   // Called when another command which requires one or more of the same

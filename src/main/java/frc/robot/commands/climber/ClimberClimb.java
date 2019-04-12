@@ -197,9 +197,9 @@ public class ClimberClimb extends Command {
         rightVoltage = 0;
       } if (drive.getRightSpeed() > 0) {
         rightDriveTarget = Math.min(rightDriveTarget, drive.getRightPosition() - .5/12.);
-        rightVoltage = -0.1;
-      } else if (drive.getRightPosition() > rightDriveTarget) {
         rightVoltage = -0.08;
+      } else if (drive.getRightPosition() > rightDriveTarget) {
+        rightVoltage = -0.06;
       } else {
         rightDone = true;
         rightVoltage = 0;

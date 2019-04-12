@@ -10,6 +10,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
+import frc.robot.commands.ClimberSelectedCommand.SelectState;
 
 public class ClimberSwitchCommand extends ConditionalCommand {
 
@@ -31,7 +32,14 @@ public class ClimberSwitchCommand extends ConditionalCommand {
 
     @Override
     protected boolean condition() {
-        return Robot.m_oi.inLevel3Mode();
+		if (Robot.m_oi.inLevel3Mode()) {
+			ClimberSelectedCommand.selectState = SelectState.OFF;
+			return true;
+		} else {
+			ClimberSelectedCommand.selectState = SelectState.ON;
+			return false;
+		}
+        
     }
 
 
