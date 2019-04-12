@@ -166,6 +166,7 @@ public class Robot extends TimedRobot {
     
     
     m_arm.configureBrakeMode();
+    m_drive.setPigeonAngle(180);
 
     m_limelight_sapg.ledOff();
     m_limelight_sapg.camDriver();

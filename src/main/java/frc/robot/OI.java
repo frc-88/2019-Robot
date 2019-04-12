@@ -207,6 +207,12 @@ public class OI {
     SmartDashboard.putData("Drive Left Park", new DriveProfile(DriveProfiles.leftPark));
     SmartDashboard.putData("Drive Right Park", new DriveProfile(DriveProfiles.rightPark));
 
+    SmartDashboard.putData("Drive Straight 8", new DriveProfile(DriveProfiles.straight8));
+    SmartDashboard.putData("Drive Left 5x5", new DriveProfile(DriveProfiles.leftTurnTest));
+    SmartDashboard.putData("Drive Right 5x5", new DriveProfile(DriveProfiles.rightTurnTest));
+    SmartDashboard.putData("Drive Left Park", new DriveProfile(DriveProfiles.leftPark));
+    SmartDashboard.putData("Drive Right Park", new DriveProfile(DriveProfiles.rightPark));
+
     SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
     SmartDashboard.putData("Zero Pitch", new NavXZeroPitch());
 
