@@ -9,6 +9,7 @@ package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 /**
  * An example command.  You can replace me with your own command.
@@ -40,11 +41,15 @@ public class ArcadeDrive extends Command {
 
     if (Robot.m_oi.isDriverButtonBPressed()) {
       turn = 0.6 * Robot.m_limelight_sapg.turnToTarget();
+
+      speed = Robot.m_limelight_sapg.hasTarget() ? -0.3 : 0;
       
-      //if (Math.abs(turn) < 0.1) {
-        speed = Robot.m_limelight_sapg.hasTarget()? -0.3:0;
-      //}
+      // if (Robot.m_limelight_sapg.hasTarget()) {
+      //   double adjustment = Math.min(Robot.m_limelight_sapg.getTargetArea() / RobotMap.LIMELIGHT_MAX_AREA, 1);
+      //   speed = RobotMap.TARGETING_MAX_SPEED - (adjustment * (RobotMap.TARGETING_MAX_SPEED - RobotMap.TARGETING_MIN_SPEED));
+      // }
     }
+
     Robot.m_drive.arcadeDrive(speed, turn);
   }
   
