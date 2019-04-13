@@ -44,6 +44,9 @@ public class ArcadeDrive extends Command {
       //if (Math.abs(turn) < 0.1) {
         speed = Robot.m_limelight_sapg.hasTarget()? -0.3:0;
       //}
+
+      // double area = Robot.m_limelight_sapg.getTargetArea();
+
     }
     Robot.m_drive.arcadeDrive(speed, turn);
   }
