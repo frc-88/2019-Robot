@@ -14,6 +14,7 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
+import frc.robot.util.ArmPosition;
 
 public class ClimberClimb extends Command {
 
@@ -34,9 +35,9 @@ public class ClimberClimb extends Command {
   private final double DROP_SHOULDER_TARGET = 121;
   private int DROP_CLIMBER_TARGET = 46500;
 
-  private final double CLEAR_SHOULDER_TARGET = 86;
-
   private int CLEAR_CLIMBER_TARGET = 35000;
+
+  private final double CLEAR_SHOULDER_TARGET = 86;
 
   private int state;
   private double leftDriveTarget;
@@ -228,8 +229,7 @@ public class ClimberClimb extends Command {
     case 5:
 
       climber.moveEncoder(CLEAR_CLIMBER_TARGET);
-      arm.moveShoulder(CLEAR_SHOULDER_TARGET);
-      arm.moveElbow(PULL_ELBOW_TARGET);
+      arm.setSetpoint(ArmPosition.PRE_CLIMB, ArmPosition.PRE_CLIMB.shoulder, ArmPosition.PRE_CLIMB.elbow, RobotMap.SHOULDER_MAX_SPEED, RobotMap.ELBOW_MAX_SPEED);
 
       drive.basicDrive(0, 0);
 
