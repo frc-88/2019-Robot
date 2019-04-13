@@ -13,8 +13,8 @@ import frc.robot.Robot;
 
 public class ArmBattleMode extends Command {
 
-  private double shoulderSpeed = 0.2;
-  private double elbowSpeed = 0.2;
+  private final double SHOULDER_CURRENT = 8;
+  private final double ELBOW_CURRENT = -6;
 
   public ArmBattleMode() {
     requires(Robot.m_arm);
@@ -23,24 +23,14 @@ public class ArmBattleMode extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Preferences prefs = Preferences.getInstance();
-    if (prefs.containsKey("Arm:BattleModeShoulder")) {
-      shoulderSpeed = prefs.getDouble("Arm:BattleModeShoulder", shoulderSpeed);
-    } else {
-      prefs.putDouble("Arm:BattleModeShoulder", shoulderSpeed);
-    }
-    if (prefs.containsKey("Arm:BattleModeElbow")) {
-      elbowSpeed = prefs.getDouble("Arm:BattleModeElbow", elbowSpeed);
-    } else {
-      prefs.putDouble("Arm:BattleModeElbow", elbowSpeed);
-    }
+
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.m_arm.setShoulderVoltage(shoulderSpeed);
-    Robot.m_arm.setElbowVoltage(elbowSpeed);
+    Robot.m_arm.setShoulderCurrent(SHOULDER_CURRENT);
+    Robot.m_arm.setElbowCurrent(ELBOW_CURRENT);
   }
 
   // Make this return true when this Command no longer needs to run execute()
