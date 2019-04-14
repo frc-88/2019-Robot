@@ -106,7 +106,7 @@ public class OI {
     buttonBox.buttonBlueHigh.whenPressed(new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
     buttonBox.buttonWhiteHome.whenPressed(new ArmGoToSetpoint(ArmPosition.HOME));
 
-    buttonBox.buttonBlueLow.whenPressed(new ArmInPositionCommand(ArmPosition.HOME, new ArmGoToSetpoint(ArmPosition.BATTLE_MODE)));
+    buttonBox.buttonBlueLow.whenPressed(new ArmInPositionCommand(ArmPosition.HOME, new ArmBattleMode()));
     buttonBox.buttonBlueLow.whenReleased(new ArmGoToSetpoint(ArmPosition.HOME));
 
     buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
@@ -136,7 +136,7 @@ public class OI {
     backupTab.add("High Rocket Back", new ArmGoToSetpoint(ArmPosition.HIGH_ROCKET_BACK));
     backupTab.add("Home", new ArmGoToSetpoint(ArmPosition.HOME));
 
-    backupTab.add("Battle",new ArmGoToSetpoint(ArmPosition.BATTLE_MODE));
+    backupTab.add("Battle", new ArmBattleMode());
 
     backupTab.add("Preclimb 3", new ClimberFullPrep());
     backupTab.add("Preclimb 2", new ClimberFullPrep2());

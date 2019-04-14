@@ -157,4 +157,8 @@ public class RobotMap {
 
   // Misc
   public static final int CAN_TIMEOUT = 0;
+
+  public static final double LIMELIGHT_MAX_AREA = 1000;
+  public static final double TARGETING_MAX_SPEED = 0.35;
+  public static final double TARGETING_MIN_SPEED = 0.08;
 }
