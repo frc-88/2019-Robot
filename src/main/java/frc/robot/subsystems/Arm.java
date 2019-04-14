@@ -52,8 +52,9 @@ public class Arm extends Subsystem {
   // Talon Info
   private final static int MAIN_SLOT_IDX = 0;
   private final static int AUX_SENSOR_SLOT_IDX = 1;
-  private final static int MAGIC_ELBOW_PID_IDX = 0;
-  private final static int POSITION_ELBOW_PID_IDX = 1;
+  private final static int MAGIC_PID_IDX = 0;
+  private final static int POSITION_PID_IDX = 1;
+  private final static int CURRENT_PID_IDX = 2;
   private final static int TIMEOUTMS = 0;
 
   private TalonSRX shoulder, elbow;
@@ -86,10 +87,15 @@ public class Arm extends Subsystem {
   private void configShoulderTalon() {
     configTalonCommon(shoulder);
 
-    shoulder.config_kP(MAIN_SLOT_IDX, 8, TIMEOUTMS);
-    shoulder.config_kI(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    shoulder.config_kD(MAIN_SLOT_IDX, 0, TIMEOUTMS);
-    shoulder.config_kF(MAIN_SLOT_IDX, 3, TIMEOUTMS);
+    shoulder.config_kP(MAGIC_PID_IDX, 8, TIMEOUTMS);
+    shoulder.config_kI(MAGIC_PID_IDX, 0, TIMEOUTMS);
+    shoulder.config_kD(MAGIC_PID_IDX, 0, TIMEOUTMS);
+    shoulder.config_kF(MAGIC_PID_IDX, 3, TIMEOUTMS);
+
+    shoulder.config_kP(CURRENT_PID_IDX, 0.15, TIMEOUTMS);
+    shoulder.config_kI(CURRENT_PID_IDX, 0, TIMEOUTMS);
+    shoulder.config_kD(CURRENT_PID_IDX, 0,TIMEOUTMS);
+    shoulder.config_kF(CURRENT_PID_IDX, .04, TIMEOUTMS);
 
     shoulder.setInverted(true);
 
@@ -105,15 +111,20 @@ public class Arm extends Subsystem {
   private void configElbowTalon() {
     configTalonCommon(elbow);
 
-    elbow.config_kP(MAGIC_ELBOW_PID_IDX, 8, TIMEOUTMS);
-    elbow.config_kI(MAGIC_ELBOW_PID_IDX, 0, TIMEOUTMS);
-    elbow.config_kD(MAGIC_ELBOW_PID_IDX, 0, TIMEOUTMS);
-    elbow.config_kF(MAGIC_ELBOW_PID_IDX, 3.0, TIMEOUTMS);
+    elbow.config_kP(MAGIC_PID_IDX, 8, TIMEOUTMS);
+    elbow.config_kI(MAGIC_PID_IDX, 0, TIMEOUTMS);
+    elbow.config_kD(MAGIC_PID_IDX, 0, TIMEOUTMS);
+    elbow.config_kF(MAGIC_PID_IDX, 3.0, TIMEOUTMS);
 
-    elbow.config_kP(POSITION_ELBOW_PID_IDX, 20, TIMEOUTMS);
-    elbow.config_kI(POSITION_ELBOW_PID_IDX, 0, TIMEOUTMS);
-    elbow.config_kD(POSITION_ELBOW_PID_IDX, 50, TIMEOUTMS);
-    elbow.config_kF(POSITION_ELBOW_PID_IDX, 0, TIMEOUTMS);
+    elbow.config_kP(POSITION_PID_IDX, 20, TIMEOUTMS);
+    elbow.config_kI(POSITION_PID_IDX, 0, TIMEOUTMS);
+    elbow.config_kD(POSITION_PID_IDX, 50, TIMEOUTMS);
+    elbow.config_kF(POSITION_PID_IDX, 0, TIMEOUTMS);
+
+    elbow.config_kP(CURRENT_PID_IDX, .15, TIMEOUTMS);
+    elbow.config_kI(CURRENT_PID_IDX, 0, TIMEOUTMS);
+    elbow.config_kD(CURRENT_PID_IDX, 0,TIMEOUTMS);
+    elbow.config_kF(CURRENT_PID_IDX, .042, TIMEOUTMS);
 
     elbow.setInverted(false);
 
@@ -239,6 +250,8 @@ public class Arm extends Subsystem {
 
     SmartDashboard.putNumber("Arm:shoulder offset", shoulderOffset);
     SmartDashboard.putNumber("Arm:elbow offset", elbowOffset);
+    SmartDashboard.putNumber("Arm:shoulder current", shoulder.getOutputCurrent());
+    SmartDashboard.putNumber("Arm:elbow current", elbow.getOutputCurrent());
   }
 
   /**
@@ -434,6 +447,9 @@ public class Arm extends Subsystem {
     setShoulderSpeed(shoulderSpeed);
     setElbowSpeed(elbowSpeed);
 
+    shoulder.selectProfileSlot(MAGIC_PID_IDX, 0);
+    elbow.selectProfileSlot(MAGIC_PID_IDX, 0);
+
     shoulder.set(ControlMode.MotionMagic, convertShoulderDegreesToMotorCounts(shoulderTarget));
     elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(elbowTarget));
   }
@@ -443,6 +459,7 @@ public class Arm extends Subsystem {
    */
   public void moveShoulder(double degrees) {
     currentSetpoint = null;
+    shoulder.selectProfileSlot(MAGIC_PID_IDX, 0);
     shoulder.set(ControlMode.MotionMagic, convertShoulderDegreesToMotorCounts(degrees));
   }
 
@@ -451,7 +468,7 @@ public class Arm extends Subsystem {
    */
   public void moveElbow(double degrees) {
     currentSetpoint = null;
-    elbow.selectProfileSlot(MAGIC_ELBOW_PID_IDX, 0);
+    elbow.selectProfileSlot(MAGIC_PID_IDX, 0);
     elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(degrees));
   }
 
@@ -461,7 +478,7 @@ public class Arm extends Subsystem {
    */
   public void moveElbowAbs(double degrees, double ff) {
     currentSetpoint = null;
-    elbow.selectProfileSlot(POSITION_ELBOW_PID_IDX, 0);
+    elbow.selectProfileSlot(POSITION_PID_IDX, 0);
     elbow.set(ControlMode.MotionMagic, convertElbowDegreesToMotorCounts(
         degrees + getElbowMotorDegrees() - getElbowAbsDegrees()),
         DemandType.ArbitraryFeedForward, ff);
@@ -506,6 +523,22 @@ public class Arm extends Subsystem {
   public void setElbowVoltage(double percentOutput) {
     currentSetpoint = null;
     elbow.set(ControlMode.PercentOutput, percentOutput);
+  }
+
+  /**
+   * PIDS the shoulder to the given current in Amps
+   */
+  public void setShoulderCurrent(double current) {
+    shoulder.selectProfileSlot(CURRENT_PID_IDX, 0);
+    shoulder.set(ControlMode.Current, current);
+  }
+
+  /**
+   * PIDS the elbow to the given current in Amps
+   */
+  public void setElbowCurrent(double current) {
+    elbow.selectProfileSlot(CURRENT_PID_IDX, 0);
+    elbow.set(ControlMode.Current, current);
   }
 
   /*****************************************************************************

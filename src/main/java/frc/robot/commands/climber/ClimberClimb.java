@@ -14,6 +14,7 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
+import frc.robot.util.ArmPosition;
 
 public class ClimberClimb extends Command {
 
@@ -22,23 +23,21 @@ public class ClimberClimb extends Command {
   private Drive drive = Robot.m_drive;
 
   private final double LIFT_SHOULDER_START = 86;
-  private final double LIFT_SHOULDER_END = 127;
+  private final double LIFT_SHOULDER_END = 122;
   
   private final double LIFT_ELBOW_START = 176;
   private final double LIFT_ELBOW_END = 160;
 
-  private int LIFT_CLIMBER_TARGET = 38500;
+  private int LIFT_CLIMBER_TARGET = 48500;
 
-  private final double PULL_ELBOW_TARGET = 174;
+  private final double PULL_ELBOW_TARGET = 173;
 
   private final double DROP_SHOULDER_TARGET = 121;
-  private int DROP_CLIMBER_TARGET = 36500;
+  private int DROP_CLIMBER_TARGET = 46500;
+
+  private int CLEAR_CLIMBER_TARGET = 35000;
 
   private final double CLEAR_SHOULDER_TARGET = 86;
-
-  private int CLEAR_CLIMBER_TARGET = 25000;
-
-  private final int CLIMBER_RECOVER_TARGET = 36500;
 
   private int state;
   private double leftDriveTarget;
@@ -95,14 +94,12 @@ public class ClimberClimb extends Command {
       climber.moveEncoder(LIFT_CLIMBER_TARGET, 0.05);
 
       double shoulderPos = arm.getShoulderAbsDegrees();
-      double shoulderPercentDone = Math.max(0, (shoulderPos - LIFT_SHOULDER_START) / (LIFT_SHOULDER_END - LIFT_SHOULDER_START));
+      double shoulderPercentDone = Math.min(Math.max(0, (shoulderPos - LIFT_SHOULDER_START) / (LIFT_SHOULDER_END - LIFT_SHOULDER_START)), 1);
       double elbowTotalDist = LIFT_ELBOW_END - LIFT_ELBOW_START;
       arm.moveElbowAbs(LIFT_ELBOW_START + elbowTotalDist * shoulderPercentDone, 0);
 
-      if (climber.targetReached(3000)) {
+      if (climber.targetReached(3000) && Math.abs(arm.getElbowAbsDegrees() - LIFT_ELBOW_END) < RobotMap.ARM_TOLERANCE) {
         state++;
-
-        arm.configureBrakeMode();
       }
 
       
@@ -115,10 +112,12 @@ public class ClimberClimb extends Command {
       } else {
         arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
       }
-      drive.basicDrive(0.2, 0.2);
+      drive.basicDrive(0.4, 0.4);
 
-      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE + 2) {
+      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE + 1) {
         state++;
+
+        arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
 
         arm.setShoulderSpeed(50);        
       }
@@ -132,15 +131,12 @@ public class ClimberClimb extends Command {
 
       arm.moveShoulder(DROP_SHOULDER_TARGET);
 
-      drive.basicDrive(0.2, 0.2);
-      System.out.println("2");
+      arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
+
+      drive.basicDrive(0.4, 0.4);
 
       if (Robot.m_navx.getPitch() < -25) {
         state = 10;
-        
-        arm.configureCoastMode();
-        climber.configForEncoderPID();
-
       }
 
       if (climber.onPlatform()) {
@@ -158,14 +154,12 @@ public class ClimberClimb extends Command {
 
     case 3:
 
-      drive.basicDrive(0.2, 0.2);
+      drive.basicDrive(0.4, 0.4);
+
+      arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
 
       if (Robot.m_navx.getPitch() < -25) {
         state = 10;
-        
-        arm.configureCoastMode();
-        climber.configForEncoderPID();
-
       }
 
       if (climber.onPlatform()) {
@@ -178,6 +172,8 @@ public class ClimberClimb extends Command {
       break;
     
     case 4:
+
+      arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
 
       if (!climber.onPlatform()) {
         leftDone = true;
@@ -202,9 +198,9 @@ public class ClimberClimb extends Command {
         rightVoltage = 0;
       } if (drive.getRightSpeed() > 0) {
         rightDriveTarget = Math.min(rightDriveTarget, drive.getRightPosition() - .5/12.);
-        rightVoltage = -0.1;
-      } else if (drive.getRightPosition() > rightDriveTarget) {
         rightVoltage = -0.08;
+      } else if (drive.getRightPosition() > rightDriveTarget) {
+        rightVoltage = -0.06;
       } else {
         rightDone = true;
         rightVoltage = 0;
@@ -233,8 +229,7 @@ public class ClimberClimb extends Command {
     case 5:
 
       climber.moveEncoder(CLEAR_CLIMBER_TARGET);
-      arm.moveShoulder(CLEAR_SHOULDER_TARGET);
-      arm.moveElbow(PULL_ELBOW_TARGET);
+      arm.setSetpoint(ArmPosition.PRE_CLIMB, ArmPosition.PRE_CLIMB.shoulder, ArmPosition.PRE_CLIMB.elbow, RobotMap.SHOULDER_MAX_SPEED, RobotMap.ELBOW_MAX_SPEED);
 
       drive.basicDrive(0, 0);
 

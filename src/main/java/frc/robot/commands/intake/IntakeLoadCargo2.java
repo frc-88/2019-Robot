@@ -78,6 +78,13 @@ public class IntakeLoadCargo2 extends Command {
       break;
     }
 
+    if (state > 1 && !Robot.m_intake.hasCargo()) {
+      state = 0;
+      direction=-1;
+      speed=initSpeed;
+      upCount = 0;
+    }
+
     lastDistance = distance;
 
   }
