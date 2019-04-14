@@ -16,6 +16,8 @@ public class IntakeLoadCargo2 extends Command {
   private double lastDistance;
   private int state;
   private double initSpeed=-1;
+  private int upCount;
+
   public IntakeLoadCargo2() {
     requires(Robot.m_intake);
   }
@@ -32,6 +34,7 @@ public class IntakeLoadCargo2 extends Command {
     state = 0;
     direction=-1;
     speed=initSpeed;
+    upCount = 0;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -50,7 +53,7 @@ public class IntakeLoadCargo2 extends Command {
         Robot.m_intake.set(0);
         state++;
         direction *= -1;
-        speed = 0.3;
+        speed = 0.2;
       }
       break;
 
@@ -69,8 +72,17 @@ public class IntakeLoadCargo2 extends Command {
 
     case 4:
     default:
-      state = 10;
+      if (upCount++ > 1) {
+        state = 10;
+      }
       break;
+    }
+
+    if (state > 1 && !Robot.m_intake.hasCargo()) {
+      state = 0;
+      direction=-1;
+      speed=initSpeed;
+      upCount = 0;
     }
 
     lastDistance = distance;

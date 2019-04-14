@@ -294,13 +294,6 @@ public class Drive extends Subsystem {
      * limiting current draw.
      */
     public void basicDriveLimited(double leftVelocity, double rightVelocity) {
-
-        if (Robot.m_oi.getPushingModeButton()) {
-            currentLimit = RobotMap.PUSHING_MODE_CURRENT_LIMIT;
-        } else {
-            currentLimit = RobotMap.DRIVE_CURRENT_LIMIT;
-        }
-
         leftCommandedSpeed = leftVelocity;
         rightCommandedSpeed = rightVelocity;
         leftDrive.setVelocityCurrentLimited(leftVelocity, currentLimit / 2);
@@ -333,13 +326,9 @@ public class Drive extends Subsystem {
         // speed = DriveUtils.signedPow(speed, 3);
         // turn = DriveUtils.signedPow(speed, 3);
 
-        if (Robot.m_oi.getPushingModeButton()) {
-            speed = limitDeccelerationOnly(speed);
-        } else {
-            speed = limitAcceleration(speed);
-        }
-
         // turn = DriveUtils.cheesyTurn(speed, turn);
+
+        speed = limitAcceleration(speed);
 
         double leftSpeed = (speed + turn);
         double rightSpeed = (speed - turn);

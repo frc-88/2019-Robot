@@ -16,7 +16,7 @@ public class ClimberPrep extends Command {
 
   private Climber climber = Robot.m_climber;
 
-  private int WINCH_DISTANCE = 23000; //2100 on jupiter
+  private int WINCH_DISTANCE = 35000; //2100 on jupiter
 
   public ClimberPrep() {
     requires(climber);
