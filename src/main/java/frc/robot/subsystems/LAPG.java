@@ -18,13 +18,13 @@ import frc.robot.RobotMap;
 public class LAPG extends Subsystem {
     private DoubleSolenoid deployPiston;
     private DoubleSolenoid grabPiston;
-    private Solenoid grabNeutral;
+    private DoubleSolenoid grabNeutral;
     private DigitalInput grabSwitch;
 
     public LAPG() {
         deployPiston = new DoubleSolenoid(RobotMap.LAPG_DEPLOY_PCM, RobotMap.LAPG_DEPLOY_FORWARD, RobotMap.LAPG_DEPLOY_REVERSE);
         grabPiston = new DoubleSolenoid(RobotMap.LAPG_GRAB_PCM, RobotMap.LAPG_GRAB_FORWARD, RobotMap.LAPG_GRAB_REVERSE);
-        grabNeutral = new Solenoid(RobotMap.LAPG_NEUTRAL_PCM, RobotMap.LAPG_NEUTRAL);
+        grabNeutral = new DoubleSolenoid(RobotMap.LAPG_NEUTRAL_PCM, RobotMap.LAPG_NEUTRAL_FORWARD, RobotMap.LAPG_NEUTRAL_REVERSE);
         grabSwitch = new DigitalInput(RobotMap.LAPG_GRAB_SWITCH);
 
         open();
@@ -44,11 +44,11 @@ public class LAPG extends Subsystem {
     }
 
     public void neutral() {
-        grabNeutral.set(true);
+        grabNeutral.set(Value.kForward);
     }
 
     public void active() {
-        grabNeutral.set(false);
+        grabNeutral.set(Value.kReverse);
     }
 
     public void deploy() {
@@ -66,7 +66,7 @@ public class LAPG extends Subsystem {
     public void updateDashboard() {
         SmartDashboard.putString("LAPG:grab", grabPiston.get().toString());
         SmartDashboard.putString("LAPG:deploy", deployPiston.get().toString());
-        SmartDashboard.putBoolean("LAPG:neutral", grabNeutral.get());
+        SmartDashboard.putString("LAPG:neutral", grabNeutral.get().toString());
         SmartDashboard.putBoolean("LAPG:switch", grabSwitch.get());
     }
 
