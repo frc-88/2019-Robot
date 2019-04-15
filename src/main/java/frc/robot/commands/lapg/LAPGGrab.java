@@ -13,6 +13,7 @@ import frc.robot.Robot;
 
 public class LAPGGrab extends Command {
   private static final long DEFAULT_DELAY = 100000; // microseconds
+  private static final long ACTIVE_TIME = 600000; // microseconds
   private static final long OPEN_TIME = 600000; // microseconds
 
   private int state;
@@ -51,12 +52,16 @@ public class LAPGGrab extends Command {
       }
       break;
     case 3:
-      // active, open
+      // active
       Robot.m_lapg.active();
+      gotoNextStateAfterDelay(ACTIVE_TIME);
+      break;
+    case 4:
+      // open
       Robot.m_lapg.open();
       gotoNextStateAfterDelay(OPEN_TIME);
-      break;
-    case 6:
+      break;      
+    case 5:
       // retract
       Robot.m_lapg.retract();
       state = 99;
