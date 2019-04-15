@@ -35,17 +35,16 @@ public class ArcadeDrive extends Command {
     double turn=Robot.m_oi.getDriverRightXAxis();
 
     if (Robot.m_oi.isDriverButtonAPressed()) {
-
-      turn = 0.8 * Robot.m_limelight_wapg.turnToTarget();
+      turn = 0.8 * Robot.m_limelight.turnToTarget();
     }
 
     if (Robot.m_oi.isDriverButtonBPressed()) {
-      turn = 0.6 * Robot.m_limelight_wapg.turnToTarget();
+      turn = 0.6 * Robot.m_limelight.turnToTarget();
 
-      speed = Robot.m_limelight_wapg.hasTarget() ? -0.3 : 0;
+      speed = Robot.m_limelight.hasTarget() ? -0.3 : 0;
       
-      // if (Robot.m_limelight_sapg.hasTarget()) {
-      //   double adjustment = Math.min(Robot.m_limelight_sapg.getTargetArea() / RobotMap.LIMELIGHT_MAX_AREA, 1);
+      // if (Robot.m_limelight.hasTarget()) {
+      //   double adjustment = Math.min(Robot.m_limelight.getTargetArea() / RobotMap.LIMELIGHT_MAX_AREA, 1);
       //   speed = RobotMap.TARGETING_MAX_SPEED - (adjustment * (RobotMap.TARGETING_MAX_SPEED - RobotMap.TARGETING_MIN_SPEED));
       // }
     }

@@ -27,7 +27,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
-import frc.robot.subsystems.WAPG;
+import frc.robot.subsystems.LAPG;
 import frc.robot.util.TimeScheduler;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
@@ -41,9 +41,9 @@ import frc.robot.subsystems.Intake;
  */
 public class Robot extends TimedRobot {
   public static Arm m_arm;
-  public static WAPG m_wapg;
+  public static LAPG m_lapg;
   public static Climber m_climber;
-  public static Limelight m_limelight_wapg;
+  public static Limelight m_limelight;
   public static NavX m_navx;
   public static Drive m_drive;
   public static OI m_oi;
@@ -78,11 +78,11 @@ public class Robot extends TimedRobot {
 
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
-    m_limelight_wapg = new Limelight("limelight-sapg");
+    m_limelight = new Limelight("limelight-sapg");
     m_drive = new Drive();
     m_intake = new Intake();
     m_arm = new Arm();
-    m_wapg = new WAPG();
+    m_lapg = new LAPG();
     m_climber = new Climber();
     
 
@@ -92,8 +92,8 @@ public class Robot extends TimedRobot {
     initializeDashboard();
     initPreferences();
 
-    m_limelight_wapg.ledOff();
-    m_limelight_wapg.camDriver();
+    m_limelight.ledOff();
+    m_limelight.camDriver();
 
     m_navx.zeroPitch();
 
@@ -137,8 +137,8 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    m_limelight_wapg.ledOff();
-    m_limelight_wapg.camDriver();
+    m_limelight.ledOff();
+    m_limelight.camDriver();
   }
 
   /**
@@ -164,8 +164,8 @@ public class Robot extends TimedRobot {
     
     m_arm.configureBrakeMode();
 
-    m_limelight_wapg.ledOff();
-    m_limelight_wapg.camDriver();
+    m_limelight.ledOff();
+    m_limelight.camDriver();
 
     m_navx.zeroPitch();
 
@@ -198,8 +198,8 @@ public class Robot extends TimedRobot {
     }
     m_arm.configureBrakeMode();
 
-    m_limelight_wapg.ledOff();
-    m_limelight_wapg.camDriver();
+    m_limelight.ledOff();
+    m_limelight.camDriver();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -267,7 +267,7 @@ public class Robot extends TimedRobot {
 
   public void makeSounds() {
 
-    if (m_limelight_wapg.hasTarget()) {
+    if (m_limelight.hasTarget()) {
       hasTargetCounts++;
     } else {
       noTargetCounts++;
@@ -278,7 +278,7 @@ public class Robot extends TimedRobot {
       noCargoCounts++;
     }
 
-    // if (m_limelight_wapg.isTracking() && hasTargetCounts == 5) {
+    // if (m_limelight.isTracking() && hasTargetCounts == 5) {
 
     //   // Target Acquired
     //   soundPlaying.setString("i_see_you");
@@ -286,7 +286,7 @@ public class Robot extends TimedRobot {
 
     // }
 
-    // if (m_limelight_wapg.isTracking() && noTargetCounts == 5) {
+    // if (m_limelight.isTracking() && noTargetCounts == 5) {
 
     //   // Target Lost
     //   soundPlaying.setString("cant_see_me");
@@ -359,7 +359,8 @@ public class Robot extends TimedRobot {
     m_intake.updateDashboard();
     m_climber.updateDashboard();
     m_navx.updateDashboard();
-    m_limelight_wapg.updateDashboard();
+    m_limelight.updateDashboard();
+    m_lapg.updateDashboard();
 
     SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
   }
