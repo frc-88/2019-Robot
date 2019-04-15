@@ -40,31 +40,30 @@ public class LAPGGrab extends Command {
       gotoNextStateAfterDelay();
       break;
     case 1:
-      //off
-      Robot.m_lapg.off();
-      gotoNextStateAfterDelay();
-      break;
-    case 2:
       // neutral, wait for switch
       Robot.m_lapg.neutral();
       if (Robot.m_lapg.getSwitch()) {
         state++;
       }
       break;
-    case 3:
+    case 2:
       // active
       Robot.m_lapg.active();
       gotoNextStateAfterDelay(ACTIVE_TIME);
       break;
-    case 4:
+    case 3:
       // open
       Robot.m_lapg.open();
       gotoNextStateAfterDelay(OPEN_TIME);
-      break;      
-    case 5:
+      break;
+    case 4:
       // retract
       Robot.m_lapg.retract();
       state = 99;
+      break;
+    default:
+      state = 99;
+      break;
     }
 
   }
