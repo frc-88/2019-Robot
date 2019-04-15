@@ -50,8 +50,10 @@ import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
 import frc.robot.commands.lapg.LAPGClose;
 import frc.robot.commands.lapg.LAPGDeploy;
+import frc.robot.commands.lapg.LAPGGrab;
 import frc.robot.commands.lapg.LAPGOpen;
 import frc.robot.commands.lapg.LAPGRetract;
+import frc.robot.commands.lapg.LAPGScore;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.DebouncedButton;
@@ -86,8 +88,8 @@ public class OI {
 
     // Operator button box    
     buttonBox.buttonWhiteLeftTop.whenPressed(new LAPGDeploy());
-    buttonBox.buttonWhiteTopLeft.whenPressed(new LAPGOpen());
-    buttonBox.buttonWhiteTopRight.whenPressed(new LAPGClose());
+    buttonBox.buttonWhiteTopLeft.whenPressed(new LAPGGrab());
+    buttonBox.buttonWhiteTopRight.whenPressed(new LAPGScore());
     buttonBox.buttonWhiteRightTop.whenPressed(new LAPGRetract());
     buttonBox.buttonYellowTriangle.whenPressed(new IntakeManual(0.5));
     buttonBox.buttonYellowTriangle.whenReleased(new IntakeDefault());
@@ -171,6 +173,8 @@ public class OI {
     SmartDashboard.putData("LAPG Retract", new LAPGRetract());
     SmartDashboard.putData("LAPG Open", new LAPGOpen());
     SmartDashboard.putData("LAPG Close", new LAPGClose());
+    SmartDashboard.putData("LAPG Grab", new LAPGGrab());
+    SmartDashboard.putData("LAPG Score", new LAPGScore());
 
     SmartDashboard.putData("Limelight On", new LimelightTrackingOn());
     SmartDashboard.putData("Limelight Off", new LimelightTrackingOff());
