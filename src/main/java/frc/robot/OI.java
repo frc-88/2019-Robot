@@ -119,9 +119,9 @@ public class OI {
     // Backup Button Tab
     ShuffleboardTab backupTab = Shuffleboard.getTab("British Columbia");
     backupTab.add(new LAPGDeploy());
-    backupTab.add(new LAPGOpen());
-    backupTab.add(new LAPGClose());
     backupTab.add(new LAPGRetract());
+    backupTab.add(new LAPGGrab());
+    backupTab.add(new LAPGScore());
     backupTab.add("Intake Forwards", new IntakeManual(0.5));
     backupTab.add("Intake Reverse", new IntakeManual(-0.5));
     backupTab.add(new ArmZero());
