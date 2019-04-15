@@ -48,10 +48,10 @@ import frc.robot.commands.intake.IntakeLoadCargo2;
 import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
-import frc.robot.commands.wapg.WAPGClose;
-import frc.robot.commands.wapg.WAPGDeploy;
-import frc.robot.commands.wapg.WAPGOpen;
-import frc.robot.commands.wapg.WAPGRetract;
+import frc.robot.commands.lapg.LAPGClose;
+import frc.robot.commands.lapg.LAPGDeploy;
+import frc.robot.commands.lapg.LAPGOpen;
+import frc.robot.commands.lapg.LAPGRetract;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.DebouncedButton;
@@ -85,10 +85,10 @@ public class OI {
     driveController.buttonY.whenPressed(new ArcadeDrive());
 
     // Operator button box    
-    buttonBox.buttonWhiteLeftTop.whenPressed(new WAPGDeploy());
-    buttonBox.buttonWhiteTopLeft.whenPressed(new WAPGOpen());
-    buttonBox.buttonWhiteTopRight.whenPressed(new WAPGClose());
-    buttonBox.buttonWhiteRightTop.whenPressed(new WAPGRetract());
+    buttonBox.buttonWhiteLeftTop.whenPressed(new LAPGDeploy());
+    buttonBox.buttonWhiteTopLeft.whenPressed(new LAPGOpen());
+    buttonBox.buttonWhiteTopRight.whenPressed(new LAPGClose());
+    buttonBox.buttonWhiteRightTop.whenPressed(new LAPGRetract());
     buttonBox.buttonYellowTriangle.whenPressed(new IntakeManual(0.5));
     buttonBox.buttonYellowTriangle.whenReleased(new IntakeDefault());
     buttonBox.buttonWhiteTriangle.whenPressed(new IntakeManual(-0.5));
@@ -116,10 +116,10 @@ public class OI {
 
     // Backup Button Tab
     ShuffleboardTab backupTab = Shuffleboard.getTab("British Columbia");
-    backupTab.add(new SAPGDeploy());
-    backupTab.add(new SAPGOpen());
-    backupTab.add(new SAPGClose());
-    backupTab.add(new SAPGRetract());
+    backupTab.add(new LAPGDeploy());
+    backupTab.add(new LAPGOpen());
+    backupTab.add(new LAPGClose());
+    backupTab.add(new LAPGRetract());
     backupTab.add("Intake Forwards", new IntakeManual(0.5));
     backupTab.add("Intake Reverse", new IntakeManual(-0.5));
     backupTab.add(new ArmZero());
@@ -167,10 +167,10 @@ public class OI {
     }
 
     // setup dashboard buttons for testing and debug
-    SmartDashboard.putData("WAPG Deploy", new WAPGDeploy());
-    SmartDashboard.putData("WAPG Retract", new WAPGRetract());
-    SmartDashboard.putData("WAPG Open", new WAPGOpen());
-    SmartDashboard.putData("WAPG Close", new WAPGClose());
+    SmartDashboard.putData("LAPG Deploy", new LAPGDeploy());
+    SmartDashboard.putData("LAPG Retract", new LAPGRetract());
+    SmartDashboard.putData("LAPG Open", new LAPGOpen());
+    SmartDashboard.putData("LAPG Close", new LAPGClose());
 
     SmartDashboard.putData("Limelight On", new LimelightTrackingOn());
     SmartDashboard.putData("Limelight Off", new LimelightTrackingOff());

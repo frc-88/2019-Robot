@@ -19,14 +19,14 @@ public class LimelightTrackingOff extends InstantCommand {
    */
   public LimelightTrackingOff() {
     super();
-    requires(Robot.m_limelight_wapg);
+    requires(Robot.m_limelight);
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_limelight_wapg.ledOff();
-    Robot.m_limelight_wapg.camDriver();
+    Robot.m_limelight.ledOff();
+    Robot.m_limelight.camDriver();
   }
 
 }

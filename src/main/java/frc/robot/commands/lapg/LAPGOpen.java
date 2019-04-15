@@ -5,21 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.wapg;
+package frc.robot.commands.lapg;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-public class WAPGClose extends InstantCommand {
-  public WAPGClose() {
+public class LAPGOpen extends InstantCommand {
+  public LAPGOpen() {
     super();
-    requires(Robot.m_wapg);
+    requires(Robot.m_lapg);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-   Robot.m_wapg.close();
+    Robot.m_lapg.open();
   }
 
 }

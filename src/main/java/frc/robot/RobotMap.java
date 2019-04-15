@@ -57,13 +57,16 @@ public class RobotMap {
   public static final int CLIMBER_SELECTOR_PCM = 22;
   public static final int CLIMBER_PLATFORM_IR_ID = 2;
 
-  // WAPG
-  public static final int WAPG_DEPLOY_FORWARD = 2;
-  public static final int WAPG_DEPLOY_REVERSE = 5;
-  public static final int WAPG_GRAB_FORWARD = 4;
-  public static final int WAPG_GRAB_REVERSE = 3;
-  public static final int WAPG_DEPLOY_PCM = 21;
-  public static final int WAPG_GRAB_PCM = 21;
+  // LAPG
+  public static final int LAPG_DEPLOY_FORWARD = 2;
+  public static final int LAPG_DEPLOY_REVERSE = 5;
+  public static final int LAPG_GRAB_FORWARD = 4;
+  public static final int LAPG_GRAB_REVERSE = 3;
+  public static final int LAPG_DEPLOY_PCM = 21;
+  public static final int LAPG_GRAB_PCM = 21;
+  public static final int LAPG_NEUTRAL = 0;
+  public static final int LAPG_NEUTRAL_PCM = 0;
+  public static final int LAPG_GRAB_SWITCH = 0;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;

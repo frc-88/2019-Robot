@@ -5,21 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.wapg;
+package frc.robot.commands.lapg;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-public class WAPGRetract extends InstantCommand {
-  public WAPGRetract() {
+public class LAPGDeploy extends InstantCommand {
+  public LAPGDeploy() {
     super();
-    requires(Robot.m_wapg);
+    requires(Robot.m_lapg);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_wapg.retract();
+    Robot.m_lapg.deploy();
   }
 
 }

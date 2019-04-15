@@ -19,14 +19,14 @@ public class LimelightTrackingOn extends InstantCommand {
    */
   public LimelightTrackingOn() {
     super();
-    requires(Robot.m_limelight_wapg);
+    requires(Robot.m_limelight);
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_limelight_wapg.ledPipeline();
-    Robot.m_limelight_wapg.camVision();
+    Robot.m_limelight.ledPipeline();
+    Robot.m_limelight.camVision();
   }
 
 }
