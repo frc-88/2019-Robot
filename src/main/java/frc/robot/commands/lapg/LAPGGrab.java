@@ -10,11 +10,9 @@ package frc.robot.commands.lapg;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class LAPGGrab extends Command {
-  private static final long CLOSE_TIME = 500000; // microseconds
-  private static final long OPEN_TIME = 600000; // microseconds
-
   private int state;
   private long startTime;
 
@@ -37,7 +35,7 @@ public class LAPGGrab extends Command {
       //close
       Robot.m_lapg.deploy();
       Robot.m_lapg.close();
-      gotoNextStateAfterDelay(CLOSE_TIME);
+      gotoNextStateAfterDelay(RobotMap.LAPG_CLOSE_TIME);
       break;
     case 1:
       // neutral, wait for switch
@@ -50,7 +48,7 @@ public class LAPGGrab extends Command {
       // active, open
       Robot.m_lapg.active();
       Robot.m_lapg.open();
-      gotoNextStateAfterDelay(OPEN_TIME);
+      gotoNextStateAfterDelay(RobotMap.LAPG_OPEN_TIME);
       break;
     case 3:
       // retract

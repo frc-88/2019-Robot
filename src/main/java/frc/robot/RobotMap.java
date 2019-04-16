@@ -145,6 +145,10 @@ public class RobotMap {
   //Intake
   public static final double INTAKE_HAS_CARGO = 11;
 
+  // LAPG
+  public static final long LAPG_CLOSE_TIME = 600000; // microseconds
+  public static final long LAPG_OPEN_TIME = 600000; // microseconds
+
   // OI  
   public static final int OPERATOR_CONTROLLER_PORT = 1;
   public static final int OPERATOR_NONE = 0;

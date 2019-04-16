@@ -10,11 +10,9 @@ package frc.robot.commands.lapg;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class LAPGScore extends Command {
-  private static final long DEFAULT_DELAY = 100000; // microseconds
-  private static final long CLOSE_TIME = 600000; // microseconds
-
   private int state;
   private long startTime;
 
@@ -36,7 +34,7 @@ public class LAPGScore extends Command {
     case 0:
       //close
       Robot.m_lapg.close();
-      gotoNextStateAfterDelay(CLOSE_TIME);
+      gotoNextStateAfterDelay(RobotMap.LAPG_CLOSE_TIME);
       break;
     case 1:
       // retract
@@ -61,10 +59,6 @@ public class LAPGScore extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-  }
-
-  private void gotoNextStateAfterDelay() {
-    gotoNextStateAfterDelay(DEFAULT_DELAY);
   }
 
   private void gotoNextStateAfterDelay(long delay) {
