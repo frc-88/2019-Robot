@@ -142,11 +142,11 @@ public class RobotMap {
   // LAPG
   public static final long LAPG_CLOSE_TIME = 600000; // microseconds
   public static final long LAPG_OPEN_TIME = 600000; // microseconds
-  public static final double TARGETING_MAX_SPEED = 0.35;
-  public static final double TARGETING_MIN_SPEED = 0.08;
+  public static final double TARGETING_MAX_SPEED = 0.30;
+  public static final double TARGETING_MIN_SPEED = 0.05;
 
   // Limelight
-  public static final double LIMELIGHT_MAX_AREA = 1000;
+  public static final double LIMELIGHT_MAX_AREA = 12.25;
 
   // OI  
   public static final int OPERATOR_CONTROLLER_PORT = 1;
