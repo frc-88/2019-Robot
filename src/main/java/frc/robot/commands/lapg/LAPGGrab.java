@@ -24,6 +24,7 @@ public class LAPGGrab extends Command {
   @Override
   protected void initialize() {
     state = 0;
+    Robot.m_lapg.setPanel(false);
     startTime = RobotController.getFPGATime();
   }
 
@@ -52,6 +53,7 @@ public class LAPGGrab extends Command {
       break;
     case 3:
       // retract
+      Robot.m_lapg.setPanel(true);
       Robot.m_lapg.retract();
       state = 99;
       break;
@@ -78,6 +80,7 @@ public class LAPGGrab extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.m_lapg.setPanel(false);
     Robot.m_lapg.active();
   }
 

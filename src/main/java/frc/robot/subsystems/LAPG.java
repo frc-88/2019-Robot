@@ -19,6 +19,7 @@ public class LAPG extends Subsystem {
     private DoubleSolenoid grabPiston;
     private DoubleSolenoid grabNeutral;
     private DigitalInput grabSwitch;
+    private boolean hasPanel;
 
     public LAPG() {
         deployPiston = new DoubleSolenoid(RobotMap.LAPG_DEPLOY_PCM, RobotMap.LAPG_DEPLOY_FORWARD, RobotMap.LAPG_DEPLOY_REVERSE);
@@ -60,6 +61,14 @@ public class LAPG extends Subsystem {
 
     public boolean getSwitch() {
         return grabSwitch.get();
+    }
+
+    public void setPanel(boolean panel) {
+        hasPanel = panel;
+    }
+
+    public boolean hasPanel() {
+        return hasPanel;
     }
 
     public void updateDashboard() {

@@ -18,6 +18,7 @@ import frc.robot.commands.ArmIntakeLoadCargo;
 import frc.robot.commands.ClimberSelectedCommand;
 import frc.robot.commands.ClimberSwitchCommand;
 import frc.robot.commands.HaveCargoCommand;
+import frc.robot.commands.HavePanelCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmBattleMode;
 import frc.robot.commands.arm.ArmCalibrate;
@@ -111,7 +112,8 @@ public class OI {
     buttonBox.buttonBlueLow.whenPressed(new ArmInPositionCommand(ArmPosition.HOME, new ArmBattleMode()));
     buttonBox.buttonBlueLow.whenReleased(new ArmGoToSetpoint(ArmPosition.HOME));
 
-    buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
+    // buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
+    buttonBox.buttonRedBig.whenPressed(new HavePanelCommand(new LAPGScore(),new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo())));
 
     preclimbButton = new DebouncedButton(buttonBox.buttonBBBRed);
     preclimbButton.whenActive(new ClimberSwitchCommand(new ClimberFullPrep(), new ClimberFullPrep2()));
