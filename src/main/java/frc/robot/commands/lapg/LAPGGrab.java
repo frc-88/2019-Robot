@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class LAPGGrab extends Command {
-  private static final long DEFAULT_DELAY = 100000; // microseconds
   private static final long CLOSE_TIME = 500000; // microseconds
   private static final long OPEN_TIME = 600000; // microseconds
 
@@ -80,10 +79,7 @@ public class LAPGGrab extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-  }
-
-  private void gotoNextStateAfterDelay() {
-    gotoNextStateAfterDelay(DEFAULT_DELAY);
+    Robot.m_lapg.active();
   }
 
   private void gotoNextStateAfterDelay(long delay) {
