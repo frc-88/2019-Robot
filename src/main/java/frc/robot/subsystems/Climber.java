@@ -24,7 +24,9 @@ import frc.robot.RobotMap;
 import frc.robot.util.SharpIR;
 
 /**
- * Add your docs here.
+ * how did this happen?
+ * there was no climber haiku
+ * this explains it all
  */
 public class Climber extends Subsystem {
 
