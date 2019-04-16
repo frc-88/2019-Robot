@@ -112,8 +112,8 @@ public class OI {
     buttonBox.buttonBlueLow.whenPressed(new ArmInPositionCommand(ArmPosition.HOME, new ArmBattleMode()));
     buttonBox.buttonBlueLow.whenReleased(new ArmGoToSetpoint(ArmPosition.HOME));
 
-    // buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
-    buttonBox.buttonRedBig.whenPressed(new HavePanelCommand(new LAPGScore(),new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo())));
+    buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
+    //buttonBox.buttonRedBig.whenPressed(new HavePanelCommand(new LAPGScore(),new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo())));
 
     preclimbButton = new DebouncedButton(buttonBox.buttonBBBRed);
     preclimbButton.whenActive(new ClimberSwitchCommand(new ClimberFullPrep(), new ClimberFullPrep2()));
