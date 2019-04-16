@@ -66,11 +66,11 @@ public class RobotMap {
   public static final int LAPG_GRAB_REVERSE = 5;
   public static final int LAPG_GRAB_PCM = 22;
   
-  public static final int LAPG_NEUTRAL_FORWARD = 4;
-  public static final int LAPG_NEUTRAL_REVERSE = 3;
+  public static final int LAPG_NEUTRAL_FORWARD = 3;
+  public static final int LAPG_NEUTRAL_REVERSE = 4;
   public static final int LAPG_NEUTRAL_PCM = 21;
   
-  public static final int LAPG_GRAB_SWITCH = 0;
+  public static final int LAPG_GRAB_SWITCH = 1;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;

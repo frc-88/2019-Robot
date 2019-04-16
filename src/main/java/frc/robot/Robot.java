@@ -197,6 +197,8 @@ public class Robot extends TimedRobot {
       m_climber.holdLevel2();
     }
     m_arm.configureBrakeMode();
+    m_lapg.open();
+    m_lapg.active();
 
     m_limelight.ledOff();
     m_limelight.camDriver();

@@ -48,9 +48,11 @@ import frc.robot.commands.intake.IntakeLoadCargo2;
 import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
+import frc.robot.commands.lapg.LAPGActive;
 import frc.robot.commands.lapg.LAPGClose;
 import frc.robot.commands.lapg.LAPGDeploy;
 import frc.robot.commands.lapg.LAPGGrab;
+import frc.robot.commands.lapg.LAPGNeutral;
 import frc.robot.commands.lapg.LAPGOpen;
 import frc.robot.commands.lapg.LAPGRetract;
 import frc.robot.commands.lapg.LAPGScore;
@@ -175,6 +177,8 @@ public class OI {
     SmartDashboard.putData("LAPG Close", new LAPGClose());
     SmartDashboard.putData("LAPG Grab", new LAPGGrab());
     SmartDashboard.putData("LAPG Score", new LAPGScore());
+    SmartDashboard.putData("LAPG Active", new LAPGActive());
+    SmartDashboard.putData("LAPG Neutral", new LAPGNeutral());
 
     SmartDashboard.putData("Limelight On", new LimelightTrackingOn());
     SmartDashboard.putData("Limelight Off", new LimelightTrackingOff());

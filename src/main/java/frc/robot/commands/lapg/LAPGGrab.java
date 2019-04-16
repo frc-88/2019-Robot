@@ -13,7 +13,7 @@ import frc.robot.Robot;
 
 public class LAPGGrab extends Command {
   private static final long DEFAULT_DELAY = 100000; // microseconds
-  private static final long ACTIVE_TIME = 600000; // microseconds
+  private static final long CLOSE_TIME = 500000; // microseconds
   private static final long OPEN_TIME = 600000; // microseconds
 
   private int state;
@@ -36,8 +36,9 @@ public class LAPGGrab extends Command {
     switch (state) {
     case 0:
       //close
+      Robot.m_lapg.deploy();
       Robot.m_lapg.close();
-      gotoNextStateAfterDelay();
+      gotoNextStateAfterDelay(CLOSE_TIME);
       break;
     case 1:
       // neutral, wait for switch
@@ -47,16 +48,12 @@ public class LAPGGrab extends Command {
       }
       break;
     case 2:
-      // active
+      // active, open
       Robot.m_lapg.active();
-      gotoNextStateAfterDelay(ACTIVE_TIME);
-      break;
-    case 3:
-      // open
       Robot.m_lapg.open();
       gotoNextStateAfterDelay(OPEN_TIME);
       break;
-    case 4:
+    case 3:
       // retract
       Robot.m_lapg.retract();
       state = 99;
