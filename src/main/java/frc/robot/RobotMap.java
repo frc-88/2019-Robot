@@ -144,6 +144,12 @@ public class RobotMap {
   public static final long LAPG_OPEN_TIME = 600000; // microseconds
   public static final double TARGETING_MAX_SPEED = 0.30;
   public static final double TARGETING_MIN_SPEED = 0.05;
+  // Titan's turn values
+  // public static final double TARGETING_A_TURN_P = 0.8;
+  // public static final double TARGETING_B_TURN_P = 0.6;
+  // Jupiter's turn values
+  public static final double TARGETING_A_TURN_P = 0.6;
+  public static final double TARGETING_B_TURN_P = 0.4;
 
   // Limelight
   public static final double LIMELIGHT_MAX_AREA = 12.25;
