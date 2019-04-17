@@ -18,6 +18,7 @@ import frc.robot.commands.ArmIntakeLoadCargo;
 import frc.robot.commands.ClimberSelectedCommand;
 import frc.robot.commands.ClimberSwitchCommand;
 import frc.robot.commands.HaveCargoCommand;
+import frc.robot.commands.HavePanelCommand;
 import frc.robot.commands.arm.ArmBasicCommand;
 import frc.robot.commands.arm.ArmBattleMode;
 import frc.robot.commands.arm.ArmCalibrate;
@@ -48,10 +49,14 @@ import frc.robot.commands.intake.IntakeLoadCargo2;
 import frc.robot.commands.intake.IntakeManual;
 import frc.robot.commands.navx.NavXZeroPitch;
 import frc.robot.commands.navx.NavXZeroYaw;
-import frc.robot.commands.sapg.SAPGClose;
-import frc.robot.commands.sapg.SAPGDeploy;
-import frc.robot.commands.sapg.SAPGOpen;
-import frc.robot.commands.sapg.SAPGRetract;
+import frc.robot.commands.lapg.LAPGActive;
+import frc.robot.commands.lapg.LAPGClose;
+import frc.robot.commands.lapg.LAPGDeploy;
+import frc.robot.commands.lapg.LAPGGrab;
+import frc.robot.commands.lapg.LAPGNeutral;
+import frc.robot.commands.lapg.LAPGOpen;
+import frc.robot.commands.lapg.LAPGRetract;
+import frc.robot.commands.lapg.LAPGScore;
 import frc.robot.driveutil.DriveUtils;
 import frc.robot.util.ArmPosition;
 import frc.robot.util.DebouncedButton;
@@ -85,10 +90,10 @@ public class OI {
     driveController.buttonY.whenPressed(new ArcadeDrive());
 
     // Operator button box    
-    buttonBox.buttonWhiteLeftTop.whenPressed(new SAPGDeploy());
-    buttonBox.buttonWhiteTopLeft.whenPressed(new SAPGOpen());
-    buttonBox.buttonWhiteTopRight.whenPressed(new SAPGClose());
-    buttonBox.buttonWhiteRightTop.whenPressed(new SAPGRetract());
+    buttonBox.buttonWhiteLeftTop.whenPressed(new LAPGDeploy());
+    buttonBox.buttonWhiteTopLeft.whenPressed(new LAPGGrab());
+    buttonBox.buttonWhiteTopRight.whenPressed(new LAPGScore());
+    buttonBox.buttonWhiteRightTop.whenPressed(new LAPGRetract());
     buttonBox.buttonYellowTriangle.whenPressed(new IntakeManual(0.5));
     buttonBox.buttonYellowTriangle.whenReleased(new IntakeDefault());
     buttonBox.buttonWhiteTriangle.whenPressed(new IntakeManual(-0.5));
@@ -108,6 +113,7 @@ public class OI {
     buttonBox.buttonBlueLow.whenReleased(new ArmGoToSetpoint(ArmPosition.HOME));
 
     buttonBox.buttonRedBig.whenPressed(new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo()));
+    //buttonBox.buttonRedBig.whenPressed(new HavePanelCommand(new LAPGScore(),new HaveCargoCommand(new IntakeEjectCargo(), new ArmIntakeLoadCargo())));
 
     preclimbButton = new DebouncedButton(buttonBox.buttonBBBRed);
     preclimbButton.whenActive(new ClimberSwitchCommand(new ClimberFullPrep(), new ClimberFullPrep2()));
@@ -116,10 +122,10 @@ public class OI {
 
     // Backup Button Tab
     ShuffleboardTab backupTab = Shuffleboard.getTab("British Columbia");
-    backupTab.add(new SAPGDeploy());
-    backupTab.add(new SAPGOpen());
-    backupTab.add(new SAPGClose());
-    backupTab.add(new SAPGRetract());
+    backupTab.add(new LAPGDeploy());
+    backupTab.add(new LAPGRetract());
+    backupTab.add(new LAPGGrab());
+    backupTab.add(new LAPGScore());
     backupTab.add("Intake Forwards", new IntakeManual(0.5));
     backupTab.add("Intake Reverse", new IntakeManual(-0.5));
     backupTab.add(new ArmZero());
@@ -152,13 +158,6 @@ public class OI {
       testController.buttonLeftBumper.whenPressed(new IntakeEjectCargo());
       break;
 
-    case RobotMap.OPERATOR_SAPG_TEST:
-      testController.buttonA.whenPressed(new SAPGDeploy());
-      testController.buttonB.whenPressed(new SAPGRetract());
-      testController.buttonX.whenPressed(new SAPGOpen());
-      testController.buttonY.whenPressed(new SAPGClose());
-      break;
-
     case RobotMap.OPERATOR_CLIMB_TEST:
       testController.buttonA.whenPressed(new ClimberLift());
       testController.buttonB.whenPressed(new ClimberPull());
@@ -174,10 +173,14 @@ public class OI {
     }
 
     // setup dashboard buttons for testing and debug
-    SmartDashboard.putData("SAPG Deploy", new SAPGDeploy());
-    SmartDashboard.putData("SAPG Retract", new SAPGRetract());
-    SmartDashboard.putData("SAPG Open", new SAPGOpen());
-    SmartDashboard.putData("SAPG Close", new SAPGClose());
+    SmartDashboard.putData("LAPG Deploy", new LAPGDeploy());
+    SmartDashboard.putData("LAPG Retract", new LAPGRetract());
+    SmartDashboard.putData("LAPG Open", new LAPGOpen());
+    SmartDashboard.putData("LAPG Close", new LAPGClose());
+    SmartDashboard.putData("LAPG Grab", new LAPGGrab());
+    SmartDashboard.putData("LAPG Score", new LAPGScore());
+    SmartDashboard.putData("LAPG Active", new LAPGActive());
+    SmartDashboard.putData("LAPG Neutral", new LAPGNeutral());
 
     SmartDashboard.putData("Limelight On", new LimelightTrackingOn());
     SmartDashboard.putData("Limelight Off", new LimelightTrackingOff());

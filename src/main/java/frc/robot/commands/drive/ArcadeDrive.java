@@ -35,19 +35,30 @@ public class ArcadeDrive extends Command {
     double turn=Robot.m_oi.getDriverRightXAxis();
 
     if (Robot.m_oi.isDriverButtonAPressed()) {
+      // titan:
+      // turn = 0.8 * Robot.m_limelight.turnToTarget();
 
-      turn = 0.8 * Robot.m_limelight_sapg.turnToTarget();
+      // jupiter:
+      turn = 0.6 * Robot.m_limelight.turnToTarget();
     }
 
     if (Robot.m_oi.isDriverButtonBPressed()) {
-      turn = 0.6 * Robot.m_limelight_sapg.turnToTarget();
+      // titan:
+      turn = 0.6 * Robot.m_limelight.turnToTarget();
 
-      speed = Robot.m_limelight_sapg.hasTarget() ? -0.3 : 0;
-      
-      // if (Robot.m_limelight_sapg.hasTarget()) {
-      //   double adjustment = Math.min(Robot.m_limelight_sapg.getTargetArea() / RobotMap.LIMELIGHT_MAX_AREA, 1);
-      //   speed = RobotMap.TARGETING_MAX_SPEED - (adjustment * (RobotMap.TARGETING_MAX_SPEED - RobotMap.TARGETING_MIN_SPEED));
-      // }
+      // jupiter:
+      turn = 0.4 * Robot.m_limelight.turnToTarget();
+
+      if (Robot.m_limelight.hasTarget()) {
+        double adjustment = Math.min(Robot.m_limelight.getTargetArea() / RobotMap.LIMELIGHT_MAX_AREA, 1);
+        speed = RobotMap.TARGETING_MAX_SPEED - (adjustment * (RobotMap.TARGETING_MAX_SPEED - RobotMap.TARGETING_MIN_SPEED));
+        speed *= -1;
+      }
+    }
+
+    if (Robot.m_drive.isFrozen()) {
+      speed = 0;
+      turn = 0;
     }
 
     Robot.m_drive.arcadeDrive(speed, turn);

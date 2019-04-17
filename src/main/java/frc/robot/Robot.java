@@ -27,7 +27,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.NavX;
-import frc.robot.subsystems.SAPG;
+import frc.robot.subsystems.LAPG;
 import frc.robot.util.TimeScheduler;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
@@ -41,9 +41,9 @@ import frc.robot.subsystems.Intake;
  */
 public class Robot extends TimedRobot {
   public static Arm m_arm;
-  public static SAPG m_sapg;
+  public static LAPG m_lapg;
   public static Climber m_climber;
-  public static Limelight m_limelight_sapg;
+  public static Limelight m_limelight;
   public static NavX m_navx;
   public static Drive m_drive;
   public static OI m_oi;
@@ -78,11 +78,11 @@ public class Robot extends TimedRobot {
 
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
     m_navx = new NavX();
-    m_limelight_sapg = new Limelight("limelight-sapg");
+    m_limelight = new Limelight("limelight-sapg");
     m_drive = new Drive();
     m_intake = new Intake();
     m_arm = new Arm();
-    m_sapg = new SAPG();
+    m_lapg = new LAPG();
     m_climber = new Climber();
     
 
@@ -92,8 +92,8 @@ public class Robot extends TimedRobot {
     initializeDashboard();
     initPreferences();
 
-    m_limelight_sapg.ledOff();
-    m_limelight_sapg.camDriver();
+    m_limelight.ledOff();
+    m_limelight.camDriver();
 
     m_navx.zeroPitch();
 
@@ -137,8 +137,8 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    m_limelight_sapg.ledOff();
-    m_limelight_sapg.camDriver();
+    m_limelight.ledOff();
+    m_limelight.camDriver();
   }
 
   /**
@@ -164,8 +164,8 @@ public class Robot extends TimedRobot {
     
     m_arm.configureBrakeMode();
 
-    m_limelight_sapg.ledOff();
-    m_limelight_sapg.camDriver();
+    m_limelight.ledOff();
+    m_limelight.camDriver();
 
     m_navx.zeroPitch();
 
@@ -197,9 +197,13 @@ public class Robot extends TimedRobot {
       m_climber.holdLevel2();
     }
     m_arm.configureBrakeMode();
+    m_lapg.open();
+    m_lapg.active();
 
-    m_limelight_sapg.ledOff();
-    m_limelight_sapg.camDriver();
+    m_limelight.ledOff();
+    m_limelight.camDriver();
+
+    m_drive.unfreeze();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -261,15 +265,13 @@ public class Robot extends TimedRobot {
   long lastLoopTime = Long.MAX_VALUE;
   int hasTargetCounts = 0;
   int noTargetCounts = 0;
-  int hasPanelCounts = 0;
-  int noPanelCounts = 0;
   int hasCargoCounts = 0;
   int noCargoCounts = 0;
   int lastNumPlayed = -1;
 
   public void makeSounds() {
 
-    if (m_limelight_sapg.hasTarget()) {
+    if (m_limelight.hasTarget()) {
       hasTargetCounts++;
     } else {
       noTargetCounts++;
@@ -279,13 +281,8 @@ public class Robot extends TimedRobot {
     } else {
       noCargoCounts++;
     }
-    if (m_sapg.hasPanel()) {
-      hasPanelCounts++;
-    } else {
-      noPanelCounts++;
-    }
 
-    // if (m_sapg.isTracking() && hasTargetCounts == 5) {
+    // if (m_limelight.isTracking() && hasTargetCounts == 5) {
 
     //   // Target Acquired
     //   soundPlaying.setString("i_see_you");
@@ -293,7 +290,7 @@ public class Robot extends TimedRobot {
 
     // }
 
-    // if (m_sapg.isTracking() && noTargetCounts == 5) {
+    // if (m_limelight.isTracking() && noTargetCounts == 5) {
 
     //   // Target Lost
     //   soundPlaying.setString("cant_see_me");
@@ -310,22 +307,6 @@ public class Robot extends TimedRobot {
     }
 
     if (noCargoCounts == 5) {
-
-      // Lost cargo
-      soundPlaying.setString("oopsie_daisy");
-      hasCargoCounts = 0;
-
-    }
-
-    if (hasPanelCounts == 5) {
-
-      // Got cargo
-      soundPlaying.setString("got_it");
-      noCargoCounts = 0;
-
-    }
-
-    if (noPanelCounts == 5) {
 
       // Lost cargo
       soundPlaying.setString("oopsie_daisy");
@@ -379,11 +360,11 @@ public class Robot extends TimedRobot {
 
     m_drive.updateShuffleboard();
     m_arm.updateDashboard();
-    m_sapg.updateDashboard();
     m_intake.updateDashboard();
     m_climber.updateDashboard();
     m_navx.updateDashboard();
-    m_limelight_sapg.updateDashboard();
+    m_limelight.updateDashboard();
+    m_lapg.updateDashboard();
 
     SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
   }

@@ -19,7 +19,6 @@ public class RobotMap {
   // IDs
   /////////////////////////////////////////////////////////////////////////////
 
-
   // Drivetrain
   public static final int LEFT_MASTER_DRIVE_ID = 0;
   public static final int RIGHT_MASTER_DRIVE_ID = 11;
@@ -44,7 +43,6 @@ public class RobotMap {
   public static final int ELBOW_AUXILARY_ID = 13;
 
   // Intake
-  
   public static final int INTAKE_ID = 10;
   public static final int INTAKE_IR1_ID = 0;
   public static final int INTAKE_IR2_ID = 3;
@@ -57,15 +55,17 @@ public class RobotMap {
   public static final int CLIMBER_SELECTOR_PCM = 22;
   public static final int CLIMBER_PLATFORM_IR_ID = 2;
 
-  // SAPG
-  public static final int SAPG_DEPLOY_FORWARD = 2;
-  public static final int SAPG_DEPLOY_REVERSE = 5;
-  public static final int SAPG_GRAB_FORWARD = 4;
-  public static final int SAPG_GRAB_REVERSE = 3;
-  public static final int SAPG_DEPLOY_PCM = 21;
-  public static final int SAPG_GRAB_PCM = 21;
-  public static final int SAPG_MOTOR_ID = 06;
-  public static final int SAPG_PANEL_IR_ID = 4;
+  // LAPG
+  public static final int LAPG_DEPLOY_FORWARD = 2;
+  public static final int LAPG_DEPLOY_REVERSE = 5;
+  public static final int LAPG_DEPLOY_PCM = 21;
+  public static final int LAPG_GRAB_FORWARD = 2;
+  public static final int LAPG_GRAB_REVERSE = 5;
+  public static final int LAPG_GRAB_PCM = 22;
+  public static final int LAPG_NEUTRAL_FORWARD = 3;
+  public static final int LAPG_NEUTRAL_REVERSE = 4;
+  public static final int LAPG_NEUTRAL_PCM = 21;
+  public static final int LAPG_GRAB_SWITCH = 1;
 
   // Compressor
   public static final int COMPRESSOR_PCM = 22;
@@ -132,21 +132,25 @@ public class RobotMap {
   public static final double ACCELERATION_RATIO = 1.5;
 
   // Climber
-
   public static final int CLIMB_ARM_SPEED = 40;
   public static final int CLIMBER_TOLERANCE = 200;
   public static final double PLATFORM_IR_THRESHOLD = 8.5;
 
-  //Intake
+  // Intake
   public static final double INTAKE_HAS_CARGO = 11;
 
-  // SAPG
-  public static final double SAPG_TOLERANCE = 2; //inches
+  // LAPG
+  public static final long LAPG_CLOSE_TIME = 600000; // microseconds
+  public static final long LAPG_OPEN_TIME = 600000; // microseconds
+  public static final double TARGETING_MAX_SPEED = 0.30;
+  public static final double TARGETING_MIN_SPEED = 0.05;
+
+  // Limelight
+  public static final double LIMELIGHT_MAX_AREA = 12.25;
 
   // OI  
   public static final int OPERATOR_CONTROLLER_PORT = 1;
   public static final int OPERATOR_NONE = 0;
-  public static final int OPERATOR_SAPG_TEST = 1;
   public static final int OPERATOR_ARM_TEST = 2;
   public static final int OPERATOR_CLIMB_TEST = 3;
   public static final int OPERATOR_CONTROL = OPERATOR_CLIMB_TEST;
@@ -157,8 +161,4 @@ public class RobotMap {
 
   // Misc
   public static final int CAN_TIMEOUT = 0;
-
-  public static final double LIMELIGHT_MAX_AREA = 1000;
-  public static final double TARGETING_MAX_SPEED = 0.35;
-  public static final double TARGETING_MIN_SPEED = 0.08;
 }

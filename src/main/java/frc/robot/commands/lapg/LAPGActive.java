@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.limelight;
+package frc.robot.commands.lapg;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
@@ -13,20 +13,19 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class LimelightTrackingOff extends InstantCommand {
+public class LAPGActive extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public LimelightTrackingOff() {
+  public LAPGActive() {
     super();
-    requires(Robot.m_limelight);
+    requires(Robot.m_lapg);
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_limelight.ledOff();
-    Robot.m_limelight.camDriver();
+    Robot.m_lapg.active();
   }
 
 }

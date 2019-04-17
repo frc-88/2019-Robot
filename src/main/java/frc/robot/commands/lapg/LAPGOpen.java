@@ -5,27 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.sapg;
+package frc.robot.commands.lapg;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
-/**
- * Add your docs here.
- */
-public class SAPGLoadPreferences extends InstantCommand {
-  /**
-   * Add your docs here.
-   */
-  public SAPGLoadPreferences() {
+public class LAPGOpen extends InstantCommand {
+  public LAPGOpen() {
     super();
-    requires(Robot.m_sapg);
+    requires(Robot.m_lapg);
   }
 
-  // Called once when the command executes
+  // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.m_sapg.fetchPreferences();
+    Robot.m_lapg.open();
   }
 
 }
