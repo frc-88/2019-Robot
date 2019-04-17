@@ -56,6 +56,10 @@ public class ArcadeDrive extends Command {
       }
     }
 
+    if (Robot.m_drive.isFrozen()) {
+      speed = 0;
+      turn = 0;
+    }
 
     Robot.m_drive.arcadeDrive(speed, turn);
   }

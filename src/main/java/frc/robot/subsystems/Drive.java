@@ -100,6 +100,7 @@ public class Drive extends Subsystem {
     private double leftCommandedSpeed;
     private double rightCommandedSpeed;
     private double joystickSpeed;
+    private boolean frozen;
 
     public Drive() {
         leftTransmission = new ShiftingTransmission(new Vex775Pro(), RobotMap.NUM_DRIVE_MOTORS_PER_SIDE,
@@ -135,6 +136,7 @@ public class Drive extends Subsystem {
         leftTransmission.shiftToLow();
         rightTransmission.shiftToLow();
         maxSpeed = RobotMap.MAX_SPEED_LOW;
+        frozen = false;
     }
 
     public void configureShuffleboard() {
@@ -612,4 +614,15 @@ public class Drive extends Subsystem {
         return leftDrive.isMotionProfileFinished() && rightDrive.isMotionProfileFinished();
     }
 
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    public void freeze() {
+        frozen = true;
+    }
+
+    public void unfreeze() {
+        frozen = false;
+    }
 }

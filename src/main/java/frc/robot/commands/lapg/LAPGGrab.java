@@ -42,6 +42,7 @@ public class LAPGGrab extends Command {
       // neutral, wait for switch
       Robot.m_lapg.neutral();
       if (Robot.m_lapg.getSwitch()) {
+        Robot.m_drive.freeze();
         state++;
       }
       break;
@@ -74,6 +75,7 @@ public class LAPGGrab extends Command {
   @Override
   protected void end() {
     Robot.m_lapg.active();
+    Robot.m_drive.unfreeze();
   }
 
   // Called when another command which requires one or more of the same
@@ -82,6 +84,7 @@ public class LAPGGrab extends Command {
   protected void interrupted() {
     Robot.m_lapg.setPanel(false);
     Robot.m_lapg.active();
+    Robot.m_drive.unfreeze();
   }
 
   private void gotoNextStateAfterDelay(long delay) {
