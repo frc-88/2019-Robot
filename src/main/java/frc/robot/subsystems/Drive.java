@@ -619,10 +619,12 @@ public class Drive extends Subsystem {
     }
 
     public void freeze() {
+        Robot.m_oi.rumbleDriver(0.88);
         frozen = true;
     }
 
     public void unfreeze() {
+        Robot.m_oi.rumbleDriver(0.0);
         frozen = false;
     }
 }

@@ -289,4 +289,8 @@ public class OI {
   public boolean inLevel3Mode() {
     return !buttonBox.buttonBBBSwitch.get();
   }
+
+  public void rumbleDriver(double rumble) {
+    driveController.rumble(rumble);
+  }
 }
