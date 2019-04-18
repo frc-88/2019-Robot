@@ -317,7 +317,7 @@ public class Drive extends Subsystem {
         joystickSpeed = speed;
 
         DriveUtils.signedPow(speed, RobotMap.DRIVE_SPEED_EXP);
-        DriveUtils.signedPow(turn, RobotMap.DRIVE_TURN_EXP);
+        DriveUtils.deadbandExponential(turn, RobotMap.DRIVE_TURN_EXP, 2);
 
         // turn = DriveUtils.cheesyTurn(speed, turn);
 
