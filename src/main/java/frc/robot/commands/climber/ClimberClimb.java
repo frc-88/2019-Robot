@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.arm.ArmGoToSetpoint;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
@@ -38,6 +39,8 @@ public class ClimberClimb extends Command {
   private int CLEAR_CLIMBER_TARGET = 35000;
 
   private final double CLEAR_SHOULDER_TARGET = 86;
+
+  private ArmGoToSetpoint homeCommand = new ArmGoToSetpoint(ArmPosition.HOME);
 
   private int state;
   private double leftDriveTarget;
@@ -99,7 +102,11 @@ public class ClimberClimb extends Command {
       arm.moveElbowAbs(LIFT_ELBOW_START + elbowTotalDist * shoulderPercentDone, 0);
 
       if (climber.targetReached(3000) && Math.abs(arm.getElbowAbsDegrees() - LIFT_ELBOW_END) < RobotMap.ARM_TOLERANCE) {
-        state++;
+        if (Robot.m_oi.getClimbButton()) {
+          state = 21;
+        } else {
+          state++;
+        }
       }
 
       
@@ -240,6 +247,81 @@ public class ClimberClimb extends Command {
         climber.configForEncoderPID();
 
       }
+
+      break;
+
+    case 21:
+
+      if (arm.getElbowAbsDegrees() < 170) {
+        arm.moveElbowAbs(PULL_ELBOW_TARGET, 1);
+      } else {
+        arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
+      }
+      drive.basicDrive(0.08, 0.08);
+
+      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE + 1) {
+        state++;
+
+        arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
+
+        arm.setShoulderSpeed(50);        
+      }
+
+    break;
+
+  case 22:
+
+    climber.configForEncoderPID();
+    climber.moveEncoder(DROP_CLIMBER_TARGET);
+
+    arm.moveShoulder(DROP_SHOULDER_TARGET);
+
+    arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
+
+    drive.basicDrive(0.08, 0.08);
+
+    if (Robot.m_navx.getPitch() < -25) {
+      state = 10;
+    }
+
+    if (climber.onPlatform()) {
+      state++;
+
+      leftDriveTarget = drive.getLeftPosition();
+      rightDriveTarget = drive.getRightPosition();
+    }
+
+    if (Math.abs(arm.getShoulderAbsDegrees() - DROP_SHOULDER_TARGET) < RobotMap.ARM_TOLERANCE) {
+      state++;
+
+      arm.setSetpoint(ArmPosition.MID_CLIMB, 0, 0, 0, 0);
+      homeCommand.initialize();
+    }
+
+    break;
+
+  case 23:
+
+    drive.basicDrive(0.08, 0.08);
+
+    homeCommand.execute();
+
+    if (arm.getCurrentSetpoint().equals(ArmPosition.HOME) && arm.targetReached()) {
+      state = 3;
+    }
+
+    if (Robot.m_navx.getPitch() < -25) {
+      state = 10;
+    }
+
+    if (climber.onPlatform()) {
+      state = 3;
+
+      leftDriveTarget = drive.getLeftPosition();
+      rightDriveTarget = drive.getRightPosition();
+    }
+
+    break;
 
     }
     

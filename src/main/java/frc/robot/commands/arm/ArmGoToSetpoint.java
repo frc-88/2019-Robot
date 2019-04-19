@@ -32,7 +32,7 @@ public class ArmGoToSetpoint extends Command {
 
   // Called just before this Command runs the first time
   @Override
-  protected void initialize() {
+  public void initialize() {
     start = arm.getCurrentSetpoint();
     path = ArmPosition.getPath(start, target);
     currentPathSetpoint = 0;
@@ -41,7 +41,7 @@ public class ArmGoToSetpoint extends Command {
 
   // Called repeatedly when this Command is scheduled to run
   @Override
-  protected void execute() {
+  public void execute() {
     if (currentPathSetpoint < path.length) {
 
       ArmSetpoint to = path[currentPathSetpoint];

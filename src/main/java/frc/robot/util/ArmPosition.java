@@ -30,6 +30,7 @@ public final class ArmPosition {
     public static final ArmSetpoint HIGH_ROCKET_BACK = new ArmSetpoint(-30, 0);
     public static final ArmSetpoint PRE_CLIMB = new ArmSetpoint(75, 176);
     public static final ArmSetpoint PRE_CLIMB2 = new ArmSetpoint(103, 170);
+    public static final ArmSetpoint MID_CLIMB = new ArmSetpoint(121, 173);
     public static final ArmSetpoint LOW_ROCKET_BACK = new ArmSetpoint(-90, -180);
 
     public static ArmSetpoint[] getPath(ArmSetpoint currentSetpoint, ArmSetpoint targetSetpoint) {
@@ -103,6 +104,16 @@ public final class ArmPosition {
         }
         else if ((targetSetpoint.equals(INTAKE) || targetSetpoint.equals(HOME))
                 && currentSetpoint.equals(PRE_CLIMB)) {
+
+            return new ArmSetpoint[] {
+                new ArmSetpoint(130,126).passShoulder().passElbow(),
+                new ArmSetpoint(140, 87).passShoulder().passElbow(),
+                targetSetpoint
+            };
+    
+        } 
+        else if (targetSetpoint.equals(HOME)
+                && currentSetpoint.equals(MID_CLIMB)) {
 
             return new ArmSetpoint[] {
                 new ArmSetpoint(130,126).passShoulder().passElbow(),

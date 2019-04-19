@@ -290,6 +290,10 @@ public class OI {
     return !buttonBox.buttonBBBSwitch.get();
   }
 
+  public boolean getClimbButton() {
+    return buttonBox.buttonBBBBlue.get();
+  }
+
   public void rumbleDriver(double rumble) {
     driveController.rumble(rumble);
   }
