@@ -141,17 +141,20 @@ public class RobotMap {
 
   // LAPG
   // Below times in microseconds
-  public static final long LAPG_CLOSE_TIME = 1000000;
+  public static final long LAPG_CLOSE_TIME = 500000;
   public static final long LAPG_OPEN_TIME = 500000;
   public static final long LAPG_RETRACT_TIME = 250000;
-  public static final double TARGETING_MAX_SPEED = 0.5;
-  public static final double TARGETING_MIN_SPEED = 0.1;
+  public static final double TARGETING_MAX_SPEED = 0.38;
+  public static final double TARGETING_MIN_SPEED = 0.08;
+  public static final double TARGETING_MAX_P = 0.9;
+  public static final double TARGETING_MIN_P = 0.3;
+  public static final double TARGETING_MAX_TURN = 0.25;
   // Titan's turn values
   // public static final double TARGETING_A_TURN_P = 0.8;
   // public static final double TARGETING_B_TURN_P = 0.6;
   // Jupiter's turn values
-  public static final double TARGETING_A_TURN_P = 0.3;
-  public static final double TARGETING_B_TURN_P = 0.2;
+  public static final double TARGETING_A_TURN_P = 0.50;
+  public static final double TARGETING_B_TURN_P = 0.25;
 
   // Limelight
   public static final double LIMELIGHT_MAX_AREA = 12.25;

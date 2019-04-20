@@ -39,11 +39,16 @@ public class ArcadeDrive extends Command {
     }
 
     if (Robot.m_oi.isDriverButtonBPressed()) {
-      turn = RobotMap.TARGETING_A_TURN_P * Robot.m_limelight.turnToTarget();
-
       if (Robot.m_limelight.hasTarget()) {
         double adjustment = Math.min(Robot.m_limelight.getTargetArea() / RobotMap.LIMELIGHT_MAX_AREA, 1);
+
         speed = (RobotMap.TARGETING_MAX_SPEED - (adjustment * (RobotMap.TARGETING_MAX_SPEED - RobotMap.TARGETING_MIN_SPEED))) * -1;
+        
+        turn = (RobotMap.TARGETING_MIN_P + (adjustment * (RobotMap.TARGETING_MAX_P - RobotMap.TARGETING_MIN_P))) * Robot.m_limelight.turnToTarget();
+        if (Math.abs(turn) > RobotMap.TARGETING_MAX_TURN) {
+          turn = RobotMap.TARGETING_MAX_TURN * Math.signum(turn);
+          speed = RobotMap.TARGETING_MIN_SPEED;
+        }
       }
     }
 

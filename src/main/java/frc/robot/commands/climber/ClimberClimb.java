@@ -88,6 +88,9 @@ public class ClimberClimb extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+
+    double leftVoltage;
+    double rightVoltage;
     switch (state) {
 
     // Lift the robot
@@ -187,7 +190,6 @@ public class ClimberClimb extends Command {
         rightDone = true;
       }
 
-      double leftVoltage;
       if (leftDone) {
         leftVoltage = 0;
       } else if (drive.getLeftSpeed() > 0) {
@@ -200,7 +202,6 @@ public class ClimberClimb extends Command {
         leftVoltage = 0;
       }
 
-      double rightVoltage;
       if (rightDone) {
         rightVoltage = 0;
       } if (drive.getRightSpeed() > 0) {
@@ -257,9 +258,9 @@ public class ClimberClimb extends Command {
       } else {
         arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
       }
-      drive.basicDrive(0.08, 0.08);
+      drive.basicDrive(0.18, 0.18);
 
-      if (Math.abs(arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) < RobotMap.ARM_TOLERANCE + 1) {
+      if ((arm.getElbowAbsDegrees() - PULL_ELBOW_TARGET) > 0) {
         state++;
 
         arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
@@ -269,59 +270,141 @@ public class ClimberClimb extends Command {
 
     break;
 
-  case 22:
+    case 22:
 
-    climber.configForEncoderPID();
-    climber.moveEncoder(DROP_CLIMBER_TARGET);
+      climber.configForEncoderPID();
+      climber.moveEncoder(DROP_CLIMBER_TARGET);
 
-    arm.moveShoulder(DROP_SHOULDER_TARGET);
+      arm.moveShoulder(DROP_SHOULDER_TARGET);
 
-    arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
+      arm.moveElbowAbs(PULL_ELBOW_TARGET, 0);
 
-    drive.basicDrive(0.08, 0.08);
+      drive.basicDrive(0.18, 0.18);
 
-    if (Robot.m_navx.getPitch() < -25) {
-      state = 10;
-    }
+      if (Robot.m_navx.getPitch() < -25) {
+        state = 10;
+      }
 
-    if (climber.onPlatform()) {
-      state++;
+      if (climber.onPlatform()) {
+        state++;
 
-      leftDriveTarget = drive.getLeftPosition();
-      rightDriveTarget = drive.getRightPosition();
-    }
+        leftDriveTarget = drive.getLeftPosition();
+        rightDriveTarget = drive.getRightPosition();
+      }
 
-    if (Math.abs(arm.getShoulderAbsDegrees() - DROP_SHOULDER_TARGET) < RobotMap.ARM_TOLERANCE) {
-      state++;
+      if (Math.abs(arm.getShoulderAbsDegrees() - DROP_SHOULDER_TARGET) < RobotMap.ARM_TOLERANCE) {
+        state++;
 
-      arm.setSetpoint(ArmPosition.MID_CLIMB, 0, 0, 0, 0);
-      homeCommand.initialize();
-    }
+        arm.setSetpoint(ArmPosition.MID_CLIMB, 0, 0, 0, 0);
+        homeCommand.initialize();
+      }
 
-    break;
+      break;
 
-  case 23:
+    case 23:
 
-    drive.basicDrive(0.08, 0.08);
+      drive.basicDrive(0.18, 0.18);
 
-    homeCommand.execute();
+      homeCommand.execute();
 
-    if (arm.getCurrentSetpoint().equals(ArmPosition.HOME) && arm.targetReached()) {
-      state = 3;
-    }
+      if (arm.getCurrentSetpoint().equals(ArmPosition.HOME) && arm.targetReached()) {
+        state = 3;
+      }
 
-    if (Robot.m_navx.getPitch() < -25) {
-      state = 10;
-    }
+      if (Robot.m_navx.getPitch() < -25) {
+        state = 10;
+      }
 
-    if (climber.onPlatform()) {
-      state = 3;
+      if (climber.onPlatform() && arm.getCurrentSetpoint().equals(ArmPosition.HOME)) {
+        state++;
 
-      leftDriveTarget = drive.getLeftPosition();
-      rightDriveTarget = drive.getRightPosition();
-    }
+        leftDriveTarget = drive.getLeftPosition();
+        rightDriveTarget = drive.getRightPosition();
+      }
 
-    break;
+      break;
+
+    case 24:
+
+      drive.basicDrive(0.4, 0.4);
+
+      if (Robot.m_navx.getPitch() < -25) {
+        state = 10;
+      }
+
+      if (climber.onPlatform()) {
+        state++;
+
+        leftDriveTarget = drive.getLeftPosition();
+        rightDriveTarget = drive.getRightPosition();
+      }
+
+      break;
+    
+    case 25:
+
+      if (!climber.onPlatform()) {
+        leftDone = true;
+        rightDone = true;
+      }
+
+      if (leftDone) {
+        leftVoltage = 0;
+      } else if (drive.getLeftSpeed() > 0) {
+        leftDriveTarget = Math.min(leftDriveTarget, drive.getLeftPosition() - .5/12.);
+        leftVoltage = -0.1;
+      } else if (drive.getLeftPosition() > leftDriveTarget) {
+        leftVoltage = -0.08;
+      } else {
+        leftDone = true;
+        leftVoltage = 0;
+      }
+
+      if (rightDone) {
+        rightVoltage = 0;
+      } if (drive.getRightSpeed() > 0) {
+        rightDriveTarget = Math.min(rightDriveTarget, drive.getRightPosition() - .5/12.);
+        rightVoltage = -0.08;
+      } else if (drive.getRightPosition() > rightDriveTarget) {
+        rightVoltage = -0.06;
+      } else {
+        rightDone = true;
+        rightVoltage = 0;
+      }
+
+      drive.basicDrive(leftVoltage, rightVoltage);
+      
+      climber.moveEncoder(CLEAR_CLIMBER_TARGET);
+
+      if (Robot.m_navx.getPitch() < -25) {
+        state = 10;
+        
+        arm.configureCoastMode();
+        climber.configForEncoderPID();
+
+      }
+
+      if (leftDone && rightDone) {
+        state++;
+      }
+
+      break;
+
+    case 26:
+
+      climber.moveEncoder(CLEAR_CLIMBER_TARGET);
+
+      drive.basicDrive(0, 0);
+
+      if (Robot.m_navx.getPitch() < -25) {
+        state = 10;
+        
+        arm.configureCoastMode();
+        climber.configForEncoderPID();
+
+      }
+
+      break;
 
     }
     
