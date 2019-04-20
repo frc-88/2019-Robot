@@ -7,6 +7,7 @@
 
 package frc.robot.commands.drive;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -55,6 +56,10 @@ public class ArcadeDrive extends Command {
     if (Robot.m_drive.isFrozen()) {
       speed = 0;
       turn = 0;
+    }
+
+    if (Robot.m_drive.isRecording()) {
+      Robot.m_drive.writeLog(RobotController.getFPGATime(), speed, turn);
     }
 
     Robot.m_drive.arcadeDrive(speed, turn);
