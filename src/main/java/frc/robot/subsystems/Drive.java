@@ -10,10 +10,16 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -101,6 +107,8 @@ public class Drive extends Subsystem {
     private double rightCommandedSpeed;
     private double joystickSpeed;
     private boolean frozen;
+    private boolean recording;
+    private BufferedWriter bw;
 
     public Drive() {
         leftTransmission = new ShiftingTransmission(new Vex775Pro(), RobotMap.NUM_DRIVE_MOTORS_PER_SIDE,
@@ -137,6 +145,12 @@ public class Drive extends Subsystem {
         rightTransmission.shiftToLow();
         maxSpeed = RobotMap.MAX_SPEED_LOW;
         frozen = false;
+        recording = false;
+
+        Preferences prefs = Preferences.getInstance();
+        if (!prefs.containsKey("Drive:RecordFile")) {
+            prefs.putString("Drive:RecordFile", "test");
+          }
     }
 
     public void configureShuffleboard() {
@@ -362,7 +376,7 @@ public class Drive extends Subsystem {
 
         double currentSpeed = getStraightSpeed();
         if (speed - currentSpeed > 0) {
-            
+
             deccelerating = false;
 
             double vel = currentSpeed + maxAccel;
@@ -415,7 +429,7 @@ public class Drive extends Subsystem {
 
         double currentSpeed = getStraightSpeed();
         if (speed - currentSpeed > 0) {
-            
+
             deccelerating = false;
 
             return speed;
@@ -626,5 +640,45 @@ public class Drive extends Subsystem {
     public void unfreeze() {
         Robot.m_oi.rumbleDriver(0.0);
         frozen = false;
+    }
+
+    public boolean isRecording() {
+        return recording;
+    }
+
+    public void startRecording(String filename) {
+        File file;
+        FileWriter fw;
+
+        try {
+            file = new File(String.format("/home/lvuser/sandstorm/%s.log", filename));
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+            fw = new FileWriter(file);
+            bw = new BufferedWriter(fw);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        recording = true;
+    }
+
+    public void writeLog(long timestamp, double speed, double turn) {
+        try {
+            bw.write(String.format("%f,%f,%f%n", timestamp, speed, turn));
+            bw.newLine();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public void stopRecording() {
+        try {
+            bw.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        recording = false;
     }
 }
