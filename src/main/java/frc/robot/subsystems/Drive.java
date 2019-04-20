@@ -651,7 +651,7 @@ public class Drive extends Subsystem {
         FileWriter fw;
 
         try {
-            file = new File(String.format("/home/lvuser/sandstorm/%s.log", filename));
+            file = new File(String.format("/home/lvuser/%s.log", filename));
             if (file.exists()) {
                 file.delete();
             }
@@ -666,7 +666,7 @@ public class Drive extends Subsystem {
 
     public void writeLog(long timestamp, double speed, double turn) {
         try {
-            bw.write(String.format("%f,%f,%f%n", timestamp, speed, turn));
+            bw.write(String.format("%d,%f,%f%n", timestamp, speed, turn));
             bw.newLine();
         } catch (IOException ioe) {
             ioe.printStackTrace();
