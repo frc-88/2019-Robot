@@ -18,7 +18,6 @@ public class ArmIntakeLoadCargo extends CommandGroup {
    * Add your docs here.
    */
   public ArmIntakeLoadCargo() {
-    addSequential(new IntakeEjectCargo());
     addParallel(new ArmGoToSetpoint(ArmPosition.INTAKE));
     addSequential(new IntakeLoadCargo2(-0.85));
   }
