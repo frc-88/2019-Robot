@@ -40,7 +40,11 @@ public class LAPGScore extends Command {
     case 1:
       // retract
       Robot.m_lapg.retract();
+      gotoNextStateAfterDelay(RobotMap.LAPG_RETRACT_TIME);
+      break;
+    case 2:
       state = 99;
+      break;
     }
 
   }

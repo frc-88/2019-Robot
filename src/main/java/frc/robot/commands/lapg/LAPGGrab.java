@@ -56,7 +56,7 @@ public class LAPGGrab extends Command {
       // retract
       Robot.m_lapg.setPanel(true);
       Robot.m_lapg.retract();
-      state = 99;
+      gotoNextStateAfterDelay(RobotMap.LAPG_RETRACT_TIME);
       break;
     default:
       state = 99;
