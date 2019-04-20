@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.commands.arm.ArmGoToSetpoint;
+import frc.robot.commands.intake.IntakeEjectCargo;
 import frc.robot.commands.intake.IntakeLoadCargo2;
 import frc.robot.util.ArmPosition;
 
@@ -17,7 +18,8 @@ public class ArmIntakeLoadCargo extends CommandGroup {
    * Add your docs here.
    */
   public ArmIntakeLoadCargo() {
-    addParallel(new IntakeLoadCargo2(-0.9));
+    addSequential(new IntakeEjectCargo());
     addParallel(new ArmGoToSetpoint(ArmPosition.INTAKE));
+    addSequential(new IntakeLoadCargo2(-0.85));
   }
 }
