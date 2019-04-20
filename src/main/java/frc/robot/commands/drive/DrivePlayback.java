@@ -15,22 +15,36 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class DrivePlayback extends Command {
-  private List<List<String>> points = new ArrayList<>();
+  private List<List<Double>> points = new ArrayList<>();
+  private double startTime;
+  private int idx;
 
   public DrivePlayback(String filename) {
     requires(Robot.m_drive);
 
     try {
-      private BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
+      BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
 
       String line;
+      double initTime = -1;
       while ((line = br.readLine()) != null) {
         String[] values = line.split(",");
-        points.add(Arrays.asList(values));
+        List<Double> converted = new ArrayList<Double>();
+        if (initTime == -1) {
+          initTime = Long.parseLong(values[0]);
+          converted.add(0.);
+        } else {
+          converted.add(Double.parseDouble(values[0]) - initTime);
+        }
+        converted.add(Double.parseDouble(values[1]));
+        converted.add(Double.parseDouble(values[2]));
+        points.add(converted);
       }
 
       br.close();
@@ -42,17 +56,36 @@ public class DrivePlayback extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    startTime = RobotController.getFPGATime();
+    idx = 0;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    double timeElapsed = RobotController.getFPGATime() - startTime;
+    while (idx < points.size()) {
+      System.out.println(timeElapsed + "  " + points.get(idx).get(0));
+      if (timeElapsed > points.get(idx).get(0) + 10000) {
+        idx++;
+      } else {
+        break;
+      }
+    }
+
+    Robot.m_drive.autoshift();
+    
+    double speed=points.get(idx).get(1);
+    double turn=points.get(idx).get(2);
+
+    Robot.m_drive.arcadeDrive(speed, turn);
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return idx == points.size() - 1;
   }
 
   // Called once after isFinished returns true

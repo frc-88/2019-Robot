@@ -41,6 +41,7 @@ import frc.robot.commands.climber.ClimberPrep2;
 import frc.robot.commands.climber.ClimberPull;
 import frc.robot.commands.climber.ClimberSwitchTo3;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.DrivePlayback;
 import frc.robot.commands.drive.DriveStartRecording;
 import frc.robot.commands.drive.DriveStopRecording;
 import frc.robot.commands.intake.IntakeBasicControl;
@@ -90,6 +91,8 @@ public class OI {
     driveController.buttonB.whenPressed(new LimelightTrackingOn());
     driveController.buttonB.whenReleased(new LimelightTrackingOff());
     driveController.buttonY.whenPressed(new ArcadeDrive());
+
+    driveController.buttonBack.whenPressed(new DrivePlayback("/home/lvuser/rightload2backrocket.log"));
 
     // Operator button box    
     buttonBox.buttonWhiteLeftTop.whenPressed(new LAPGDeploy());
