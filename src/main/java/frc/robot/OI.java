@@ -41,6 +41,8 @@ import frc.robot.commands.climber.ClimberPrep2;
 import frc.robot.commands.climber.ClimberPull;
 import frc.robot.commands.climber.ClimberSwitchTo3;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.DriveStartRecording;
+import frc.robot.commands.drive.DriveStopRecording;
 import frc.robot.commands.intake.IntakeBasicControl;
 import frc.robot.commands.intake.IntakeDefault;
 import frc.robot.commands.intake.IntakeEjectCargo;
@@ -204,6 +206,9 @@ public class OI {
 
     SmartDashboard.putData("Zero Yaw", new NavXZeroYaw());
     SmartDashboard.putData("Zero Pitch", new NavXZeroPitch());
+
+    SmartDashboard.putData("Start Recording", new DriveStartRecording());
+    SmartDashboard.putData("Stop Recording", new DriveStopRecording());
 
   }
 
