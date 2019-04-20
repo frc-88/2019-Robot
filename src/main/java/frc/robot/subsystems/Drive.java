@@ -667,7 +667,6 @@ public class Drive extends Subsystem {
     public void writeLog(long timestamp, double speed, double turn) {
         try {
             bw.write(String.format("%d,%f,%f%n", timestamp, speed, turn));
-            bw.newLine();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
