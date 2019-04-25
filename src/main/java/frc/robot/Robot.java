@@ -73,7 +73,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
+    // Oh yeah!!!
+    
     CameraServer.getInstance().startAutomaticCapture();
 
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
