@@ -229,23 +229,23 @@ public class Robot extends TimedRobot {
     long timeOther = timeNow - lastRobotPerEnd;
     long timePacket = timeNow - lastControlPacket;
 
-    System.out.println("TIMING - TeleopPer: " + timeTeleopPer
-        + "   RobotPer: " + timeRobotPer
-        + "   Other: " + timeOther
-        + "   LastPacket: " + timePacket);
+    // System.out.println("TIMING - TeleopPer: " + timeTeleopPer
+    //     + "   RobotPer: " + timeRobotPer
+    //     + "   Other: " + timeOther
+    //     + "   LastPacket: " + timePacket);
 
-    if (timeTeleopPer > 250_000) {
-      System.out.println("WARNING LOOK AT ME: TELEOP TOOK A LONG TIME");
-    }
-    if (timeRobotPer > 250_000) {
-      System.out.println("WARNING LOOK AT ME: ROBOT TOOK A LONG TIME");
-    }
-    if (timeOther > 250_000) {
-      System.out.println("WARNING LOOK AT ME: OTHER TOOK A LONG TIME");
-    }
-    if (timePacket > 250_000) {
-      System.out.println("WARNING LOOK AT ME: PACKET TOOK A LONG TIME");
-    }
+    // if (timeTeleopPer > 250_000) {
+    //   System.out.println("WARNING LOOK AT ME: TELEOP TOOK A LONG TIME");
+    // }
+    // if (timeRobotPer > 250_000) {
+    //   System.out.println("WARNING LOOK AT ME: ROBOT TOOK A LONG TIME");
+    // }
+    // if (timeOther > 250_000) {
+    //   System.out.println("WARNING LOOK AT ME: OTHER TOOK A LONG TIME");
+    // }
+    // if (timePacket > 250_000) {
+    //   System.out.println("WARNING LOOK AT ME: PACKET TOOK A LONG TIME");
+    // }
 
     lastTeleopPerStart = timeNow;
     if (DriverStation.getInstance().isNewControlData()) {
