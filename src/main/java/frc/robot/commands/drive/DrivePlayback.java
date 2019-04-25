@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -22,14 +23,28 @@ import frc.robot.RobotMap;
 
 public class DrivePlayback extends Command {
   private List<List<Double>> points = new ArrayList<>();
+  private String pathFile;
   private double startTime;
   private int idx;
+
+  public DrivePlayback()
+  {
+    requires(Robot.m_drive);
+    Preferences prefs = Preferences.getInstance();
+    pathFile = prefs.getString("Drive:RecordFile", "test");
+  }
 
   public DrivePlayback(String filename) {
     requires(Robot.m_drive);
 
+    pathFile = filename;
+  }
+
+  // Called just before this Command runs the first time
+  @Override
+  protected void initialize() {
     try {
-      BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
+      BufferedReader br = new BufferedReader(new FileReader(new File(pathFile)));
 
       String line;
       double initTime = -1;
@@ -51,11 +66,7 @@ public class DrivePlayback extends Command {
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
-  }
 
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
     startTime = RobotController.getFPGATime();
     idx = 0;
   }
