@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Oh yeah!!!
-    
+
     CameraServer.getInstance().startAutomaticCapture();
 
     compressor = new Compressor(RobotMap.COMPRESSOR_PCM);
@@ -95,6 +95,7 @@ public class Robot extends TimedRobot {
 
     m_limelight.ledOff();
     m_limelight.camDriver();
+    m_limelight.setPip();
 
     m_navx.zeroPitch();
 
@@ -140,6 +141,7 @@ public class Robot extends TimedRobot {
 
     m_limelight.ledOff();
     m_limelight.camDriver();
+    m_limelight.setPip();
   }
 
   /**
