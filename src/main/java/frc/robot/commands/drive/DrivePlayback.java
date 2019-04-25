@@ -27,11 +27,10 @@ public class DrivePlayback extends Command {
   private double startTime;
   private int idx;
 
-  public DrivePlayback()
-  {
+  public DrivePlayback() {
     requires(Robot.m_drive);
     Preferences prefs = Preferences.getInstance();
-    pathFile = prefs.getString("Drive:RecordFile", "test");
+    pathFile = "/home/lvuser/" + prefs.getString("Drive:RecordFile", "test");
   }
 
   public DrivePlayback(String filename) {
@@ -50,16 +49,18 @@ public class DrivePlayback extends Command {
       double initTime = -1;
       while ((line = br.readLine()) != null) {
         String[] values = line.split(",");
-        List<Double> converted = new ArrayList<Double>();
-        if (initTime == -1) {
-          initTime = Long.parseLong(values[0]);
-          converted.add(0.);
-        } else {
-          converted.add(Double.parseDouble(values[0]) - initTime);
+        if (values.length > 0) {
+          List<Double> converted = new ArrayList<Double>();
+          if (initTime == -1) {
+            initTime = Long.parseLong(values[0]);
+            converted.add(0.);
+          } else {
+            converted.add(Double.parseDouble(values[0]) - initTime);
+          }
+          converted.add(Double.parseDouble(values[1]));
+          converted.add(Double.parseDouble(values[2]));
+          points.add(converted);
         }
-        converted.add(Double.parseDouble(values[1]));
-        converted.add(Double.parseDouble(values[2]));
-        points.add(converted);
       }
 
       br.close();
@@ -85,12 +86,12 @@ public class DrivePlayback extends Command {
     }
 
     Robot.m_drive.autoshift();
-    
-    double speed=points.get(idx).get(1);
-    double turn=points.get(idx).get(2);
+
+    double speed = points.get(idx).get(1);
+    double turn = points.get(idx).get(2);
 
     Robot.m_drive.arcadeDrive(speed, turn);
-    
+
   }
 
   // Make this return true when this Command no longer needs to run execute()
