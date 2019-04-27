@@ -8,6 +8,7 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -41,6 +42,8 @@ public class ClimberClimb extends Command {
   private final double CLEAR_SHOULDER_TARGET = 86;
 
   private ArmGoToSetpoint homeCommand = new ArmGoToSetpoint(ArmPosition.HOME);
+
+  private double driveStartTime;
 
   private int state;
   private double leftDriveTarget;
@@ -158,6 +161,8 @@ public class ClimberClimb extends Command {
 
       if (Math.abs(arm.getShoulderAbsDegrees() - DROP_SHOULDER_TARGET) < RobotMap.ARM_TOLERANCE) {
         state++;
+
+        driveStartTime = RobotController.getFPGATime();
       }
 
       break;
@@ -172,7 +177,7 @@ public class ClimberClimb extends Command {
         state = 10;
       }
 
-      if (climber.onPlatform()) {
+      if (climber.onPlatform() || RobotController.getFPGATime() - driveStartTime > 2_000_000) {
         state++;
 
         leftDriveTarget = drive.getLeftPosition();
@@ -311,6 +316,7 @@ public class ClimberClimb extends Command {
           && Math.abs(arm.getShoulderMotorDegrees() - ArmPosition.HOME.shoulder) < RobotMap.ARM_TOLERANCE) {
         state++;
 
+        driveStartTime = RobotController.getFPGATime();
       }
 
       if (Robot.m_navx.getPitch() < -25) {
@@ -327,7 +333,7 @@ public class ClimberClimb extends Command {
         state = 10;
       }
 
-      if (climber.onPlatform()) {
+      if (climber.onPlatform() || RobotController.getFPGATime() - driveStartTime > 2_000_000) {
         state++;
 
         leftDriveTarget = drive.getLeftPosition();
