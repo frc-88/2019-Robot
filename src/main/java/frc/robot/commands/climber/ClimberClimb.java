@@ -273,7 +273,7 @@ public class ClimberClimb extends Command {
     case 22:
 
       climber.configForEncoderPID();
-      climber.moveEncoder(DROP_CLIMBER_TARGET);
+      climber.moveEncoder(DROP_CLIMBER_TARGET - 250);
 
       arm.moveShoulder(DROP_SHOULDER_TARGET);
 
@@ -307,19 +307,14 @@ public class ClimberClimb extends Command {
 
       homeCommand.execute();
 
-      if (arm.getCurrentSetpoint().equals(ArmPosition.HOME) && arm.targetReached()) {
-        state = 3;
+      if (Math.abs(arm.getShoulderMotorDegrees() - ArmPosition.HOME.shoulder) < RobotMap.ARM_TOLERANCE
+          && Math.abs(arm.getShoulderMotorDegrees() - ArmPosition.HOME.shoulder) < RobotMap.ARM_TOLERANCE) {
+        state++;
+
       }
 
       if (Robot.m_navx.getPitch() < -25) {
         state = 10;
-      }
-
-      if (climber.onPlatform() && arm.getCurrentSetpoint().equals(ArmPosition.HOME)) {
-        state++;
-
-        leftDriveTarget = drive.getLeftPosition();
-        rightDriveTarget = drive.getRightPosition();
       }
 
       break;
