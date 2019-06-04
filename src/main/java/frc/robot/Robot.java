@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import java.util.Objects;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -25,8 +23,6 @@ import frc.robot.commands.climber.ClimberClimb;
 import frc.robot.commands.climber.ClimberClimb2;
 import frc.robot.commands.climber.ClimberFullPrep;
 import frc.robot.commands.climber.ClimberFullPrep2;
-import frc.robot.commands.lapg.LAPGGrab;
-import frc.robot.commands.lapg.LAPGScore;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
@@ -70,17 +66,6 @@ public class Robot extends TimedRobot {
   long lastControlPacket = Long.MAX_VALUE;
 
   boolean firstAutoInit = true;
-
-  private boolean inGrab = false;
-  private boolean sandstormVibrateReady = false;
-
-  double sandstormVibrateMin = 20;
-  double sandstormVibrateMax = 25;
-
-  double lastLeftDist = 0;
-  double lastRightDist = 0;
-  double leftTotalDist = 0;
-  double rightTotalDist = 0;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -199,18 +184,6 @@ public class Robot extends TimedRobot {
      * ExampleCommand(); break; }
      */
 
-    Preferences prefs = Preferences.getInstance();
-    if (prefs.containsKey("Sandstorm:MinDist")) {
-      sandstormVibrateMin = prefs.getDouble("Sandstorm:MinDist", sandstormVibrateMin);
-    } else {
-      prefs.putDouble("Sandstorm:MinDist", sandstormVibrateMin);
-    }
-    if (prefs.containsKey("Sandstorm:MaxDist")) {
-      sandstormVibrateMax = prefs.getDouble("Sandstorm:MaxDist", sandstormVibrateMax);
-    } else {
-      prefs.putDouble("Sandstorm:MaxDist", sandstormVibrateMax);
-    }
-
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.start();
@@ -223,41 +196,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-
-    if (sandstormVibrateReady) {
-      double curLeftDist = m_drive.getLeftPosition();
-      double curRightDist = m_drive.getRightPosition();
-
-      leftTotalDist += Math.abs(lastLeftDist - curLeftDist);
-      rightTotalDist += Math.abs(lastRightDist - curRightDist);
-
-      lastLeftDist = curLeftDist;
-      lastRightDist = curRightDist;
-
-      if (leftTotalDist > sandstormVibrateMin && leftTotalDist < sandstormVibrateMax
-          && rightTotalDist > sandstormVibrateMin && rightTotalDist < sandstormVibrateMax) {
-          
-        m_oi.rumbleDriver(0.44);
-
-      } else {
-        m_oi.rumbleDriver(0);
-      }
-    }
-    
-    if (Objects.nonNull(m_lapg.getCurrentCommand()) && m_lapg.getCurrentCommand().getClass().equals(LAPGGrab.class)) {
-      inGrab = true;
-      sandstormVibrateReady = false;
-    }
-
-    if (inGrab && Objects.nonNull(m_lapg.getCurrentCommand()) && !m_lapg.getCurrentCommand().getClass().equals(LAPGGrab.class))
-      inGrab = false;
-      sandstormVibrateReady = true;
-
-      leftTotalDist = 0;
-      rightTotalDist = 0;
-      lastLeftDist = m_drive.getLeftPosition();
-      lastRightDist = m_drive.getRightPosition();
-    }
+  }
 
   @Override
   public void teleopInit() {
@@ -271,8 +210,6 @@ public class Robot extends TimedRobot {
     m_limelight.camDriver();
 
     m_drive.unfreeze();
-
-    m_oi.rumbleDriver(0);
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

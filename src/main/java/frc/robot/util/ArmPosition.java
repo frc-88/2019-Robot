@@ -116,7 +116,7 @@ public final class ArmPosition {
                 && currentSetpoint.equals(MID_CLIMB)) {
 
             return new ArmSetpoint[] {
-                new ArmSetpoint(118, 155),
+                new ArmSetpoint(100, 140).passShoulder().passElbow(),
                 new ArmSetpoint(158, 115).passElbow(),
                 targetSetpoint
             };
