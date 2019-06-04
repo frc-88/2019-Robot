@@ -92,7 +92,7 @@ public class OI {
     driveController.buttonB.whenReleased(new LimelightTrackingOff());
     driveController.buttonY.whenPressed(new ArcadeDrive());
 
-    driveController.buttonBack.whenPressed(new DrivePlayback("/home/lvuser/rightload2backrocket.log"));
+    driveController.buttonBack.whenPressed(new DrivePlayback("/home/lvuser/deploy/test2.log"));
 
     // Operator button box    
     buttonBox.buttonWhiteLeftTop.whenPressed(new LAPGDeploy());
@@ -212,6 +212,7 @@ public class OI {
 
     SmartDashboard.putData("Start Recording", new DriveStartRecording());
     SmartDashboard.putData("Stop Recording", new DriveStopRecording());
+    SmartDashboard.putData("Play Recording", new DrivePlayback());
 
   }
 

@@ -77,7 +77,7 @@ public class ArmGoToSetpoint extends Command {
 
       int passIdx = currentPathSetpoint;
       while (path[passIdx].passShoulder) {
-        System.out.println("Shoulder pass");
+        //System.out.println("Shoulder pass");
         passIdx++;
       }
       double shoulderTarget = path[passIdx].shoulder;

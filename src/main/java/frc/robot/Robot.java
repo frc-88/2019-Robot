@@ -73,6 +73,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // Oh yeah!!!
 
     CameraServer.getInstance().startAutomaticCapture();
 
@@ -94,6 +95,10 @@ public class Robot extends TimedRobot {
 
     m_limelight.ledOff();
     m_limelight.camDriver();
+    m_limelight.setPip();
+
+    m_lapg.open();
+    m_lapg.active();
 
     m_navx.zeroPitch();
 
@@ -139,6 +144,7 @@ public class Robot extends TimedRobot {
 
     m_limelight.ledOff();
     m_limelight.camDriver();
+    m_limelight.setPip();
   }
 
   /**
@@ -160,14 +166,16 @@ public class Robot extends TimedRobot {
       m_arm.zero();
       m_climber.holdLevel2();
     }
-    
-    
+
     m_arm.configureBrakeMode();
 
     m_limelight.ledOff();
     m_limelight.camDriver();
 
     m_navx.zeroPitch();
+
+    m_lapg.open();
+    m_lapg.active();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -197,8 +205,6 @@ public class Robot extends TimedRobot {
       m_climber.holdLevel2();
     }
     m_arm.configureBrakeMode();
-    m_lapg.open();
-    m_lapg.active();
 
     m_limelight.ledOff();
     m_limelight.camDriver();
@@ -226,23 +232,23 @@ public class Robot extends TimedRobot {
     long timeOther = timeNow - lastRobotPerEnd;
     long timePacket = timeNow - lastControlPacket;
 
-    System.out.println("TIMING - TeleopPer: " + timeTeleopPer
-        + "   RobotPer: " + timeRobotPer
-        + "   Other: " + timeOther
-        + "   LastPacket: " + timePacket);
+    // System.out.println("TIMING - TeleopPer: " + timeTeleopPer
+    //     + "   RobotPer: " + timeRobotPer
+    //     + "   Other: " + timeOther
+    //     + "   LastPacket: " + timePacket);
 
-    if (timeTeleopPer > 250_000) {
-      System.out.println("WARNING LOOK AT ME: TELEOP TOOK A LONG TIME");
-    }
-    if (timeRobotPer > 250_000) {
-      System.out.println("WARNING LOOK AT ME: ROBOT TOOK A LONG TIME");
-    }
-    if (timeOther > 250_000) {
-      System.out.println("WARNING LOOK AT ME: OTHER TOOK A LONG TIME");
-    }
-    if (timePacket > 250_000) {
-      System.out.println("WARNING LOOK AT ME: PACKET TOOK A LONG TIME");
-    }
+    // if (timeTeleopPer > 250_000) {
+    //   System.out.println("WARNING LOOK AT ME: TELEOP TOOK A LONG TIME");
+    // }
+    // if (timeRobotPer > 250_000) {
+    //   System.out.println("WARNING LOOK AT ME: ROBOT TOOK A LONG TIME");
+    // }
+    // if (timeOther > 250_000) {
+    //   System.out.println("WARNING LOOK AT ME: OTHER TOOK A LONG TIME");
+    // }
+    // if (timePacket > 250_000) {
+    //   System.out.println("WARNING LOOK AT ME: PACKET TOOK A LONG TIME");
+    // }
 
     lastTeleopPerStart = timeNow;
     if (DriverStation.getInstance().isNewControlData()) {
